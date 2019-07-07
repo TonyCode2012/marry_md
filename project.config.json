@@ -6,11 +6,14 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false,
+		"uglifyFileName": false,
+		"checkInvalidKey": true
 	},
 	"appid": "wxbec5ea22913b5173",
 	"projectname": "miniprogram-a",
-	"libVersion": "2.2.5",
+	"libVersion": "2.7.3",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {
