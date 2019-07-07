@@ -1,2 +1,35 @@
-<!--miniprogram/pages/index/index.wxml-->
-<text>miniprogram/pages/index/index.wxml</text>
+<recommend wx:if="{{PageCur=='recommend'}}"></recommend>
+<like wx:if="{{PageCur=='like'}}"></like>
+<intro wx:if="{{PageCur=='intro'}}"></intro>
+<mine wx:if="{{PageCur=='mine'}}"></mine>
+<!-- tabbar -->
+<view class="cu-bar tabbar bg-white shadow foot">
+<!-- recommend -->
+  <view class="{{PageCur=='recommend'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="recommend">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-home lg"></text>
+    </view>
+    <view>首页</view>
+  </view>
+  <!-- like -->
+  <view class="{{PageCur=='like'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="like">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-like lg"></text>
+    </view>
+    <view>感兴趣</view>
+  </view>
+  <!-- intro -->
+  <view class="{{PageCur=='intro'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="intro">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-community lg"></text>
+    </view>
+    <view>牵线</view>
+  </view>
+  <!-- mine -->
+  <view class="{{PageCur=='mine'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="mine">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-people lg"></text>
+     </view>
+    <view>我的</view>
+  </view>
+</view>

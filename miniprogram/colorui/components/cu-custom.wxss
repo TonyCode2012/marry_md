@@ -1,0 +1,6 @@
+/* colorui/components/cu-custom.wxss */
+
+.cu-bar .content.text-left {
+  margin-left: 30rpx;
+  text-align: left;
+}

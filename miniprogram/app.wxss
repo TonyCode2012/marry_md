@@ -1,19 +1,10 @@
-/**app.wxss**/
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-} 
+@import "colorui/main.wxss";
+@import "colorui/icon.wxss";
 
-button {
-  background: initial;
+.scrollPage {
+  height: 100vh;
 }
 
-button:focus{
-  outline: 0;
-}
-
-button::after{
-  border: none;
+.text-light {
+  font-weight: 300;
 }

@@ -6,10 +6,7 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true,
-		"autoAudits": false,
-		"uglifyFileName": false,
-		"checkInvalidKey": true
+		"newFeature": true
 	},
 	"appid": "wxbec5ea22913b5173",
 	"projectname": "weapp_match_a",
@@ -33,15 +30,8 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
-			"list": [
-				{
-					"id": -1,
-					"name": "my",
-					"pathName": "pages/my/index",
-					"scene": null
-				}
-			]
+			"current": -1,
+			"list": []
 		}
 	}
 }
