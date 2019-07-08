@@ -30,8 +30,36 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
-			"list": []
+			"current": 3,
+			"list": [
+				{
+					"id": -1,
+					"name": "index",
+					"pathName": "pages/index/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "group_home",
+					"pathName": "pages/group/home/home",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "group_detail",
+					"pathName": "pages/group/detail/detail",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "mine_home",
+					"pathName": "pages/mine/home/home",
+					"scene": null
+				}
+			]
 		}
 	}
 }

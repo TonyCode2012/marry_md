@@ -1,1 +1,19 @@
 /* pages/mine/home/home.wxss */
+
+.edit-profile {
+  position: absolute;
+  right: 5rpx;
+  top: 10rpx;
+  display: flex;
+  align-items: center;
+}
+.edit-profile .cuIcon-right{
+	color: var(--grey);
+	text-align: center;
+	font-size: 34rpx;
+	line-height: 30rpx
+}
+
+.user-profile{
+  position: relative
+}

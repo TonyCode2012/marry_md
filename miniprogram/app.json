@@ -1,11 +1,13 @@
 {
   "pages": [
     "pages/index/index",
-    
-    "pages/recommend/home/home",
+    "pages/meet/home/home",
     "pages/mine/home/home",
     "pages/like/home/home",
-    "pages/intro/home/home"
+    "pages/intro/home/home",
+    "pages/group/home/home",
+    "pages/mine/profile/profile",
+    "pages/group/detail/detail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#39b54a",

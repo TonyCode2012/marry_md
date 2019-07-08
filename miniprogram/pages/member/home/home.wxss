@@ -1,0 +1,5 @@
+/* pages/member/home/home.wxss */
+.user-intro{
+  padding-bottom: 20rpx;
+  border-bottom: solid 1rpx var(--gray);
+}

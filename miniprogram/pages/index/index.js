@@ -4,7 +4,7 @@ const app = getApp()
 
 Page({
   data: {
-    PageCur: 'recommend'
+    PageCur: 'meet'
   },
   NavChange(e) {
     this.setData({

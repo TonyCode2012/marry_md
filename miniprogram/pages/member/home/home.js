@@ -1,8 +1,7 @@
-// pages/mine/home/home.js
+// pages/member/home/home.js
 
 const app = getApp()
 
- 
 Component({
   options: {
     addGlobalClass: true,

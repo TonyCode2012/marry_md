@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "recommend": "/pages/recommend/home/home",
+    "meet": "/pages/meet/home/home",
     "like": "/pages/like/home/home",
     "intro": "/pages/intro/home/home",
     "mine": "/pages/mine/home/home"

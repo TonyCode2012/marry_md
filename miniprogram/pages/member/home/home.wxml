@@ -1,0 +1,65 @@
+<!--pages/member/home/home.wxml-->
+
+<view class='cu-custom'>
+  <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='cuIcon-back'></text> 遇见
+    </navigator>
+    <view class='content' style='top:{{StatusBar}}px;'></view>
+  </view>
+</view>
+<swiper style='height: 500rpx' class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+  <swiper-item wx:for="{{4}}" wx:key>
+    <image class='response' src="https://image.weilanwl.com/img/4x3-2.jpg" mode="aspectFill"></image>
+  </swiper-item>
+</swiper>
+<view class='padding-lg margin-top-sm'>
+
+  <view class="margin-bottom-xl">
+    <view class='margin-bottom-xs flex align-center'>
+      <text class="text-cut margin-right-sm text-black text-bold text-xxl">Lancer</text>
+      <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
+    </view>
+    <view class='text-gray'>
+      <text class='cuIcon-male text-blue margin-right-xs'></text>
+      <text class='margin-right-sm'>上海</text>
+      <text class='margin-right-sm'>93年处女座</text>
+      <text class='margin-right-sm'>178cm</text>
+      <text class='margin-right-sm'>本科</text>
+      <text class='margin-right-sm'>宁波大学</text>
+    </view>
+  </view>
+  <view class="user-intro">
+    <view class='user-intro-header text-gray text-sm'>Ta 的个人介绍</view>
+  </view>
+  <view class="user-expect margin-top-lg">
+    <text>
+    信最核心的价值，就是连接——提供一对一、一对多和多对多的连接方式，从而实现人与人、人与智能终端、人与社交化娱乐、人与硬件设备的连接，同时连接服务、资讯、商业。 ​微信团队一直致力于将微信打造成一个强大的、全方位的服务工具。
+     <br/>
+      <br/>
+    在此基础上，我们推出了微信小程序这个产品，提供给微信小程序的开发者在微信内搭建和实现特定服务、功能的平台。
+    <br/>
+     <br/>
+    通过全面开放的能力，我们将更多连接的可能给予企业和服务提供者，并为微信小程序提供基础的接入能力、运营环境和规则体系，进而帮助更多的企业和服务提供者建立自己的品牌，将商业机会带给整个微信产业链。
+    </text>
+  </view>
+
+  <view class='margin-top-xl padding-left-xl'>
+    <view class='margin-top-lg text-gray text-lg'>
+      希望你
+    </view>
+    <text>
+        使用微信小程序平台的服务，你必须阅读并遵守 《微信小程序平台服务条款》，以及腾讯为此制定的专项规则等。
+      </text>
+  </view>
+
+</view>
+
+
+<view class="btn-group cu-bar tabbar bg-white foot">
+  <button class="cu-btn bg-red round ">感兴趣
+    <!-- <text class='text-xs margin-left-xs'>(翻牌子可加微信)</text> -->
+  </button>
+  <button class="cu-btn bg-green round">分享</button>
+</view>
+<view class="cu-tabbar-height"></view>

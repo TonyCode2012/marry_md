@@ -1,11 +1,11 @@
-<recommend wx:if="{{PageCur=='recommend'}}"></recommend>
+<meet wx:if="{{PageCur=='meet'}}"></meet>
 <like wx:if="{{PageCur=='like'}}"></like>
 <intro wx:if="{{PageCur=='intro'}}"></intro>
 <mine wx:if="{{PageCur=='mine'}}"></mine>
 <!-- tabbar -->
 <view class="cu-bar tabbar bg-white shadow foot">
-<!-- recommend -->
-  <view class="{{PageCur=='recommend'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="recommend">
+<!-- meet -->
+  <view class="{{PageCur=='meet'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="meet">
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-home lg"></text>
     </view>

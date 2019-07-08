@@ -1,2 +1,100 @@
 <!--pages/mine/home/home.wxml-->
-<text>pages/mine/home/home.wxml</text>
+
+<cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">发现圈子</view>
+</cu-custom>
+
+
+<!--  <view class="cu-list menu-avatar">
+    <view class="cu-item">
+      <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);">
+        <view class="cu-tag badge cuIcon-female bg-pink"></view>
+      </view>
+
+      <view class="content flex-sub">
+        <view class="text-grey">正义天使 凯尔</view>
+        <view class="text-gray text-sm flex justify-between">
+          十天前
+          <view class="text-gray text-sm">
+            <text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+            <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
+            <text class="cuIcon-messagefill margin-lr-xs"></text> 30
+          </view>
+        </view>
+      </view>
+      
+    </view>
+  </view> -->
+
+<view class="padding-lr padding-top bg-white flex">
+  <view class="cu-avatar round xl" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);">
+    <view class="cu-tag badge cuIcon-female bg-pink"></view>
+  </view>
+  <view class="user-profile content margin-left flex-sub flex flex-direction justify-between">
+    <view class='edit-profile'>
+      <text>编辑资料</text>
+      <text class='cuIcon-right'></text>
+    </view>
+    <view class="text-black text-xl">李二狗</view>
+    <view class="text-gray text-sm flex align-center margin-top-sm">
+      <text class='cuIcon-safe lg text-gray margin-right-xs'> </text>
+      <text class='text-xs text-orange'>未认证</text>
+    </view>
+    <view class="text-gray text-xs  margin-top-xs">
+      <text>*只有通过认证且资料完整度50%以上才能被别人看到并认识其他人</text>
+    </view>
+  </view>
+
+</view>
+<view class="padding-sm bg-white">
+  <view class='text-gray text-sm'>
+    <text class='cuIcon-male text-blue margin-right-xs'></text>
+    <text class='margin-right-sm'>上海</text>
+    <text class='margin-right-sm'>93年处女座</text>
+    <text class='margin-right-sm'>178cm</text>
+    <text class='margin-right-sm'>本科</text>
+    <text class='margin-right-sm'>宁波大学</text>
+  </view>
+</view>
+
+<view class="cu-list menu  margin-top">
+  <view class="cu-item arrow">
+    <view class="content flex">
+      <view class="text-xxl margin-right-sm">
+        <text class="cuIcon-group text-pink"></text>
+      </view>
+      <text class="text-df text-bold">工作认证</text>
+    </view>
+    <view class="action bg-gradual-orange round">
+      <text class="text-white text-sm padding-sm">未认证</text>
+    </view>
+  </view>
+</view>
+
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class="action">
+    <text class="cuIcon-titles text-pink"></text>
+    <text class="text-df text-bold">关于我</text>
+  </view>
+</view>
+<view class="padding bg-white">
+  <view class="text-left padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+  <view class="text-center padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+  <view class="text-right padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+</view>
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class="action">
+    <text class="cuIcon-titles text-pink"></text>
+    <text class="text-df text-bold">谁会被推荐给我</text>
+  </view>
+</view>
+<view class="padding bg-white">
+  <view class="text-left padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+  <view class="text-center padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+  <view class="text-right padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+</view>
+
+<view class="cu-tabbar-height"></view>

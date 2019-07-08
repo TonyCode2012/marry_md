@@ -1,0 +1,6 @@
+<cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">发现圈子</view>
+</cu-custom>
+
+<view class="cu-tabbar-height"></view>
