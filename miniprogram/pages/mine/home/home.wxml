@@ -2,32 +2,11 @@
 
 <cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{true}}">
   <view slot="backText">返回</view>
-  <view slot="content">发现圈子</view>
+  <view slot="content">我的</view>
 </cu-custom>
+ 
 
-
-<!--  <view class="cu-list menu-avatar">
-    <view class="cu-item">
-      <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);">
-        <view class="cu-tag badge cuIcon-female bg-pink"></view>
-      </view>
-
-      <view class="content flex-sub">
-        <view class="text-grey">正义天使 凯尔</view>
-        <view class="text-gray text-sm flex justify-between">
-          十天前
-          <view class="text-gray text-sm">
-            <text class="cuIcon-attentionfill margin-lr-xs"></text> 10
-            <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
-            <text class="cuIcon-messagefill margin-lr-xs"></text> 30
-          </view>
-        </view>
-      </view>
-      
-    </view>
-  </view> -->
-
-<view class="padding-lr padding-top bg-white flex">
+<view class="padding bg-white flex solid-bottom">
   <view class="cu-avatar round xl" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);">
     <view class="cu-tag badge cuIcon-female bg-pink"></view>
   </view>
@@ -79,7 +58,7 @@
     <text class="text-df text-bold">关于我</text>
   </view>
 </view>
-<view class="padding bg-white">
+<view class="padding-lr bg-white">
   <view class="text-left padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
   <view class="text-center padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
   <view class="text-right padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
@@ -92,9 +71,16 @@
   </view>
 </view>
 <view class="padding bg-white">
-  <view class="text-left padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
-  <view class="text-center padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
-  <view class="text-right padding">我于杀戮之中绽放 ,亦如黎明中的花朵</view>
+  <view class="flex flex-wrap">
+    <view class="padding-xs user-recommend-tags">
+      <view class="cu-tag bg-gray text-black">24-25岁</view>
+      <view class="cu-tag bg-gray text-black">158-220CM</view>
+      <view class="cu-tag bg-gray text-black">同城优先</view>
+      <view class="cu-tag bg-gray text-black">家乡:都可以</view>
+      <view class="cu-tag bg-gray text-black">未婚</view>
+      <view class="cu-tag bg-gray text-black">学历:都可以</view>
+    </view>  
+  </view>
 </view>
 
 <view class="cu-tabbar-height"></view>

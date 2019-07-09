@@ -17,3 +17,11 @@
 .user-profile{
   position: relative
 }
+
+.user-recommend-tags .cu-tag  +.cu-tag  {
+  margin-left: 0rpx;
+}
+.user-recommend-tags .cu-tag{
+  margin-bottom: 10rpx;
+  margin-right: 10rpx;
+}
