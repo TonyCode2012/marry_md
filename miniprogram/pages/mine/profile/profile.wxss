@@ -1,1 +1,4 @@
 /* miniprogram/pages/mine/profile/profile.wxss */
+slider{
+  width: 350rpx;
+}

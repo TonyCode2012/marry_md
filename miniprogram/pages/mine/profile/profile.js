@@ -6,6 +6,28 @@ Page({
    */
   data: {
 
+    region: ['广东省', '广州市', '海珠区'],
+    imgList: [],
+    date: '2018-12-25',
+    index_height: null,
+    height: [170, 171, 172, 173, 174, 175, 176],
+    index_weight: null,
+    weight:[50,51,52,53,54,55,56,57,58],
+    index: null,
+    education: ['大专','本科','硕士','博士'],
+    index_job:null, 
+    job: ['产品经理', '程序员', '设计师', '运营'],
+    index_assets: null,
+    assets: ['有车', '有房', '有车有房'],
+    index_earning: null,
+    earning: ['5-15W', '15-30W', '30-50W', '50-100W']
+
+  },
+
+  DateChange(e) {
+    this.setData({
+      date: e.detail.value
+    })
   },
 
   /**

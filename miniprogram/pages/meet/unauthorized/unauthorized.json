@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "auth": "/pages/meet/auth/auth",
+    "memberlist": "/pages/member/list/list"
+  }
+}

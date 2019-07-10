@@ -1,7 +1,8 @@
 {
   "component": true,
   "usingComponents": {
-    "auth": "/pages/meet/auth/auth",
-    "recommend": "/pages/meet/recommend/recommend"
+    "authorized": "/pages/meet/authorized/authorized",
+    "unauthorized": "/pages/meet/unauthorized/unauthorized"
+
   }
 }

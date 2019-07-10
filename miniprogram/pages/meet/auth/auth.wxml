@@ -1,6 +1,6 @@
 <view class="bg-white margin-top cu-card case">
   <view class="grid col-1 text-center ">
-    <view class="padding" bindtap='gotoRecommend'>
+    <view class="padding" bindtap='gotoAuthorized'>
       <text class='text-black text-bold text-df'>完成身份认证，获取关系网靠谱资源</text>
       <text class='margin-left-xs cuIcon-right'></text>
     </view>

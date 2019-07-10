@@ -1,5 +1,6 @@
 // pages/recommend/home/home.js
 const app = getApp();
+const observer = require("../../../utils/observer.js");
 
 Component({
   options: {
@@ -16,6 +17,14 @@ Component({
    * 组件的初始数据
    */
   data: { 
+    isAuth: false
+  },
+  ready: function(){
+    observer.observe(observer.store, 'isAuth', (value)=>{
+      this.setData({
+        isAuth: value
+      })
+    })
   },
 
   /**

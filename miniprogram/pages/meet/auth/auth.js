@@ -1,4 +1,7 @@
 // pages/meet/auth/auth.js
+
+const observer = require("../../../utils/observer.js");
+
 Component({
   options: {
     addGlobalClass: true,
@@ -16,6 +19,10 @@ Component({
   data: {
 
   },
+  ready: function () { 
+    console.log(observer.observe)
+
+  },
 
   /**
    * 组件的方法列表
@@ -30,10 +37,8 @@ Component({
         })
       }
     },
-    gotoGroup(){
-      wx.navigateTo({
-        url: '/pages/group/home/home',
-      })
+    gotoAuthorized(){
+      observer.store.isAuth = true;
     }
   }
 })

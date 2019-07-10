@@ -1,6 +1,6 @@
-<cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{true}}">
+<cu-custom bgColor="bg-gradual-red" isBack="{{true}}" isContentLeft="{{false}}">
   <view slot="backText">返回</view>
-  <view slot="content"></view>
+  <view slot="content" class="text-bold">我的公会</view>
 </cu-custom>
 
 <view class="cu-list menu-avatar">

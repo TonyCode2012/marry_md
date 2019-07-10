@@ -1,2 +1,289 @@
-<!--miniprogram/pages/mine/profile/profile.wxml-->
-<text>miniprogram/pages/mine/profile/profile.wxml</text>
+<cu-custom bgColor="bg-gradual-red" isBack="{{true}}" isContentLeft="{{true}}">
+  <view slot="backText">编辑基本资料</view>
+  <view slot="content" class="text-bold"></view>
+</cu-custom>
+
+<view class="">
+  <view class="padding flex justify-between align-center">
+    <text class='text-sm block text-gray'>*完成资料，找到对的人</text>
+  </view>
+</view>
+
+<!-- 图片上传 -->
+<view class="cu-bar bg-white">
+  <view class="action">
+    图片上传
+  </view>
+  <view class="action">
+    {{imgList.length}}/4
+  </view>
+</view>
+<view class="cu-form-group">
+  <view class="grid col-4 grid-square flex-sub">
+    <view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}">
+      <image src='{{imgList[index]}}' mode='aspectFill'></image>
+      <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+        <text class="cuIcon-close"></text>
+      </view>
+    </view>
+    <view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length<4}}">
+      <text class="cuIcon-cameraadd"></text>
+    </view>
+  </view>
+</view>
+
+<!-- basic -->
+<view class="cu-form-group  margin-top">
+  <view class="title">昵称</view>
+  <input placeholder=""></input>
+</view>
+<view class="cu-form-group">
+  <view class="title">性别</view>
+  <view>
+    <view class='cu-tag line-pink round padding-lr-sm'>小哥哥</view>
+    <view class='cu-tag bg-pink round padding-lr-sm'>小姐姐</view>
+  </view>
+</view>
+<view class="cu-form-group">
+  <view class="title">生日</view>
+  <picker mode="date" value="{{date}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
+    <view class="picker">
+      {{date}}
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">体重</view>
+  <picker bindchange="PickerChange" value="{{index_weight}}" range="{{weight}}">
+    <view class="picker">
+      {{index_weight?picker[index_weight]:'50'}} kg
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">身高</view>
+  <picker bindchange="PickerChange" value="{{index_height}}" range="{{height}}">
+    <view class="picker">
+      {{index_height?picker[index_height]:'170'}} cm
+    </view>
+  </picker>
+</view>
+
+
+<view class="cu-form-group">
+  <view class="title">所在地</view>
+  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+    <view class="picker">
+      {{region[0]}}，{{region[1]}}，{{region[2]}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">家乡</view>
+  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+    <view class="picker">
+      {{region[0]}}，{{region[1]}}，{{region[2]}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">婚姻</view>
+  <view>
+    <view class='cu-tag line-pink round padding-lr-sm'>未婚</view>
+    <view class='cu-tag bg-pink round padding-lr-sm'>离异</view>
+  </view>
+</view>
+
+<!-- education -->
+<view class="cu-form-group margin-top">
+  <view class="title">普通选择</view>
+  <picker bindchange="PickerChange" value="{{index}}" range="{{education}}">
+    <view class="picker">
+      {{index?picker[index]:'本科'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">毕业院校</view>
+  <input placeholder=""></input>
+</view>
+
+
+<!-- job -->
+<view class="cu-form-group margin-top">
+  <view class="title">职位/职业</view>
+  <picker bindchange="PickerChange" value="{{index_job}}" range="{{job}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'产品经理'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">资产</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{assets}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'有房 有车'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">年收入</view>
+  <picker bindchange="PickerChange" value="{{index_earning}}" range="{{earning}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'5-15W'}}
+    </view>
+  </picker>
+</view>
+
+
+<view class="padding"> 
+  <view class='padding-tb-xs text-sm block text-gray'>*只有你同意后才能看到对方微信号</view> 
+  <view class='padding-tb-xs text-sm block text-gray'>*确认微信号可被搜索</view> 
+  <view class='padding-tb-xs text-sm block text-gray'>*微信中打开: 我->设置->隐私->添加我的方式->微信号</view> 
+  <view class='padding-tb-xs text-sm block text-gray'>*手机号仅为紧急联系方式，不会暴露给任何用户</view> 
+</view>
+
+<view class="cu-form-group">
+  <view class="title">微信号</view>
+  <input placeholder=""></input>
+</view><view class="cu-form-group">
+  <view class="title">手机号</view>
+  <input placeholder=""></input>
+</view>
+
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">自我介绍</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">业务爱好</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">喜欢的食物</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">喜欢的电影和电视剧</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">最喜欢的一首情歌</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">欣赏哪对名人的爱情，原因是什么</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">你听过最美的情话</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+
+<view class='margin-top'>
+  <view class="padding-lr padding-bottom-xs text-gray">希望你是</view>
+	<view class="cu-form-group ">
+		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
+	</view>
+</view>
+
+<!-- 匹配条件 -->
+<view class="padding"> 
+  <view class='text-sm block text-gray'>*按如下条件帮我匹配</view> 
+</view>
+
+<view class="cu-form-group">
+  <view class="title">年龄</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'26-32'}}
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">学历</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'本科以上'}}
+    </view>
+  </picker>
+</view>
+
+
+<view class="cu-form-group">
+  <view class="title">距离</view>
+   <view class='flex align-center'>
+   <slider  min="0" max="100" step="3" show-value value='50'/><text>km 以内</text>
+   </view>
+</view>
+
+
+<view class="cu-form-group">
+  <view class="title">身高</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'175'}}cm+
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">体重</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'无要求'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">婚姻状况</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'无要求'}}
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">资产</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{assets}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'有房 有车'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">最低年收入</view>
+  <picker bindchange="PickerChange" value="{{index_earning}}" range="{{earning}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'5-15W'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">籍贯</view>
+  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+    <view class="picker">
+      {{region[0]}}，{{region[1]}}，{{region[2]}}
+    </view>
+  </picker>
+</view>

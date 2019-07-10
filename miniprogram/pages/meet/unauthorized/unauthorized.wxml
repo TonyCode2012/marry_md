@@ -1,0 +1,3 @@
+<memberlist></memberlist>
+
+<auth wx:if="{{true}}"></auth>

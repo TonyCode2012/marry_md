@@ -1,0 +1,7 @@
+<view class="bg-white solid-bottom">
+  <view class="padding flex justify-between align-center">
+    <text class='text-xs block text-gray'>*根据您的匹配条件做了以下推荐，可前往我的-资料修改页修改</text>
+    <button class="cu-btn round sm fr" bindtap="gotoMyGroup">我的公会</button>
+  </view>
+</view>
+<memberlist></memberlist>
