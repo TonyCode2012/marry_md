@@ -1,7 +1,11 @@
-<meet wx:if="{{PageCur=='meet'}}"></meet>
-<like wx:if="{{PageCur=='like'}}"></like>
-<intro wx:if="{{PageCur=='intro'}}"></intro>
-<mine wx:if="{{PageCur=='mine'}}"></mine>
+
+<scroll-view scroll-y class="scrollPage">
+  <meet wx:if="{{PageCur=='meet'}}"></meet>
+  <like wx:if="{{PageCur=='like'}}"></like>
+  <intro wx:if="{{PageCur=='intro'}}"></intro>
+  <mine wx:if="{{PageCur=='mine'}}"></mine>
+</scroll-view>
+
 <!-- tabbar -->
 <view class="cu-bar tabbar bg-white shadow foot">
 <!-- meet -->

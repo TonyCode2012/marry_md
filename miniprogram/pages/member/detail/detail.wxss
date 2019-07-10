@@ -1,5 +1,8 @@
-/* pages/member/home/home.wxss */
-.user-intro{
+.user-intro {
   padding-bottom: 20rpx;
   border-bottom: solid 1rpx var(--gray);
+}
+
+.cu-bar.foot {
+  box-shadow: unset;
 }

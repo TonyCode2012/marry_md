@@ -1,2 +1,17 @@
-<!--pages/meet/auth/auth.wxml-->
-<text>pages/meet/auth/auth.wxml</text>
+<view class="bg-white margin-top cu-card case">
+  <view class="grid col-1 text-center ">
+    <view class="padding" bindtap='gotoRecommend'>
+      <text class='text-black text-bold text-df'>完成身份认证，获取关系网靠谱资源</text>
+      <text class='margin-left-xs cuIcon-right'></text>
+    </view>
+  </view>
+
+  <view class="grid col-2 margin-bottom-xl">
+    <view class="padding text-right">
+      <button bindtap='gotoUser' class='cu-btn bg-black button-hover round btn-auth'>马上认证</button>
+    </view>
+    <view class="padding">
+      <button class='cu-btn bg-green button-hover round btn-auth'>加入公会</button>
+    </view>
+  </view>
+</view>

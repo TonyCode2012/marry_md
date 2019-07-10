@@ -1,1 +1,6 @@
-/* pages/meet/auth/auth.wxss */
+.btn-auth {
+  font-size: 25rpx;
+  padding: 0 80rpx;
+  height: 50rpx;
+
+}

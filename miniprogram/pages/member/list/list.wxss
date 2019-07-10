@@ -1,0 +1,9 @@
+.cu-list.menu-no-avatar>.cu-item {
+  position: relative;
+  display: flex;
+  padding:30rpx;
+  background-color: var(--white);
+  justify-content: flex-start;
+  align-items: center;
+  line-height: 1.5em;
+}

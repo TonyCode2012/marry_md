@@ -18,38 +18,4 @@
     </view>
   </view>
 </view>
-
-
-<view class="cu-card case">
-
-  <view wx:for="{{10}}" wx:key class="cu-item shadow" data-user="lancer" bindtap="gotoDetail">
-    <view class="image">
-      <image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
-      <view class="cu-tag bg-blue">史诗</view>
-      <view class="cu-tag bg-blue">史诗2</view>
-
-      <view class="cu-bar bg-shadeBottom">
-        <!-- <text class="text-cut">我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。</text> -->
-      </view>
-    </view>
-
-    <view class="cu-list menu-no-avatar">
-      <view class="cu-item">
-        <view class="content">
-          <view>
-            <text class="text-cut margin-right-sm text-black text-bold">Lancer</text>
-            <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
-          </view>
-          <view class='text-sm text-grey'>
-            90年・巨蟹座・179CM・山东大学・本科・程序员
-          </view>
-          <view class="text-grey text-sm flex">
-            <text class="text-cut">
-            <text class="cuIcon-locationfill margin-right-xs"></text> 现居深圳・山东人</text>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
- 
-</view>
+ <memberlist></memberlist>
