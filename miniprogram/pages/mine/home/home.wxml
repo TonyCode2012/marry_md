@@ -37,7 +37,7 @@
   </view>
 </view>
 
-<view class="cu-list menu solid-top">
+<view bindtap="gotoAuthCorp" class="cu-list menu solid-top">
   <view class="cu-item arrow">
     <view class="content flex">
       <view class="text-xxl margin-right-sm">

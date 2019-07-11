@@ -39,6 +39,11 @@ Component({
     },
     gotoAuthorized(){
       observer.store.isAuth = true;
+    },
+    gotoAuthCorp(){
+      wx.navigateTo({
+        url: '/pages/authcorp/authcorp',
+      })
     }
   }
 })

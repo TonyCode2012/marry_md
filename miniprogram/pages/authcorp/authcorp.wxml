@@ -15,10 +15,6 @@
 
 <view wx:if="{{TabCur==0}}">
 
-
-
-
-
   <view class="cu-bar  margin-top">
     <view class="action">
       <text class="cuIcon-titles text-green"></text> 通过企业邮箱认证
@@ -33,7 +29,7 @@
     <view class='bg-white radius'>
       <view class="cu-form-group b">
         <input placeholder="填写企业邮箱"></input>
-        <button class="cu-btn bg-green shadow">获取校验码</button>
+        <button class="cu-btn bg-green sm shadow">获取校验码</button>
       </view>
       <view class="cu-form-group">
         <input placeholder="输入校验码"></input>

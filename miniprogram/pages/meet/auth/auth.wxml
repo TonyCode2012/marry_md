@@ -11,7 +11,7 @@
       <button bindtap='gotoUser' class='cu-btn bg-black button-hover round btn-auth'>马上认证</button>
     </view>
     <view class="padding">
-      <button class='cu-btn bg-green button-hover round btn-auth'>加入公会</button>
+      <button bindtap='gotoAuthCorp' class='cu-btn bg-green button-hover round btn-auth'>加入公会</button>
     </view>
   </view>
 </view>
