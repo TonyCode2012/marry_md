@@ -1,0 +1,86 @@
+<cu-custom bgColor="bg-gradual-red" isBack="{{true}}" isContentLeft="{{false}}">
+  <view slot="backText"></view>
+  <view slot="content" class="text-bold">谁会被推荐给我</view>
+</cu-custom>
+
+<!-- 匹配条件 -->
+<view class="padding"> 
+  <view class='text-sm block text-gray'>*按如下条件帮我匹配</view> 
+</view>
+
+<view class="cu-form-group">
+  <view class="title">年龄</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'26-32'}}
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">学历</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'本科以上'}}
+    </view>
+  </picker>
+</view>
+
+
+<view class="cu-form-group">
+  <view class="title">距离</view>
+   <view class='flex align-center'>
+   <slider  min="0" max="100" step="3" show-value value='50'/><text>km 以内</text>
+   </view>
+</view>
+
+
+<view class="cu-form-group">
+  <view class="title">身高</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'175'}}cm+
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">体重</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'无要求'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">婚姻状况</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'无要求'}}
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">资产</view>
+  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{assets}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'有房 有车'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">最低年收入</view>
+  <picker bindchange="PickerChange" value="{{index_earning}}" range="{{earning}}">
+    <view class="picker">
+      {{index_job?picker[index_job]:'5-15W'}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class="title">籍贯</view>
+  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+    <view class="picker">
+      {{region[0]}}，{{region[1]}}，{{region[2]}}
+    </view>
+  </picker>
+</view>

@@ -1,0 +1,51 @@
+<cu-custom bgColor="bg-gradual-red" isBack="{{true}}" isContentLeft="{{false}}">
+  <view slot="backText"></view>
+  <view slot="content" class="text-bold">编辑资料卡</view>
+</cu-custom>
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class='action'>
+    <text class='cuIcon-titles text-orange '></text> {{item.title}}
+  </view>
+  <view class='action'>
+
+  </view>
+</view>
+<view class="cu-card article">
+  <view class="cu-item shadow">
+    <view class="title">
+    </view>
+    <view class="padding text-sm">
+      <textarea auto-focus auto-height="true" maxlength="500" bindinput="textareaAInput" 
+      placeholder="{{item.desc}}"></textarea>
+    </view>
+  </view>
+  <view class="cu-item shadow">
+    <view class="title">
+    </view>
+    <view class="padding-lr">
+      <view class="cu-bar bg-white solid-bottom">
+        <view class="">
+          图片上传
+        </view>
+        <view class="action">
+          {{imgList.length}}/4
+        </view>
+      </view>
+      <view class="grid col-4 grid-square flex-sub margin-top-sm">
+        <view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}">
+          <image src='{{imgList[index]}}' mode='aspectFill'></image>
+          <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+            <text class="cuIcon-close"></text>
+          </view>
+        </view>
+        <view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length<4}}">
+          <text class="cuIcon-cameraadd"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class='foot padding'>
+<button class='cu-btn block bg-red lg'>保 存</button>
+</view>

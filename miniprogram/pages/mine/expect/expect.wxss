@@ -1,0 +1,4 @@
+/* miniprogram/pages/mine/expect/expect.wxss */
+slider{
+  width: 350rpx;
+}

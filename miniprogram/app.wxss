@@ -8,3 +8,10 @@
 .text-light {
   font-weight: 300;
 }
+
+.foot {
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	z-index: 1024;
+}

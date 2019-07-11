@@ -1,0 +1,12 @@
+/* pages/mine/aboutme/list/list.wxss */
+
+.border-dotted{
+  border: 2px dotted var(--gray);
+  border-radius:10rpx;
+
+
+}
+
+.list-item{
+  height: 180rpx;
+}

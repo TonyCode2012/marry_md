@@ -7,7 +7,9 @@
     "pages/intro/home/home",
     "pages/group/home/home",
     "pages/mine/profile/profile",
-    "pages/group/detail/detail"
+    "pages/group/detail/detail",
+    "pages/mine/expect/expect",
+    "pages/mine/aboutme/edit/edit"
   ],
   "window": {
     "navigationBarBackgroundColor": "#39b54a",

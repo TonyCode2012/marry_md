@@ -138,152 +138,36 @@
 </view>
 
 
-<view class="padding"> 
-  <view class='padding-tb-xs text-sm block text-gray'>*只有你同意后才能看到对方微信号</view> 
-  <view class='padding-tb-xs text-sm block text-gray'>*确认微信号可被搜索</view> 
-  <view class='padding-tb-xs text-sm block text-gray'>*微信中打开: 我->设置->隐私->添加我的方式->微信号</view> 
-  <view class='padding-tb-xs text-sm block text-gray'>*手机号仅为紧急联系方式，不会暴露给任何用户</view> 
+<view class="padding">
+  <view class='padding-tb-xs text-sm block text-gray'>*只有你同意后才能看到对方微信号</view>
+  <view class='padding-tb-xs text-sm block text-gray'>*确认微信号可被搜索</view>
+  <view class='padding-tb-xs text-sm block text-gray'>*微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
+  <view class='padding-tb-xs text-sm block text-gray'>*手机号仅为紧急联系方式，不会暴露给任何用户</view>
 </view>
 
-<view class="cu-form-group">
-  <view class="title">微信号</view>
-  <input placeholder=""></input>
-</view><view class="cu-form-group">
-  <view class="title">手机号</view>
-  <input placeholder=""></input>
-</view>
 
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">自我介绍</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
+<view class="cu-list menu shadow-lg">
+  <view class="cu-item">
+    <view class="content flex" bindtap="CopyLink">
+      <text class="cuIcon-weixin text-green "></text>
+      <text class="text-grey">微信号</text>
+      <input class='flex-sub margin-left-sm' placeholder=""></input>
 
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">业务爱好</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">喜欢的食物</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">喜欢的电影和电视剧</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">最喜欢的一首情歌</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">欣赏哪对名人的爱情，原因是什么</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">你听过最美的情话</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-
-<view class='margin-top'>
-  <view class="padding-lr padding-bottom-xs text-gray">希望你是</view>
-	<view class="cu-form-group ">
-		<textarea maxlength="-1" disabled="{{modalName!=null}}" bindinput="textareaAInput" placeholder=""></textarea>
-	</view>
-</view>
-
-<!-- 匹配条件 -->
-<view class="padding"> 
-  <view class='text-sm block text-gray'>*按如下条件帮我匹配</view> 
-</view>
-
-<view class="cu-form-group">
-  <view class="title">年龄</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'26-32'}}
     </view>
-  </picker>
-</view>
-
-<view class="cu-form-group">
-  <view class="title">学历</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'本科以上'}}
+  </view>
+  <view class='divider solid-bottom'></view>
+  <view class="cu-item arrow">
+    <view class="content" bindtap="CopyLink">
+      <text class="cuIcon-dianhua text-grey"></text>
+      <text class="text-grey">手机号</text>
     </view>
-  </picker>
-</view>
-
-
-<view class="cu-form-group">
-  <view class="title">距离</view>
-   <view class='flex align-center'>
-   <slider  min="0" max="100" step="3" show-value value='50'/><text>km 以内</text>
-   </view>
+    <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button>
+  </view>
 </view>
 
 
-<view class="cu-form-group">
-  <view class="title">身高</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'175'}}cm+
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">体重</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'无要求'}}
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">婚姻状况</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'无要求'}}
-    </view>
-  </picker>
-</view>
 
-<view class="cu-form-group">
-  <view class="title">资产</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{assets}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'有房 有车'}}
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">最低年收入</view>
-  <picker bindchange="PickerChange" value="{{index_earning}}" range="{{earning}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'5-15W'}}
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">籍贯</view>
-  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
-    <view class="picker">
-      {{region[0]}}，{{region[1]}}，{{region[2]}}
-    </view>
-  </picker>
+<view class="cu-tabbar-height lg"></view>
+<view class='foot padding-lr'>
+  <button class='cu-btn block bg-red lg'>保 存</button>
 </view>

@@ -1,4 +1,17 @@
 /* miniprogram/pages/mine/profile/profile.wxss */
-slider{
-  width: 350rpx;
+.cu-tabbar-height.lg{
+  height: 140rpx;
+}
+
+.btn-getphone{
+  position:absolute;
+width:100%;
+height:95%;
+opacity:0;
+top:0rpx;
+z-index: 1023;
+
+}
+.divider{
+  height: 1rpx;
 }

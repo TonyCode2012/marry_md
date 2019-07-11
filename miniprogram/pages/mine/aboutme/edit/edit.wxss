@@ -1,0 +1,18 @@
+textarea {
+  width: 100%;
+  padding: 20rpx 10rpx; 
+  min-height: 250rpx;
+}
+button{
+  /* border-radius: 0; */
+}
+
+.cu-btn.xl{
+	padding: 0 60rpx;
+	font-size: 34rpx;
+  height: 100rpx;
+}
+
+.article {
+  padding-bottom: 100rpx;
+}

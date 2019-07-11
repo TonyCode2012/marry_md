@@ -21,16 +21,28 @@ Component({
     StatusBar: app.globalData.StatusBar,
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
+    isExpand: false,
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
+    toggleExpand(){
+      this.setData({
+        isExpand: !this.data.isExpand
+      })
+    },
     gotoProfile(){
       wx.navigateTo({
         url: '/pages/mine/profile/profile',
       })
+    },
+    gotoExpect() {
+      wx.navigateTo({
+        url: '/pages/mine/expect/expect',
+      })
+
     }
   }
 })
