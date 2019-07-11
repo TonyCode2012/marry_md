@@ -2,38 +2,75 @@
   <view slot="backText">返回</view>
   <view slot="content" class='text-bold'>感兴趣</view>
 </cu-custom>
-<view class="cu-bar bg-white solid-bottom">
-  <view class="action">
-    列表左滑
+
+<scroll-view scroll-x class="bg-white nav text-center">
+  <view class="cu-item {{0==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
+    我想认识
   </view>
+  <view class="cu-item {{1==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
+    想认识我
+  </view>
+</scroll-view>
+
+<view wx:if="{{TabCur==0}}">
+  <view class="cu-list menu-avatar">
+    <view wx:for="{{10}}" wx:key data-user="{{index}}" bindtap="gotoUserDetail" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+
+      <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view class="content">
+        <view class="text-grey">文晓港</view>
+        <view class="text-gray text-sm">
+          <text class='margin-right-sm'>上海</text>
+          <text class='margin-right-sm'>93年处女座</text>
+          <text class='margin-right-sm'>178cm</text>
+        </view>
+      </view>
+      <view class="action flex-direction flex align-start text-xs">
+        <text wx:if="{{index==0}}" class='text-gray'>不合适7天前</text>
+        <text wx:if="{{index==1}}" class='text-gray'>待处理6天前</text>
+        <view wx:if="{{index>1}}" class="cu-tag round text-green line-green text-xs">
+          <text class='cuIcon-weixin text-green'></text><text>查看</text> 
+        </view>
+      </view>
+      <view class="move">
+        <view class="bg-red">删除</view>
+      </view>
+
+    </view>
+  </view>
+
 </view>
-<view class="cu-list menu-avatar">
-  <view data-user="{{index}}" bindtap="gotoUserDetail" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" wx:for="{{10}}" wx:key bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
-    <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
-    <view class="content">
-      <view class="text-grey">文晓港</view>
-      <view class="text-gray text-sm">
-        <text class='margin-right-sm'>上海</text>
-        <text class='margin-right-sm'>93年处女座</text>
-        <text class='margin-right-sm'>178cm</text>
+<view wx:if="{{TabCur==1}}">
+  <view class="cu-list menu-avatar">
+    <view data-user="{{index}}" bindtap="gotoUserDetail" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" wx:for="{{10}}" wx:key bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+
+      <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view class="content">
+        <view class="text-grey">文晓港</view>
+        <view class="text-gray text-sm">
+          <text class='margin-right-sm'>上海</text>
+          <text class='margin-right-sm'>93年处女座</text>
+          <text class='margin-right-sm'>178cm</text>
+        </view>
+
+      </view>
+      <view class="btn-group-decision">      
+        <view wx:if="{{index==0}}" class="cu-tag round text-white bg-grey text-xs">不合适</view>
+        <view wx:if="{{index==0}}" class="cu-tag round text-white bg-pink text-xs">同意</view>
+      </view>
+       <view class="action flex-direction flex align-start text-xs">       
+        <view wx:if="{{index>0}}" class="cu-tag round text-green line-green text-xs">
+          <text class='cuIcon-weixin text-green'></text><text>查看</text> 
+        </view>
+      </view>
+      <view class="move">
+        <view class="bg-red">删除</view>
       </view>
 
     </view>
-    <view class="action">
-      <view class="text-grey text-xs">
-        <text class="text-xxl text-green">
-          <text class='cuIcon-weixin'></text>
-        </text>
-      </view>
-      <view class="cu-tag round text-green line-green sm">交换微信</view>
-    </view>
-
-    <view class="move">
-      <view class="bg-red">删除</view>
-    </view>
-
   </view>
+
 </view>
 
 <view class="cu-tabbar-height"></view>

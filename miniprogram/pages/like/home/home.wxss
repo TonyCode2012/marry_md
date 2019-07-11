@@ -1,1 +1,12 @@
 /* pages/like/home/home.wxss */
+.cuIcon-weixin{
+  font-size: 32rpx;
+  margin-right:3rpx;
+}
+
+.cu-list.menu-avatar>.cu-item .action {
+  width: 120rpx;
+}
+.btn-group-decision{
+  position:absolute;
+}
