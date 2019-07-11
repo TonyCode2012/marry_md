@@ -5,7 +5,7 @@
 
 <view class="">
   <view class="padding flex justify-between align-center">
-    <text class='text-sm block text-gray'>*完成资料，找到对的人</text>
+    <text class='text-sm block text-gray'>* 完成资料，找到对的人</text>
   </view>
 </view>
 
@@ -139,10 +139,10 @@
 
 
 <view class="padding">
-  <view class='padding-tb-xs text-sm block text-gray'>*只有你同意后才能看到对方微信号</view>
-  <view class='padding-tb-xs text-sm block text-gray'>*确认微信号可被搜索</view>
-  <view class='padding-tb-xs text-sm block text-gray'>*微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
-  <view class='padding-tb-xs text-sm block text-gray'>*手机号仅为紧急联系方式，不会暴露给任何用户</view>
+  <view class='padding-tb-xs text-sm block text-gray'>* 只有你同意后才能看到对方微信号</view>
+  <view class='padding-tb-xs text-sm block text-gray'>* 确认微信号可被搜索</view>
+  <view class='padding-tb-xs text-sm block text-gray'>* 微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
+  <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view>
 </view>
 
 
