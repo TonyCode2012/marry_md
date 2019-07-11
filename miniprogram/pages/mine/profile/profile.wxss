@@ -1,8 +1,6 @@
 /* miniprogram/pages/mine/profile/profile.wxss */
 
-.cu-tabbar-height.lg {
-  height: 200rpx;
-}
+
 
 .btn-getphone {
   position: absolute;
