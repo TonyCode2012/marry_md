@@ -2,7 +2,7 @@
 <scroll-view scroll-y class="scrollPage">
   <meet wx:if="{{PageCur=='meet'}}"></meet>
   <like wx:if="{{PageCur=='like'}}"></like>
-  <intro wx:if="{{PageCur=='intro'}}"></intro>
+  <!-- <intro wx:if="{{PageCur=='intro'}}"></intro> -->
   <mine wx:if="{{PageCur=='mine'}}"></mine>
 </scroll-view>
 
@@ -13,27 +13,27 @@
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-home lg"></text>
     </view>
-    <view>首页</view>
+    <view>遇见</view>
   </view>
   <!-- like -->
   <view class="{{PageCur=='like'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="like">
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-like lg"></text>
     </view>
-    <view>感兴趣</view>
+    <view>匹配</view>
   </view>
   <!-- intro -->
-  <view class="{{PageCur=='intro'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="intro">
+  <!-- <view class="{{PageCur=='intro'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="intro">
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-community lg"></text>
     </view>
     <view>牵线</view>
-  </view>
+  </view> -->
   <!-- mine -->
   <view class="{{PageCur=='mine'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="mine">
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-people lg"></text>
      </view>
-    <view>我的</view>
+    <view>关于我</view>
   </view>
 </view>
