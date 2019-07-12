@@ -9,7 +9,16 @@
 }
 .btn-group-decision{
   position:absolute;
+  bottom: 75rpx;
 }
 .btn-yes{
   font-size: 23rpx;
+}
+
+.cu-list.menu-avatar>.cu-item .content {
+  width:calc(100% - 96rpx - 60rpx);
+
+}
+.cuIcon-copy{
+  font-size:50rpx;
 }

@@ -16,6 +16,8 @@ Component({
   data: {
     TabCur: 0,
     scrollLeft: 0,
+    modalName: '',
+    decision: 'pending'
   },
 
   /**
@@ -32,6 +34,36 @@ Component({
       const user = e.currentTarget.dataset.user;
       wx.navigateTo({
         url: `/pages/member/detail/detail?user=${user}`,
+      })
+    },
+    hideModal(){
+      this.setData({
+        modalName: null
+      })
+    },
+    showModal(){
+      this.setData({
+        modalName: 'weixinModal'
+      })
+      return false;
+    },
+    clip(){
+      wx.setClipboardData({
+        data: 'xxxxxxxxxxxxxxxxx',
+        success(res) {
+          wx.getClipboardData({
+            success(res) {
+              console.log(res.data) // data
+            }
+          })
+        }
+      })
+    },
+    sayYes(e){
+
+      const decision = e.currentTarget.dataset.decision
+      this.setData({
+        decision: decision
       })
     },
     // ListTouch触摸开始

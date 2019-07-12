@@ -19,17 +19,17 @@
       <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
       <view class="content">
         <view class="text-grey">文晓港</view>
-        <view class="text-gray text-sm">
-          <text class='margin-right-sm'>上海</text>
-          <text class='margin-right-sm'>93年处女座</text>
-          <text class='margin-right-sm'>178cm</text>
+        <view class="text-gray text-sm text-cut">
+          <text class='cuIcon-female text-pink margin-right-xs'></text>
+          <text>91年・本科・BAT・运营・福建人・现居上海</text>
         </view>
       </view>
-      <view class="action flex-direction flex align-start text-xs">
-        <text wx:if="{{index==0}}" class='text-gray'>不合适7天前</text>
-        <text wx:if="{{index==1}}" class='text-gray'>待处理6天前</text>
-        <view wx:if="{{index>1}}" class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text><text>查看</text> 
+      <view class="btn-group-decision flex-direction flex align-start text-sm">
+        <text wx:if="{{index==0}}" class='text-grey'>不合适7天前</text>
+        <text wx:if="{{index==1}}" class='text-grey'>待处理6天前</text>
+        <view catchtap='showModal' wx:if="{{index>1}}" class="cu-tag round text-green line-green text-sm">
+          <text class='cuIcon-weixin text-green'></text>
+          <text>查看</text>
         </view>
       </view>
       <view class="move">
@@ -48,26 +48,33 @@
       <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
       <view class="content">
         <view class="text-grey">文晓港</view>
-        <view class="text-gray text-sm">
-          <text class='margin-right-sm'>上海</text>
-          <text class='margin-right-sm'>93年处女座</text>
-          <text class='margin-right-sm'>178cm</text>
+        <view class="text-gray text-sm text-cut">
+
+          <text class='cuIcon-female text-pink margin-right-xs'></text>
+          <text>93年・硕士・互联网・涉外法务・湖北人・现居深圳</text>
         </view>
 
       </view>
-      <view class="btn-group-decision">      
-        
-        <view wx:if="{{index == 0}}" class="cu-tag round bg-grey text-xs">
-          <text class='text-white'>不合适</text> 
+      <view wx:if="{{index == 0}}" class="btn-group-decision text-sm">      
+
+        <view catchtap='sayYes' data-decision="no" wx:if="{{decision == 'pending'}}" class="cu-tag round bg-grey text-xs">
+          <text class='text-white'>不合适</text>
         </view>
-        <view wx:if="{{index == 0}}" class="cu-tag round bg-pink text-sm">
-          <text class='text-white'>同意</text> 
+        <view catchtap='sayYes' data-decision="yes" wx:if="{{decision == 'pending'}}" class="cu-tag round bg-pink text-sm">
+          <text class='text-white'>同意</text>
         </view>
         
+        <text wx:if="{{decision=='no'}}" class='text-grey'>不合适</text>
+        <view catchtap='showModal' wx:if="{{decision=='yes'}}" class="cu-tag round text-green line-green text-sm">
+          <text class='cuIcon-weixin text-green'></text>
+          <text>查看</text>
+        </view>
+
       </view>
-       <view class="action flex-direction flex align-start">       
-        <view wx:if="{{index>0}}" class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text><text>查看</text> 
+      <view wx:if="{{index>0}}" catchtap='showModal' data-user="1" class="btn-group-decision flex-direction flex align-start">
+        <view catchtap='showModal' class="cu-tag round text-green line-green text-sm">
+          <text class='cuIcon-weixin text-green'></text>
+          <text>查看</text>
         </view>
       </view>
       <view class="move">
@@ -78,5 +85,27 @@
   </view>
 
 </view>
+
+
+<view class="cu-modal {{modalName=='weixinModal'?'show':''}}" bindtap="hideModal">
+  <view class="cu-dialog" catchtap>
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">微信号</view>
+      <view bindtap='clip' class="action padding-right align-center">
+        <text class="cuIcon-copy text-grey"></text>
+        <text class='text-lg'>复制</text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <text selectable="true">xxxxxxxxxxxxxxxxx</text>
+    </view>
+    <!-- <view class="cu-bar bg-green" bindtap="clip">
+      <view class="action margin-0 flex-sub solid-left text-sl">
+        <text class="cuIcon-copy"></text>
+      </view>
+    </view> -->
+  </view>
+</view>
+
 
 <view class="cu-tabbar-height"></view>

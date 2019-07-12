@@ -19,7 +19,8 @@
             <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
           </view>
           <view class='text-sm text-grey'>
-            90年・巨蟹座・179CM・山东大学・本科・程序员
+                <text class='cuIcon-male text-blue margin-right-xs'></text>
+                <text>  90年・巨蟹座・179CM・山东大学・本科・程序员</text>
           </view>
           <view class="text-grey text-sm flex">
             <text class="text-cut">
