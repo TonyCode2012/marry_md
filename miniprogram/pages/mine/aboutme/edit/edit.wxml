@@ -5,7 +5,8 @@
 
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class='action'>
-    <text class='cuIcon-titles text-orange '></text> {{item.title}}
+    <text class='cuIcon-titles text-pink'></text> 
+    <text class='text-df text-bold'>{{item.title}}</text>
   </view>
   <view class='action'>
 

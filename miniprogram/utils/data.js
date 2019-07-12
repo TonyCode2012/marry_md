@@ -9,7 +9,7 @@ const listItem = [{
   }, {
     type: 'hobby',
     title: '兴趣爱好',
-    desc: '业务喜欢做什么，比如喜欢看什么样的书、喜欢去什么样的地方旅行等'
+    desc: '业余喜欢做什么，比如喜欢看什么样的书、喜欢去什么样的地方旅行等'
   }, {
     type: 'visionoflove',
     title: '爱情观',
