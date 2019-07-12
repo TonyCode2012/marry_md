@@ -1,7 +1,5 @@
 /* miniprogram/pages/mine/profile/profile.wxss */
 
-
-
 .btn-getphone {
   position: absolute;
   width: 100%;
@@ -13,4 +11,13 @@
 
 .divider {
   height: 1rpx;
+}
+
+.cu-item .cuIcon-weixin{
+  font-size: 40rpx;
+}
+
+
+.cu-item .cuIcon-phone{
+  font-size: 40rpx;
 }

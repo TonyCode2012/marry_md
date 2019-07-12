@@ -8,7 +8,7 @@
     <view class='content' style='top:{{StatusBar}}px;'></view>
   </view>
 </view>
-<swiper style='height: 500rpx' class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+<swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
   <swiper-item wx:for="{{4}}" wx:key>
     <image class='response' src="https://image.weilanwl.com/img/4x3-2.jpg" mode="aspectFill"></image>
   </swiper-item>

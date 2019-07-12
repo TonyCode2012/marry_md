@@ -29,9 +29,9 @@ Component({
       })
     },
     gotoUserDetail(e){
-      const user = e.currentTarget.user;
+      const user = e.currentTarget.dataset.user;
       wx.navigateTo({
-        url: `/pages/member/home/home?user=${user}`,
+        url: `/pages/member/detail/detail?user=${user}`,
       })
     },
     // ListTouch触摸开始

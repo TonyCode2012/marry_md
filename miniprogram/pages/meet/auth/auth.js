@@ -20,8 +20,6 @@ Component({
 
   },
   ready: function () { 
-    console.log(observer.observe)
-
   },
 
   /**

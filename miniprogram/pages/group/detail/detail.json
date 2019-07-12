@@ -1,5 +1,5 @@
 {
   "usingComponents": {
-    "member": "/pages/member/home/home"
+    "member": "/pages/member/detail/detail"
   }
 }

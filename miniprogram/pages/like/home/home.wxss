@@ -10,3 +10,6 @@
 .btn-group-decision{
   position:absolute;
 }
+.btn-yes{
+  font-size: 23rpx;
+}
