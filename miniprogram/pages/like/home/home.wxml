@@ -28,7 +28,7 @@
       <view class="action flex-direction flex align-start text-xs">
         <text wx:if="{{index==0}}" class='text-gray'>不合适7天前</text>
         <text wx:if="{{index==1}}" class='text-gray'>待处理6天前</text>
-        <view wx:if="{{index>1}}" class="cu-tag round text-green line-green text-xs">
+        <view wx:if="{{index>1}}" class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text><text>查看</text> 
         </view>
       </view>
@@ -56,11 +56,17 @@
 
       </view>
       <view class="btn-group-decision">      
-        <view wx:if="{{index==0}}" class="cu-tag round text-white bg-grey text-xs">不合适</view>
-        <view wx:if="{{index==0}}" class="btn-yes cu-tag round text-white bg-pink text-xs">同意</view>
+        
+        <view wx:if="{{index == 0}}" class="cu-tag round bg-grey text-xs">
+          <text class='text-white'>不合适</text> 
+        </view>
+        <view wx:if="{{index == 0}}" class="cu-tag round bg-pink text-sm">
+          <text class='text-white'>同意</text> 
+        </view>
+        
       </view>
-       <view class="action flex-direction flex align-start text-xs">       
-        <view wx:if="{{index>0}}" class="cu-tag round text-green line-green text-xs">
+       <view class="action flex-direction flex align-start">       
+        <view wx:if="{{index>0}}" class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text><text>查看</text> 
         </view>
       </view>
