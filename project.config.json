@@ -69,13 +69,6 @@
 				},
 				{
 					"id": -1,
-					"name": "intro_home",
-					"pathName": "pages/intro/home/home",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": -1,
 					"name": "profile",
 					"pathName": "pages/mine/profile/profile",
 					"query": "",
