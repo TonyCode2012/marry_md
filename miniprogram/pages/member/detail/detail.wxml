@@ -13,7 +13,7 @@
     <image class='response' src="https://image.weilanwl.com/img/4x3-2.jpg" mode="aspectFill"></image>
   </swiper-item>
 </swiper>
-<view class='padding-lg margin-top-sm'>
+<view class='padding-lg'>
 
   <view class="margin-bottom-xl">
     <view class='margin-bottom-xs flex align-center'>
