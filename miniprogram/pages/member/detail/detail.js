@@ -10,7 +10,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    userId: String
+    // userId: {
+    //   type: String,
+    //   value: ''
+    // }
   },
 
   /**
@@ -20,14 +23,19 @@ Component({
     StatusBar: app.globalData.StatusBar,
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
+    source: ''
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
-    onLoad: function () {
-      console.log(this.data.userId)
+    onLoad: function (options) {
+      const {source} = options;
+      console.log('user detail', options, this.properties);
+      this.setData({
+        source: source
+      })
     }
   }
 })

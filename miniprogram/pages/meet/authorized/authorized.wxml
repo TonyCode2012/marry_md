@@ -4,4 +4,4 @@
     <button class="cu-btn round sm fr" bindtap="gotoMyGroup">我的公会</button>
   </view>
 </view>
-<memberlist></memberlist>
+<memberlist source="meet"></memberlist>

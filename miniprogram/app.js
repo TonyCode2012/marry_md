@@ -18,10 +18,11 @@ App({
         this.globalData.StatusBar = e.statusBarHeight;
         let custom = wx.getMenuButtonBoundingClientRect();
         this.globalData.Custom = custom;
-        this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
-        // this.globalData.CustomBar = 22;
+        // this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
 
-
+        const isiOS = e.system.indexOf('iOS') > -1;
+        const navHeight = isiOS ? (32 + 6 * 2) : (32 + 8 * 2);
+        this.globalData.CustomBar = e.statusBarHeight + navHeight;
         console.log('getMenuButtonBoundingClientRect', this.globalData, e);
       }
     })

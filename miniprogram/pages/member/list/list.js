@@ -7,7 +7,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    source: {
+      type: String,
+      value: ''
+    }
   },
 
   /**
@@ -23,8 +26,9 @@ Component({
   methods: {
     gotoDetail(){
       const userId = 'test';
+      const source = this.properties.source;
       wx.navigateTo({
-        url: `/pages/member/detail/detail?userId=${userId}`
+        url: `/pages/member/detail/detail?userId=${userId}&source=${source}`
       })
     }
   }
