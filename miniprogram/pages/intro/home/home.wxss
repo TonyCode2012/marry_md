@@ -1,6 +1,0 @@
-/* pages/intro/home/home.wxss */
-
-.cu-list.menu-avatar>.cu-item .content {
-  width:calc(100% - 96rpx - 60rpx - 120rpx);
-
-}
