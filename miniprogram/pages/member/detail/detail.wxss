@@ -10,3 +10,26 @@
 swiper {
   height: 500rpx;
 }
+
+
+.source-connection{
+  width: 128rpx;
+  height: 64rpx;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.source-line{
+  background: var(--green);
+  height: 2rpx;
+  width: 100%;
+  position: absolute;
+  top: 32rpx;
+  z-index: 0;
+  /* background-clip:content-box;
+  padding: 0 4rpx; */
+}
+.source-user {
+  width: 80rpx;
+}

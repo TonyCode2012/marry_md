@@ -92,6 +92,14 @@
 					"id": -1,
 					"name": "authcorp",
 					"pathName": "pages/authcorp/authcorp",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "member_detail",
+					"pathName": "pages/member/detail/detail",
+					"query": "",
 					"scene": null
 				}
 			]
