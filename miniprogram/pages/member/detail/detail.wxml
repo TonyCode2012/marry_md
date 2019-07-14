@@ -17,11 +17,11 @@
 
   <view class="margin-bottom-xl">
     <view class='margin-bottom-xs flex align-center'>
-      <text class="text-cut margin-right-sm text-black text-bold text-xxl">Lancer</text>
+      <text class="text-cut margin-right-sm text-black text-bold text-xxl">文晓港</text>
       <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
     </view>
     <view class='text-gray'>
-      <text class='cuIcon-male text-blue margin-right-xs'></text>
+      <text class='cuIcon-female text-pink margin-right-xs'></text>
       <text class='margin-right-sm'>上海</text>
       <text class='margin-right-sm'>93年处女座</text>
       <text class='margin-right-sm'>178cm</text>
@@ -32,14 +32,40 @@
       <!-- <view class='text-gray'>来历：</view> -->
       <scroll-view scroll-x>
         <view class="source-group padding-lr-xs flex">
-          <view class="source-item flex" wx:for="{{4}}" wx:key>
+          <view class="source-item flex">
             <view class='source-user flex flex-direction justify-center align-center'>
-              <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big1000{{index+1}}.jpg);"></view>
+              <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
               <view class='text-gray text-xs'>文晓港</view>
             </view>
-            <view wx:if="{{index < 4-1}}" class='source-connection'>
+            <view class='source-connection'>
+              <view class='source-line'></view>
+              <text class="cu-tag round bg-green sm">父亲</text>
+            </view>
+          </view>
+          <view class="source-item flex">
+            <view class='source-user flex flex-direction justify-center align-center'>
+              <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
+              <view class='text-gray text-xs'>大强</view>
+            </view>
+            <view class='source-connection'>
               <view class='source-line'></view>
               <text class="cu-tag round bg-green sm">朋友</text>
+            </view>
+          </view>
+          <view class="source-item flex">
+            <view class='source-user flex flex-direction justify-center align-center'>
+              <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
+              <view class='text-gray text-xs'>谢广坤</view>
+            </view>
+            <view class='source-connection'>
+              <view class='source-line'></view>
+              <text class="cu-tag round bg-green sm">儿子</text>
+            </view>
+          </view>
+          <view class="source-item flex">
+            <view class='source-user flex flex-direction justify-center align-center'>
+              <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
+              <view class='text-gray text-xs'>我</view>
             </view>
           </view>
         </view>
