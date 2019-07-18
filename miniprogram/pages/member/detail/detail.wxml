@@ -14,7 +14,7 @@
     <image class='response' src="{{item}}" mode="aspectFill"></image>
   </swiper-item>
 </swiper>
-<view class='padding-lg'>
+<view class='padding'>
 
   <view class="margin-bottom-xl">
     <view class='margin-bottom-xs flex align-center'>
@@ -22,9 +22,11 @@
       <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
     </view>
     <view class='text-gray text-sm'>
-      <text class='cuIcon-female text-pink margin-right-xs'></text>
+      <text class='cuIcon-female text-pink'></text>
       <text>  94年・水瓶座・160CM・深大 本科・教师</text>
-
+    </view>
+    <view class='text-gray text-sm'>
+      <text><text class="cuIcon-locationfill"></text> 现居深圳・广东人</text>
     </view>
     <view class='margin-top-sm flex justify-start align-center'>
       <!-- <view class='text-gray'>来历：</view> -->
