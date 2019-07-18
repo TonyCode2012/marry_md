@@ -7,8 +7,8 @@
   box-shadow: unset;
 }
 
-swiper {
-  height: 500rpx;
+.screen-swiper {
+  min-height: 700rpx;
 }
 
 
@@ -32,4 +32,16 @@ swiper {
 }
 .source-user {
   width: 72rpx;
+}
+
+.section-content{
+  /* font-weight: lighter; */
+  font-size: 27rpx;
+  color: var(--gray);
+  padding-left:10rpx;
+
+}
+
+.section-content image{
+  margin: 10rpx 0
 }
