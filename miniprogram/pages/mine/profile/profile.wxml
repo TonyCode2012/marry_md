@@ -9,7 +9,7 @@
   </view>
 </view>
 
-<!-- 图片上传 -->
+<!-- image upload -->
 <view class="cu-bar bg-white">
   <view class="action">
     图片上传
@@ -18,6 +18,7 @@
     {{imgList.length}}/4
   </view>
 </view>
+
 <view class="cu-form-group">
   <view class="grid col-4 grid-square flex-sub">
     <view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}">
@@ -33,9 +34,9 @@
 </view>
 
 <!-- basic -->
-<view class="cu-form-group  margin-top">
+<view class="cu-form-group margin-top">
   <view class="title">昵称</view>
-  <input class='text-right padding-lr-xs' placeholder=""></input>
+  <input class='text-right padding-lr-xs' placeholder=""  bindinput="bindNickInput"></input>
 </view>
 <view class="cu-form-group">
   <view class="title">性别</view>
@@ -44,37 +45,37 @@
     <view class='cu-tag bg-pink round padding-lr-sm'>小姐姐</view>
   </view>
 </view>
+
 <view class="cu-form-group">
   <view class="title">生日</view>
-  <picker mode="date" value="{{date}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
+  <picker bindchange="bindBirthdayChange" mode="date" value="{{birthday}}" start="1970-01-01" end="{{now}}">
     <view class="picker">
-      {{date}}
+      {{birthday}}
     </view>
   </picker>
 </view>
 
 <view class="cu-form-group">
   <view class="title">体重</view>
-  <picker bindchange="PickerChange" value="{{index_weight}}" range="{{weight}}">
+  <picker bindchange="bindWeightChange" value="{{weightIndex}}" range="{{weightRange}}">
     <view class="picker">
-      {{index_weight?picker[index_weight]:'50'}} kg
+      {{ weightRange[weightIndex] }} kg
     </view>
   </picker>
 </view>
 
 <view class="cu-form-group">
   <view class="title">身高</view>
-  <picker bindchange="PickerChange" value="{{index_height}}" range="{{height}}">
+  <picker bindchange="bindHeightChange" value="{{heightIndex}}" range="{{heightRange}}">
     <view class="picker">
-      {{index_height?picker[index_height]:'170'}} cm
+      {{ heightRange[heightIndex] }} cm
     </view>
   </picker>
 </view>
 
-
 <view class="cu-form-group">
   <view class="title">所在地</view>
-  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+  <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
     <view class="picker">
       {{region[0]}}，{{region[1]}}，{{region[2]}}
     </view>
@@ -82,51 +83,47 @@
 </view>
 <view class="cu-form-group">
   <view class="title">家乡</view>
-  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+  <picker mode="region" bindchange="bindHomeRegionChange" value="{{homeRegion}}">
     <view class="picker">
-      {{region[0]}}，{{region[1]}}，{{region[2]}}
+      {{homeRegion[0]}}，{{homeRegion[1]}}，{{homeRegion[2]}}
     </view>
   </picker>
 </view>
 <view class="cu-form-group">
   <view class="title">婚姻</view>
   <view>
-    <view class='cu-tag line-pink round padding-lr-sm'>未婚</view>
-    <view class='cu-tag bg-pink round padding-lr-sm'>离异</view>
+    <view data-married="false" bindtap='bindTapMarried' class='cu-tag line-pink round padding-lr-sm'>未婚</view>
+    <view data-married="true" bindtap='bindTapMarried' class='cu-tag bg-pink round padding-lr-sm'>离异</view>
   </view>
 </view>
 
 <!-- education -->
 <view class="cu-form-group margin-top">
   <view class="title">普通选择</view>
-  <picker bindchange="PickerChange" value="{{index}}" range="{{education}}">
+  <picker bindchange="bindEducationChange" value="{{educationIndex}}" range="{{educationRange}}">
     <view class="picker">
-      {{index?picker[index]:'本科'}}
+      {{educationRange[educationIndex]}}
     </view>
   </picker>
 </view>
 <view class="cu-form-group">
   <view class="title">毕业院校</view>
-  <input placeholder=""></input>
+  <input placeholder="" class='text-right'></input>
 </view>
 
 
 <!-- job -->
 <view class="cu-form-group margin-top">
   <view class="title">职位/职业</view>
-  <picker bindchange="PickerChange" value="{{index_job}}" range="{{job}}">
+  <picker bindchange="bindJobChange" value="{{jobIndex}}" range="{{jobRange}}">
     <view class="picker">
-      {{index_job?picker[index_job]:'产品经理'}}
+      {{ jobRange[jobIndex] }}
     </view>
   </picker>
 </view>
 <view class="cu-form-group">
-  <view class="title">资产</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{assets}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'有房 有车'}}
-    </view>
-  </picker>
+  <view class="title">公司</view>
+  <input placeholder="" class='text-right' bindinput='bindCompanyInput'></input>
 </view>
 <view class="cu-form-group">
   <view class="title">年收入</view>
@@ -148,20 +145,21 @@
 
 <view class="cu-list menu shadow-lg">
   <view class="cu-item">
-    <view class="content flex align-center" bindtap="CopyLink">
-      <text class="cuIcon-weixin text-green "></text>
-      <text class="text-grey">微信号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder=""></input>
+    <view class="content flex align-center">
+      <!-- <text class="cuIcon-weixin text-green "></text> -->
+      <text class="">微信号</text>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" bindinput='bindWeixinInput'></input>
 
     </view>
   </view>
   <view class='divider solid-bottom'></view>
-  <view class="cu-item arrow">
-    <view class="content flex align-center" bindtap="CopyLink">
-      <text class="cuIcon-phone text-green"></text>
-      <text class="text-grey text-right">手机号</text>
+  <view class="cu-item">
+    <view class="content flex align-center">
+      <!-- <text class="cuIcon-phone text-green"></text> -->
+      <text class=" text-right">手机号</text>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" bindinput='bindPhoneInput'></input>
     </view>
-    <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button>
+    <!-- <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button> -->
   </view>
 </view>
 

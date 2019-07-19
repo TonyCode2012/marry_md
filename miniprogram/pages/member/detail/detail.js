@@ -1,5 +1,6 @@
 // pages/member/home/home.js
 
+const observer = require("../../../utils/observer.js")
 const app = getApp()
 
 Component({
@@ -43,6 +44,12 @@ Component({
       this.setData({
         source: source
       })
-    }
+    },
+    bindLike: function() {
+      // TODO: create like event 
+      wx.navigateTo({
+        url: '/pages/index/index?cur=like',
+      })
+    } 
   }
 })
