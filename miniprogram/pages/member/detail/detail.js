@@ -32,6 +32,19 @@ Component({
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg',
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg'
     ],
+    album:[
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG2.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG3.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG4.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG5.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG6.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG7.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG8.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG9.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG10.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG11.jpeg',
+      'cloud://test-t2od1.7465-test-t2od1/WechatIMG12.jpeg'
+    ]
   },
 
   /**
@@ -50,6 +63,12 @@ Component({
       wx.navigateTo({
         url: '/pages/index/index?cur=like',
       })
-    } 
+    },
+    ViewImage(e) {
+      wx.previewImage({
+        urls: this.data.album,
+        current: e.currentTarget.dataset.url
+      });
+    },
   }
 })

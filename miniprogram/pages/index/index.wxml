@@ -34,6 +34,6 @@
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-people lg"></text>
      </view>
-    <view>关于我</view>
+    <view>我的</view>
   </view>
 </view>

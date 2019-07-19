@@ -1,32 +1,30 @@
 <!--pages/member/home/home.wxml-->
 
 <view class='cu-custom'>
-  <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
-      <text class='cuIcon-back'></text> 遇见
+      <text class='cuIcon-back text-white'></text>
+      <text class='text-white'></text>
     </navigator>
     <view class='content' style='top:{{StatusBar}}px;'></view>
   </view>
 </view>
 <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-  <swiper-item wx:for="{{4}}" wx:key>
-    <image class='response' src="https://image.weilanwl.com/img/4x3-2.jpg" mode="aspectFill"></image>
+  <swiper-item wx:for="{{album}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{album[index]}}">
+    <image class='response' src="{{item}}" mode="aspectFill"></image>
   </swiper-item>
 </swiper>
 <view class='padding-lg'>
 
   <view class="margin-bottom-xl">
     <view class='margin-bottom-xs flex align-center'>
-      <text class="text-cut margin-right-sm text-black text-bold text-xxl">文晓港</text>
+      <text class="text-cut margin-right-sm text-black text-bold">马达</text>
       <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
     </view>
-    <view class='text-gray'>
+    <view class='text-gray text-sm'>
       <text class='cuIcon-female text-pink margin-right-xs'></text>
-      <text class='margin-right-sm'>上海</text>
-      <text class='margin-right-sm'>93年处女座</text>
-      <text class='margin-right-sm'>178cm</text>
-      <text class='margin-right-sm'>本科</text>
-      <text class='margin-right-sm'>宁波大学</text>
+      <text>  94年・水瓶座・160CM・深大 本科・教师</text>
+
     </view>
     <view class='margin-top-sm flex justify-start align-center'>
       <!-- <view class='text-gray'>来历：</view> -->
@@ -35,7 +33,7 @@
           <view class="source-item flex">
             <view class='source-user flex flex-direction justify-center align-center'>
               <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
-              <view class='text-gray text-xs'>文晓港</view>
+              <view class='text-gray text-xs'>马达</view>
             </view>
             <view class='source-connection'>
               <view class='source-line'></view>
@@ -80,28 +78,83 @@
 
 
   </view>
-  <view class="user-intro">
-    <view class='user-intro-header text-gray text-sm'>Ta 的个人介绍</view>
+  <view class="section">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">自我描述</text>
+    </view>
+    <view class="section-content margin-top-sm">
+      性格比较直爽，基本就是会哈哈大笑的那种，晚上很爱说，但还是期待别人能主动哈哈哈，不爱说服别人，比较随缘，信佛。一个内心比较细腻的水瓶座，期待一个可以让我撒娇的人。
+    </view>
   </view>
-  <view class="user-expect margin-top-lg">
-    <text>
-    信最核心的价值，就是连接——提供一对一、一对多和多对多的连接方式，从而实现人与人、人与智能终端、人与社交化娱乐、人与硬件设备的连接，同时连接服务、资讯、商业。 ​微信团队一直致力于将微信打造成一个强大的、全方位的服务工具。
-     <br/>
-      <br/>
-    在此基础上，我们推出了微信小程序这个产品，提供给微信小程序的开发者在微信内搭建和实现特定服务、功能的平台。
-    <br/>
-     <br/>
-    通过全面开放的能力，我们将更多连接的可能给予企业和服务提供者，并为微信小程序提供基础的接入能力、运营环境和规则体系，进而帮助更多的企业和服务提供者建立自己的品牌，将商业机会带给整个微信产业链。
-    </text>
+  <view class="section margin-top-xl">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">家庭背景</text>
+    </view>
+    <view class="section-content margin-top-sm">
+      从小和妈妈一起长大，妈妈很开明开朗独立，对我影响很深，同时某方面还是会传统保守些，本人很看重家庭观念，自以为是比较孝顺妈妈的，希望遇到的他也能珍惜家人。
+    </view>
   </view>
 
-  <view class='margin-top-xl padding-left-xl'>
-    <view class='margin-top-lg text-gray text-lg'>
-      希望你
+  <view class="section margin-top-xl">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">兴趣爱好</text>
     </view>
-    <text>
-        使用微信小程序平台的服务，你必须阅读并遵守 《微信小程序平台服务条款》，以及腾讯为此制定的专项规则等。
+    <view class="section-content margin-top-sm">
+      <text>喜欢尝试新东西，喜欢练街舞，爱狗狗，寒暑假会想出去走走，偶尔爱在家宅一天。会英语法语和交传。
       </text>
+      <view class='margin-top flex flex-direction justify-between'>
+        <image src='cloud://test-t2od1.7465-test-t2od1/WechatIMG10.jpeg' mode='widthFix'></image>
+        <image src='cloud://test-t2od1.7465-test-t2od1/WechatIMG11.jpeg' mode='widthFix'></image>
+        <image src='cloud://test-t2od1.7465-test-t2od1/WechatIMG12.jpeg' mode='widthFix'></image>
+      </view>
+    </view>
+  </view>
+
+  <view class="section margin-top-xl">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">爱情观</text>
+    </view>
+    <view class="section-content margin-top-sm">
+      <text>满心期待爱，也坦然接受爱永不到来，爱情，不过是锦上添花，所以绝不将就
+      </text>
+    </view>
+  </view>
+
+
+  <view class="section margin-top-xl">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">理想的另一半</text>
+    </view>
+    <view class="section-content margin-top-sm">
+      <text>希望他具有有趣的灵魂，可以在一起吧生活活得平凡又好玩，最好是有梗，可以跟我一起哈哈大笑，能积极进取，有事业心的男人比较有魅力，不喜欢一潭死水整天沉迷游戏，希望他偶尔能跟我多出去走走，享受阳光雨露，同时也有点兴趣爱好，打球什么的都可以。</text>
+    </view>
+  </view>
+
+
+  <view class="section margin-top-xl">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">我为什么单身？</text>
+    </view>
+    <view class="section-content margin-top-sm">
+    <text>工作环境单纯，每天都是接触小孩子，比较少接触外面的人，宁缺毋滥，不想将就</text>
+    </view>
+  </view>
+
+
+  <view class="section margin-top-xl">
+    <view class="section-title">
+      <text class="cuIcon-titles text-pink"></text>
+      <text class="text-df">如果遇到对的人，我期待什么样的生活？</text>
+    </view>
+    <view class="section-content margin-top-sm">
+    <text>共同扶持，一起进步，一起相信未来可期吧吧吧吧，如果可以遇到对的人，希望他能不轻易就放弃，因为我愿意认真对待。</text>
+    </view>
   </view>
 
 </view>
