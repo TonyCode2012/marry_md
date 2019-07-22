@@ -14,9 +14,10 @@
     <view class="cu-list menu-no-avatar">
       <view class="cu-item">
         <view class="content">
-          <view>
-            <text class="text-cut margin-right-sm text-black text-bold">马达</text>
-            <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white margin-right-xs'></text>已认证</text>
+          <view class="flex align-center">
+            <text class="text-cut margin-right-xs text-black text-bold text-df">马达</text>
+            <text class="cu-tag round bg-orange sm">
+            <text class='cuIcon-safe lg text-white'></text> 已认证</text>
           </view>
           <view class='text-sm text-gray margin-top-xs'>
                 <text>  94年・水瓶座・160CM・深大 本科・教师</text>

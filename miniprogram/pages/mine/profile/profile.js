@@ -1,6 +1,9 @@
-const {
-  formatDate
-} = require('../../../utils/util.js')
+const { formatDate} = require('../../../utils/util.js')
+const { weightRange, heightRange, educationRange, jobRange, earningRange} = require('../../../utils/data.js')
+
+
+const db = wx.cloud.database({});
+const user_profile = db.collection('user_profile');
 Page({
 
   /**
@@ -9,33 +12,35 @@ Page({
   data: {
 
     imgList: [],
+
     now: formatDate(new Date()),
-    nickName: '',
-    company: '',
-    weixin: '',
-    phone: '',
-    married: false,
+
+    nickname: '',
     gender: 'female',
     birthday: formatDate(new Date()),
+    company: '',
+    maritalStatus: 'single',
+    college: '',
+    weixin: '',
+    phone: '',
 
     weightIndex: 20,
-    weightRange: [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120],
+    weightRange: weightRange,
 
     heightIndex: 20,
-    heightRange: [150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229],
+    heightRange: heightRange,
 
     educationIndex: 1,
-    educationRange: ['大专', '本科', '硕士', '博士'],
-
-    jobIndex: 1,
-    jobRange: ['手动填写', '产品经理', '程序员', '设计师', '运营'],
-    customJobItem: '手动填写',
+    educationRange: educationRange,
 
     earningIndex: 0,
-    earningRange: ['5-15W', '15-30W', '30-50W', '50-100W'],
-    
+    earningRange: earningRange,
+
     region: ['广东省', '广州市', '海珠区'],
     homeRegion: ['广东省', '广州市', '海珠区'],
+
+    // jobIndex: 1,
+    // jobRange: jobRange,
   },
 
   birthdayChange(e) {
@@ -47,12 +52,12 @@ Page({
     this.setData({
       weightIndex: e.detail.value
     })
-  }, 
+  },
   bindHeightChange(e) {
     this.setData({
       heightIndex: e.detail.value
     })
-  }, 
+  },
   bindRegionChange: function (e) {
     this.setData({
       region: e.detail.value
@@ -63,7 +68,7 @@ Page({
       homeRegion: e.detail.value
     })
   },
-  bindJobChange: function (e) {
+  bindJobInput: function (e) {
     this.setData({
       jobIndex: e.detail.value
     })
@@ -95,10 +100,25 @@ Page({
       phone: e.detail.value
     })
   },
-  bindTapMarriage: function(e){
+  bindTapMarriage: function (e) {
     debugger
   },
-
+  Save: function(e){
+    let user_profile_model = {
+      nickname: '',
+      gender:'',
+      birthday: '',
+      weight: '',
+      height: '',
+      region: '',
+      home_region: '',
+      marital_status: 'divorced | single',
+      education: '',
+      college: '',
+      weixin: '',
+      phone: ''
+    }
+  },
   ChooseImage() {
     wx.chooseImage({
       count: 4, //默认9
@@ -125,10 +145,10 @@ Page({
   },
   DelImg(e) {
     wx.showModal({
-      title: '召唤师',
-      content: '确定要删除这段回忆吗？',
-      cancelText: '再看看',
-      confirmText: '再见',
+      title: '',
+      content: '确定要删除吗？',
+      cancelText: '取消',
+      confirmText: '确定',
       success: res => {
         if (res.confirm) {
           this.data.imgList.splice(e.currentTarget.dataset.index, 1);
@@ -143,56 +163,56 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
 
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {
-
+  onReady: function () {
+    wx.collec
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
+  onShow: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
+  onUnload: function () {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   }
 })

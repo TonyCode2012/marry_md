@@ -99,7 +99,7 @@
 
 <!-- education -->
 <view class="cu-form-group margin-top">
-  <view class="title">普通选择</view>
+  <view class="title">最高学历</view>
   <picker bindchange="bindEducationChange" value="{{educationIndex}}" range="{{educationRange}}">
     <view class="picker">
       {{educationRange[educationIndex]}}
@@ -115,21 +115,17 @@
 <!-- job -->
 <view class="cu-form-group margin-top">
   <view class="title">职位/职业</view>
-  <picker bindchange="bindJobChange" value="{{jobIndex}}" range="{{jobRange}}">
-    <view class="picker">
-      {{ jobRange[jobIndex] }}
-    </view>
-  </picker>
+  <input placeholder="" class='text-right' bindinput='bindJobInput' value="{{job}}"></input>
 </view>
 <view class="cu-form-group">
   <view class="title">公司</view>
-  <input placeholder="" class='text-right' bindinput='bindCompanyInput'></input>
+  <input placeholder="" class='text-right' bindinput='bindCompanyInput' value="{{company}}"></input>
 </view>
 <view class="cu-form-group">
   <view class="title">年收入</view>
-  <picker bindchange="PickerChange" value="{{index_earning}}" range="{{earning}}">
+  <picker bindchange="PickerChange" value="{{earningIndex}}" range="{{earningRange}}">
     <view class="picker">
-      {{index_job?picker[index_job]:'5-15W'}}
+      {{earningRange[earningIndex]}}
     </view>
   </picker>
 </view>
@@ -148,7 +144,7 @@
     <view class="content flex align-center">
       <!-- <text class="cuIcon-weixin text-green "></text> -->
       <text class="">微信号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" bindinput='bindWeixinInput'></input>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{weixin}}" bindinput='bindWeixinInput'></input>
 
     </view>
   </view>
@@ -157,7 +153,7 @@
     <view class="content flex align-center">
       <!-- <text class="cuIcon-phone text-green"></text> -->
       <text class=" text-right">手机号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" bindinput='bindPhoneInput'></input>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{phone}}"  bindinput='bindPhoneInput'></input>
     </view>
     <!-- <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button> -->
   </view>
@@ -167,5 +163,5 @@
 
 <view class="cu-tabbar-height lg"></view>
 <view class='foot padding-lr'>
-  <button class='cu-btn block bg-red lg'>保 存</button>
+  <button bindtap="Save" class='cu-btn block bg-red lg'>保 存</button>
 </view>
