@@ -17,7 +17,36 @@ Component({
     TabCur: 0,
     scrollLeft: 0,
     modalName: '',
-    decision: 'pending'
+    decision: 'pending',
+    fromMe: [{
+      avatar: '',
+      name: 'Anais DING',
+      basic_profile: '89年・本科・广告策划・浙江人・现居上海',
+      decision: 'pending',
+      date: '6天前'
+    }, {
+      avatar: '',
+      name: '皮皮',
+      basic_profile: '93年・硕士・涉外法务・湖北人・现居深圳',
+      decision: 'no',
+      date: '7天前'
+    }, {
+      avatar: '',
+      name: '芙洛拉',
+      basic_profile: '92年・本科・前程无忧・湖南人・现居上海',
+      decision: 'yes'
+    }],
+    toMe: [{
+      avatar: '',
+      name: '向',
+      basic_profile: '91年・本科・IQVIA・临床观察员・江西・现居上海',
+      decision: 'pending'
+    }, {
+      avatar: '',
+      name: '王小野',
+      basic_profile: '93年・本科・产品经理・安徽人・现居深圳',
+      decision: 'yes'
+    }]
   },
 
   /**
@@ -30,24 +59,24 @@ Component({
         scrollLeft: (e.currentTarget.dataset.id - 1) * 60
       })
     },
-    gotoUserDetail(e){
+    gotoUserDetail(e) {
       const user = e.currentTarget.dataset.user;
       wx.navigateTo({
         url: `/pages/member/detail/detail?user=${user}`,
       })
     },
-    hideModal(){
+    hideModal() {
       this.setData({
         modalName: null
       })
     },
-    showModal(){
+    showModal() {
       this.setData({
         modalName: 'weixinModal'
       })
       return false;
     },
-    clip(){
+    clip() {
       wx.setClipboardData({
         data: 'xxxxxxxxxxxxxxxxx',
         success(res) {
@@ -59,11 +88,12 @@ Component({
         }
       })
     },
-    sayYes(e){
-
+    sayYes(e) {
+      let index = e.currentTarget.dataset.index
       const decision = e.currentTarget.dataset.decision
-      this.setData({
-        decision: decision
+      this.data.toMe[index].decision = decision;
+       this.setData({
+        toMe: this.data.toMe
       })
     },
     // ListTouch触摸开始
