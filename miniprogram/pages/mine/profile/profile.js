@@ -1,4 +1,9 @@
-// miniprogram/pages/mine/profile/profile.js
+const { formatDate} = require('../../../utils/util.js')
+const { weightRange, heightRange, educationRange, jobRange, earningRange} = require('../../../utils/data.js')
+
+
+const db = wx.cloud.database({});
+const user_profile = db.collection('user_profile');
 Page({
 
   /**
@@ -6,30 +11,114 @@ Page({
    */
   data: {
 
-    region: ['广东省', '广州市', '海珠区'],
     imgList: [],
-    date: '2018-12-25',
-    index_height: null,
-    height: [170, 171, 172, 173, 174, 175, 176],
-    index_weight: null,
-    weight:[50,51,52,53,54,55,56,57,58],
-    index: null,
-    education: ['大专','本科','硕士','博士'],
-    index_job:null, 
-    job: ['产品经理', '程序员', '设计师', '运营'],
-    index_assets: null,
-    assets: ['有车', '有房', '有车有房'],
-    index_earning: null,
-    earning: ['5-15W', '15-30W', '30-50W', '50-100W']
 
+    now: formatDate(new Date()),
+
+    nickname: '',
+    gender: 'female',
+    birthday: formatDate(new Date()),
+    company: '',
+    maritalStatus: 'single',
+    college: '',
+    weixin: '',
+    phone: '',
+
+    weightIndex: 20,
+    weightRange: weightRange,
+
+    heightIndex: 20,
+    heightRange: heightRange,
+
+    educationIndex: 1,
+    educationRange: educationRange,
+
+    earningIndex: 0,
+    earningRange: earningRange,
+
+    region: ['广东省', '广州市', '海珠区'],
+    homeRegion: ['广东省', '广州市', '海珠区'],
+
+    // jobIndex: 1,
+    // jobRange: jobRange,
   },
 
-  DateChange(e) {
+  birthdayChange(e) {
     this.setData({
-      date: e.detail.value
+      birthday: e.detail.value
+    })
+  },
+  bindWeightChange(e) {
+    this.setData({
+      weightIndex: e.detail.value
+    })
+  },
+  bindHeightChange(e) {
+    this.setData({
+      heightIndex: e.detail.value
+    })
+  },
+  bindRegionChange: function (e) {
+    this.setData({
+      region: e.detail.value
+    })
+  },
+  bindHomeRegionChange: function (e) {
+    this.setData({
+      homeRegion: e.detail.value
+    })
+  },
+  bindJobInput: function (e) {
+    this.setData({
+      jobIndex: e.detail.value
+    })
+  },
+  bindEducationChange: function (e) {
+    this.setData({
+      educationIndex: e.detail.value
+    })
+  },
+  bindNickInput: function (e) {
+    this.setData({
+      nickName: e.detail.value
+    })
+  },
+  bindCompanyInput: function (e) {
+    this.setData({
+      company: e.detail.value
     })
   },
 
+  bindWeixinInput: function (e) {
+    this.setData({
+      weixin: e.detail.value
+    })
+  },
+
+  bindPhoneInput: function (e) {
+    this.setData({
+      phone: e.detail.value
+    })
+  },
+  bindTapMarriage: function (e) {
+    debugger
+  },
+  Save: function(e){
+    let user_profile_model = {
+      nickname: '',
+      gender:'',
+      birthday: '',
+      weight: '',
+      height: '',
+      region: '',
+      home_region: '',
+      marital_status: 'divorced | single',
+      education: '',
+      college: '',
+      weixin: '',
+      phone: ''
+    }
+  },
   ChooseImage() {
     wx.chooseImage({
       count: 4, //默认9
@@ -56,10 +145,10 @@ Page({
   },
   DelImg(e) {
     wx.showModal({
-      title: '召唤师',
-      content: '确定要删除这段回忆吗？',
-      cancelText: '再看看',
-      confirmText: '再见',
+      title: '',
+      content: '确定要删除吗？',
+      cancelText: '取消',
+      confirmText: '确定',
       success: res => {
         if (res.confirm) {
           this.data.imgList.splice(e.currentTarget.dataset.index, 1);
@@ -70,6 +159,7 @@ Page({
       }
     })
   },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -81,7 +171,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    wx.collec
   },
 
   /**
