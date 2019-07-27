@@ -36,7 +36,7 @@
 <!-- basic -->
 <view class="cu-form-group margin-top">
   <view class="title">昵称</view>
-  <input class='text-right padding-lr-xs' placeholder=""  bindinput="bindNickInput"></input>
+  <input class='text-right padding-lr-xs' value="{{nickname}}" placeholder=""  bindinput="bindNickInput"></input>
 </view>
 <view class="cu-form-group">
   <view class="title">性别</view>

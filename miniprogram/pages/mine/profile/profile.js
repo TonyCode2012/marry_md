@@ -1,7 +1,15 @@
-const { formatDate} = require('../../../utils/util.js')
-const { weightRange, heightRange, educationRange, jobRange, earningRange} = require('../../../utils/data.js')
+const {
+  formatDate
+} = require('../../../utils/util.js')
+const {
+  weightRange,
+  heightRange,
+  educationRange,
+  jobRange,
+  earningRange
+} = require('../../../utils/data.js')
 
-
+const app = wx.app();
 const db = wx.cloud.database({});
 const user_profile = db.collection('user_profile');
 Page({
@@ -58,55 +66,55 @@ Page({
       heightIndex: e.detail.value
     })
   },
-  bindRegionChange: function (e) {
+  bindRegionChange: function(e) {
     this.setData({
       region: e.detail.value
     })
   },
-  bindHomeRegionChange: function (e) {
+  bindHomeRegionChange: function(e) {
     this.setData({
       homeRegion: e.detail.value
     })
   },
-  bindJobInput: function (e) {
+  bindJobInput: function(e) {
     this.setData({
       jobIndex: e.detail.value
     })
   },
-  bindEducationChange: function (e) {
+  bindEducationChange: function(e) {
     this.setData({
       educationIndex: e.detail.value
     })
   },
-  bindNickInput: function (e) {
+  bindNickInput: function(e) {
     this.setData({
       nickName: e.detail.value
     })
   },
-  bindCompanyInput: function (e) {
+  bindCompanyInput: function(e) {
     this.setData({
       company: e.detail.value
     })
   },
 
-  bindWeixinInput: function (e) {
+  bindWeixinInput: function(e) {
     this.setData({
       weixin: e.detail.value
     })
   },
 
-  bindPhoneInput: function (e) {
+  bindPhoneInput: function(e) {
     this.setData({
       phone: e.detail.value
     })
   },
-  bindTapMarriage: function (e) {
+  bindTapMarriage: function(e) {
     debugger
   },
-  Save: function(e){
+  Save: function(e) {
     let user_profile_model = {
-      nickname: '',
-      gender:'',
+      nickname: this.data.nickname,
+      gender: '',
       birthday: '',
       weight: '',
       height: '',
@@ -118,6 +126,16 @@ Page({
       weixin: '',
       phone: ''
     }
+
+    db.collection('users').add({
+      data: user_profile_model
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
+
+
   },
   ChooseImage() {
     wx.chooseImage({
@@ -163,56 +181,56 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
 
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
     wx.collec
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })

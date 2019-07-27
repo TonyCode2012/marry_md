@@ -26,6 +26,13 @@ App({
         console.log('getMenuButtonBoundingClientRect', this.globalData, e);
       }
     })
+
+    wx.login({
+      success: function (res) {
+        debugger;
+      }
+    });
+
     const db = wx.cloud.database({});
     const book = db.collection('books');
 
