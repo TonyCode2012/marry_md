@@ -36,7 +36,7 @@ const heightRange = [150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161,
 
 
 const educationRange = ['大专', '本科', '硕士', '博士'];
-const earningRange = ['5-15W', '15-30W', '30-50W', '50-100W'];
+const incomeRange = ['5-15W', '15-30W', '30-50W', '50-100W'];
 const jobRange = ['手动填写', '产品经理', '程序员', '设计师', '运营'];
 
 module.exports = {
@@ -46,6 +46,6 @@ module.exports = {
   weightRange,
   heightRange,
   educationRange,
-  earningRange,
+  incomeRange,
   jobRange
 }

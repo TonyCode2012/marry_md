@@ -1,4 +1,3 @@
-// pages/meet/auth/auth.js
 
 const observer = require("../../../utils/observer.js");
 
@@ -39,6 +38,7 @@ Component({
       observer.store.isAuth = true;
     },
     gotoAuthCorp(){
+      
       wx.navigateTo({
         url: '/pages/authcorp/authcorp',
       })

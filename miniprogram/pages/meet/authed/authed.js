@@ -1,4 +1,3 @@
-// pages/meet/authorized/authorized.js
 Component({
   options: {
     addGlobalClass: true,

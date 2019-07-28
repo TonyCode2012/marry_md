@@ -1,0 +1,12 @@
+<cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{false}}">
+  <view slot="backText"></view>
+  <view slot="content" class="text-bold">高质量脱单平台</view>
+</cu-custom>
+
+
+<view class="loading-wrapper">
+  <view class='flex justify-center'>
+    <view class='loading-icon'>
+    </view>
+  </view>
+</view>

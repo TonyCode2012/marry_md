@@ -1,39 +1,43 @@
+<loading wx:if="{{false}}"> </loading>
 
-<scroll-view scroll-y class="scrollPage">
-  <meet wx:if="{{PageCur=='meet'}}"></meet>
-  <like wx:if="{{PageCur=='like'}}"></like>
-  <!-- <intro wx:if="{{PageCur=='intro'}}"></intro> -->
-  <mine wx:if="{{PageCur=='mine'}}"></mine>
-</scroll-view>
+<view wx:if="{{true}}">
+  <scroll-view scroll-y class="scrollPage">
+    <meet wx:if="{{PageCur=='meet'}}"></meet>
+    <like wx:if="{{PageCur=='like'}}"></like>
+    <!-- <intro wx:if="{{PageCur=='intro'}}"></intro> -->
+    <mine wx:if="{{PageCur=='mine'}}"></mine>
+  </scroll-view>
 
-<!-- tabbar -->
-<view class="cu-bar tabbar bg-white shadow foot">
-<!-- meet -->
-  <view class="{{PageCur=='meet'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="meet">
-    <view class='cuIcon-cu-image'>
-      <text class="cuIcon-home lg"></text>
+  <!-- tabbar -->
+  <view class="cu-bar tabbar bg-white shadow foot">
+    <!-- meet -->
+    <view class="{{PageCur=='meet'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="meet">
+      <view class='cuIcon-cu-image'>
+        <text class="cuIcon-home lg"></text>
+      </view>
+      <view>遇见</view>
     </view>
-    <view>遇见</view>
-  </view>
-  <!-- like -->
-  <view class="{{PageCur=='like'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="like">
-    <view class='cuIcon-cu-image'>
-      <text class="cuIcon-like lg"></text>
+    <!-- like -->
+    <view class="{{PageCur=='like'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="like">
+      <view class='cuIcon-cu-image'>
+        <text class="cuIcon-like lg"></text>
+      </view>
+      <view>匹配</view>
     </view>
-    <view>匹配</view>
-  </view>
-  <!-- intro -->
-  <!-- <view class="{{PageCur=='intro'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="intro">
+    <!-- intro -->
+    <!-- <view class="{{PageCur=='intro'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="intro">
     <view class='cuIcon-cu-image'>
       <text class="cuIcon-community lg"></text>
     </view>
     <view>牵线</view>
   </view> -->
-  <!-- mine -->
-  <view class="{{PageCur=='mine'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="mine">
-    <view class='cuIcon-cu-image'>
-      <text class="cuIcon-people lg"></text>
-     </view>
-    <view>我的</view>
+    <!-- mine -->
+    <view class="{{PageCur=='mine'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="mine">
+      <view class='cuIcon-cu-image'>
+        <text class="cuIcon-people lg"></text>
+      </view>
+      <view>我的</view>
+    </view>
   </view>
+
 </view>

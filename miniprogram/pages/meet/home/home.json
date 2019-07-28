@@ -1,8 +1,8 @@
 {
   "component": true,
   "usingComponents": {
-    "authorized": "/pages/meet/authorized/authorized",
-    "unauthorized": "/pages/meet/unauthorized/unauthorized"
+    "authed": "/pages/meet/authed/authed",
+    "unauthed": "/pages/meet/unauthed/unauthed"
 
   }
 }

@@ -1,4 +1,3 @@
-//app.js
 
 App({
   onLaunch: function() {
@@ -7,11 +6,15 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
       wx.cloud.init({
+        env: 'dev-od3w5',
+        // env: 'test-t2od1',
         traceUser: true,
       })
     }
 
-    this.globalData = {};
+    this.globalData = {
+      userProfile: {}
+    };
 
     wx.getSystemInfo({
       success: e => {
@@ -19,47 +22,10 @@ App({
         let custom = wx.getMenuButtonBoundingClientRect();
         this.globalData.Custom = custom;
         // this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
-
         const isiOS = e.system.indexOf('iOS') > -1;
         const navHeight = isiOS ? (32 + 6 * 2) : (32 + 8 * 2);
         this.globalData.CustomBar = e.statusBarHeight + navHeight;
         console.log('getMenuButtonBoundingClientRect', this.globalData, e);
-      }
-    })
-
-    wx.login({
-      success: function (res) {
-        debugger;
-      }
-    });
-
-    const db = wx.cloud.database({});
-    const book = db.collection('books');
-
-    // wx.cloud.callFunction({
-    //   name: 'requestapi',
-    //   data: {
-    //     isbn: '9787111128069',
-    //     method: 'getBook'
-    //   },
-    //   complete: res => {
-    //     console.log('callFunction test result: ', res)
-
-    //     db.collection('books').add({
-    //       data: JSON.parse(res.result)
-    //     }).then(res => {
-    //       console.log(res)
-    //     }).catch(err => {
-    //       console.log(err)
-    //     })
-
-    //   },
-    // })
-
-    db.collection('books').get({
-      success: res => {
-        console.log(res.data[0]);
- 
       }
     })
 

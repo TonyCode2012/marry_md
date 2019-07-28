@@ -2,6 +2,7 @@
   "usingComponents": {
     "meet": "/pages/meet/home/home",
     "like": "/pages/like/home/home",
-    "mine": "/pages/mine/home/home"
+    "mine": "/pages/mine/home/home",
+    "loading": "/pages/index/loading/loading"
   }
 }

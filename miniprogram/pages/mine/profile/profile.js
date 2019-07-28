@@ -6,12 +6,14 @@ const {
   heightRange,
   educationRange,
   jobRange,
-  earningRange
+  incomeRange
 } = require('../../../utils/data.js')
 
-const app = wx.app();
-const db = wx.cloud.database({});
-const user_profile = db.collection('user_profile');
+const app = getApp()
+const {
+  globalData
+} = app
+const db = wx.cloud.database({})
 Page({
 
   /**
@@ -19,16 +21,17 @@ Page({
    */
   data: {
 
-    imgList: [],
+    album: [],
 
     now: formatDate(new Date()),
 
-    nickname: '',
-    gender: 'female',
-    birthday: formatDate(new Date()),
+    nickName: '',
+    gender: '',
+    birthday: '',
+    maritalStatus: '', // single,divorced
+    school: '',
+    job: '',
     company: '',
-    maritalStatus: 'single',
-    college: '',
     weixin: '',
     phone: '',
 
@@ -41,14 +44,11 @@ Page({
     educationIndex: 1,
     educationRange: educationRange,
 
-    earningIndex: 0,
-    earningRange: earningRange,
+    incomeIndex: 0,
+    incomeRange: incomeRange,
 
     region: ['广东省', '广州市', '海珠区'],
     homeRegion: ['广东省', '广州市', '海珠区'],
-
-    // jobIndex: 1,
-    // jobRange: jobRange,
   },
 
   birthdayChange(e) {
@@ -86,6 +86,11 @@ Page({
       educationIndex: e.detail.value
     })
   },
+  bindIncomeChange: function(e) {
+    this.setData({
+      incomeIndex: e.detail.value
+    })
+  },
   bindNickInput: function(e) {
     this.setData({
       nickName: e.detail.value
@@ -102,7 +107,6 @@ Page({
       weixin: e.detail.value
     })
   },
-
   bindPhoneInput: function(e) {
     this.setData({
       phone: e.detail.value
@@ -113,29 +117,40 @@ Page({
   },
   Save: function(e) {
     let user_profile_model = {
-      nickname: this.data.nickname,
-      gender: '',
-      birthday: '',
-      weight: '',
-      height: '',
-      region: '',
-      home_region: '',
-      marital_status: 'divorced | single',
-      education: '',
-      college: '',
-      weixin: '',
-      phone: ''
+      nickName: this.data.nickName,
+      gender: this.data.gender,
+      birthday: this.data.birthday,
+      weight: this.data.weightRange[this.data.weightIndex],
+      height: this.data.heightRange[this.data.heightIndex],
+      region: this.data.region,
+      home_region: this.data.home_region,
+      marital_status: this.data.maritalStatus,
+
+      education: this.data.educationRange[this.data.educationIndex],
+      school: this.data.school,
+
+      job: this.data.job,
+      company: this.data.company,
+      income: this.data.incomeRange[this.data.incomeIndex],
+
+      school: this.data.school,
+      weixin: this.data.weixin,
+      phone: this.data.phone
     }
 
-    db.collection('users').add({
-      data: user_profile_model
-    }).then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
+
+    db.collection('users').where({
+      _openid: globalData.openid
+    }).get().then(res => {
+      return res.data[0]._id;
+    }).then(id => {
+      db.collection('users').doc(id)
+        .update({
+          data: user_profile_model
+        }).then(res => {
+          console.log(res)
+        })
     })
-
-
   },
   ChooseImage() {
     wx.chooseImage({
@@ -143,13 +158,13 @@ Page({
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
       sourceType: ['album'], //从相册选择
       success: (res) => {
-        if (this.data.imgList.length != 0) {
+        if (this.data.album.length != 0) {
           this.setData({
-            imgList: this.data.imgList.concat(res.tempFilePaths)
+            album: this.data.album.concat(res.tempFilePaths)
           })
         } else {
           this.setData({
-            imgList: res.tempFilePaths
+            album: res.tempFilePaths
           })
         }
       }
@@ -157,7 +172,7 @@ Page({
   },
   ViewImage(e) {
     wx.previewImage({
-      urls: this.data.imgList,
+      urls: this.data.album,
       current: e.currentTarget.dataset.url
     });
   },
@@ -169,9 +184,9 @@ Page({
       confirmText: '确定',
       success: res => {
         if (res.confirm) {
-          this.data.imgList.splice(e.currentTarget.dataset.index, 1);
+          this.data.album.splice(e.currentTarget.dataset.index, 1);
           this.setData({
-            imgList: this.data.imgList
+            album: this.data.album
           })
         }
       }
@@ -182,14 +197,35 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
+    debugger;
+    const {
+      userProfile
+    } = globalData
+    const {
+      userInfo
+    } = userProfile
 
+    let data = {
+      nickName: userProfile.nickName || userInfo.nickName,
+      gender: userProfile.gender || userInfo.gender,
+      birthday: userProfile.birthday || '1990-01-01',
+      maritalStatus: userProfile.marital_status || 'single', // single,divorced
+      school: userProfile.school,
+      job: userProfile.job,
+      company: userProfile.company,
+      weixin: userProfile.weixin,
+      phone: userProfile.phone,
+      album: userProfile.album
+    }
+    console.log(data)
+    this.setData(data)
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function() {
-    wx.collec
+
   },
 
   /**
