@@ -15,7 +15,7 @@
         </view>
       </view>
       <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-        <swiper-item wx:for="{{album}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{album[index]}}">
+        <swiper-item wx:for="{{userInfo.photos}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{userInfo.photos[index]}}">
           <image class='response' src="{{item}}" mode="aspectFill"></image>
         </swiper-item>
       </swiper>
@@ -28,10 +28,10 @@
           </view>
           <view class='text-gray text-sm'>
             <text class='cuIcon-female text-pink'></text>
-            <text>  94年・水瓶座・160CM・深大 本科・教师</text>
+            <text>  {{userInfo.basic_info.birthday}}年・水瓶座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.academic}}・{{userInfo.basic_info.profession}}</text>
           </view>
           <view class='text-gray text-sm'>
-            <text><text class="cuIcon-locationfill"></text> 现居深圳・广东人</text>
+            <text><text class="cuIcon-locationfill"></text> 现居{{userInfo.basic_info.location}}・{{userInfo.basic_info.hometown}}</text>
           </view>
           <view class='margin-top-sm flex justify-start align-center'>
             <!-- <view class='text-gray'>来历：</view> -->
@@ -91,7 +91,10 @@
             <text class="text-df">自我描述</text>
           </view>
           <view class="section-content margin-top-sm">
-            性格比较直爽，基本就是会哈哈大笑的那种，晚上很爱说，但还是期待别人能主动哈哈哈，不爱说服别人，比较随缘，信佛。一个内心比较细腻的水瓶座，期待一个可以让我撒娇的人。
+            {{userInfo.self_info.selfIntro.content}}
+          </view>
+          <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.selfIntro.photos}}" wx:key="*this">
+            <image src="{{item}}" mode='widthFix'></image>
           </view>
         </view>
         <view class="section margin-top-xl">
@@ -100,7 +103,10 @@
             <text class="text-df">家庭背景</text>
           </view>
           <view class="section-content margin-top-sm">
-            从小和妈妈一起长大，妈妈很开明开朗独立，对我影响很深，同时某方面还是会传统保守些，本人很看重家庭观念，自以为是比较孝顺妈妈的，希望遇到的他也能珍惜家人。
+            {{userInfo.self_info.homeBg.content}}
+          </view>
+          <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.homeBg.photos}}" wx:key="*this">
+            <image src="{{item}}" mode='widthFix'></image>
           </view>
         </view>
 
@@ -110,12 +116,10 @@
             <text class="text-df">兴趣爱好</text>
           </view>
           <view class="section-content margin-top-sm">
-            <text>喜欢尝试新东西，喜欢练街舞，爱狗狗，寒暑假会想出去走走，偶尔爱在家宅一天。会英语法语和交传。
+            <text>{{userInfo.self_info.hobby.content}}
             </text>
-            <view class='margin-top flex flex-direction justify-between'>
-              <image src='cloud://test-t2od1.7465-test-t2od1/WechatIMG10.jpeg' mode='widthFix'></image>
-              <image src='cloud://test-t2od1.7465-test-t2od1/WechatIMG11.jpeg' mode='widthFix'></image>
-              <image src='cloud://test-t2od1.7465-test-t2od1/WechatIMG12.jpeg' mode='widthFix'></image>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.hobby.photos}}" wx:key="*this">
+              <image src="{{item}}" mode='widthFix'></image>
             </view>
           </view>
         </view>
@@ -126,8 +130,11 @@
             <text class="text-df">爱情观</text>
           </view>
           <view class="section-content margin-top-sm">
-            <text>满心期待爱，也坦然接受爱永不到来，爱情，不过是锦上添花，所以绝不将就
+            <text>{{userInfo.self_info.aboutLove.content}}
             </text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.aboutLove.photos}}" wx:key="*this">
+              <image src="{{item}}" mode='widthFix'></image>
+            </view>
           </view>
         </view>
 
@@ -138,7 +145,10 @@
             <text class="text-df">理想的另一半</text>
           </view>
           <view class="section-content margin-top-sm">
-            <text>希望他具有有趣的灵魂，可以在一起吧生活活得平凡又好玩，最好是有梗，可以跟我一起哈哈大笑，能积极进取，有事业心的男人比较有魅力，不喜欢一潭死水整天沉迷游戏，希望他偶尔能跟我多出去走走，享受阳光雨露，同时也有点兴趣爱好，打球什么的都可以。</text>
+            <text>{{userInfo.self_info.idealLover.content}}</text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.idealLover.photos}}" wx:key="*this">
+              <image src="{{item}}" mode='widthFix'></image>
+            </view>
           </view>
         </view>
 
@@ -149,7 +159,10 @@
             <text class="text-df">我为什么单身？</text>
           </view>
           <view class="section-content margin-top-sm">
-          <text>工作环境单纯，每天都是接触小孩子，比较少接触外面的人，宁缺毋滥，不想将就</text>
+          <text>{{userInfo.self_info.singleReason.content}}</text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.singleReason.photos}}" wx:key="*this">
+              <image src="{{item}}" mode='widthFix'></image>
+            </view>
           </view>
         </view>
 
@@ -160,7 +173,10 @@
             <text class="text-df">如果遇到对的人，我期待什么样的生活？</text>
           </view>
           <view class="section-content margin-top-sm">
-          <text>共同扶持，一起进步，一起相信未来可期吧吧吧吧，如果可以遇到对的人，希望他能不轻易就放弃，因为我愿意认真对待。</text>
+          <text>{{userInfo.self_info.idealLife.content}}</text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.idealLife.photos}}" wx:key="*this">
+              <image src="{{item}}" mode='widthFix'></image>
+            </view>
           </view>
         </view>
 

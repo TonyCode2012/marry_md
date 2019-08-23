@@ -4,7 +4,8 @@ const app = getApp()
 Page({
   data: {
     PageCur: 'meet',
-    query: null
+    query: null,
+    seekerList: []
   },
   NavChange(e) {
     this.setData({
@@ -20,7 +21,26 @@ Page({
         PageCur: value
       })
     })
+    // get data from db
+    const that = this
+    const db = wx.cloud.database({
+      env: 'test-t2od1'
+    })
+    db.collection('users').where({
+      'auth_info.personal_auth': false
+    }).get({
+      success: function (res) {
+        that.setData({
+          seekerList: res.data
+        })
+      },
+      fail: function (res) {
+        console.log(res)
+      }
+    })
+    
   },
+
   onReady() {
     if (this.data.query && this.data.query.cur) {
       this.setData({

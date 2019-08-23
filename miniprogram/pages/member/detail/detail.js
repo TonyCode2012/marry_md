@@ -40,31 +40,20 @@ Component({
     Custom: app.globalData.Custom,
     source: '',
 
+    userInfo: {},
+
     avatar: [
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big81005.jpg',
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg',
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg'
     ],
-    album:[
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG2.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG3.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG4.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG5.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG6.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG7.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG8.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG9.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG10.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG11.jpeg',
-      'cloud://test-t2od1.7465-test-t2od1/WechatIMG12.jpeg'
-    ],
+    
     innerM: {
       chooseRelations: function (that) {
         wx.showActionSheet({
           itemList: that.data.relationArry,
           complete(res) {
-            console.log(res.tapIndex)
             if (res.tapIndex != undefined && res.tapIndex != 0) {
               that.data.relationIndex = res.tapIndex
               console.log("relationship is:" + that.data.relationArry[that.data.relationIndex])
@@ -119,25 +108,45 @@ Component({
         env: 'test-t2od1'
       })
       const _ = db.command
-      db.collection('transmition').where({
-        starter: options.starter,
-        rear: _.eq(options.rear).or(_.eq("zhaoyao2"))
-      }).get({
-        success:function(res) {
-          console.log(res)
-          if(res.data.length > 1) {
+      // get transmition
+      if(options.starter != undefined) {
+        db.collection('users').where({
+          _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+        }).get({
+          success:function(res) {
             that.setData({
-              relationship: true
+              userInfo: res.data[0]
             })
-          } else {
-            that.data.innerM.chooseRelations(that)
-            relationData = res.data[0]
+          },
+          fail:function(res) {
+            console.log(res)
           }
-        },
-        fail:function(res) {
-          console.log(res)
-        }
-      })
+        })
+        db.collection('transmition').where({
+          starter: options.starter,
+          rear: _.eq(options.rear).or(_.eq("zhaoyao2"))
+        }).get({
+          success:function(res) {
+            if(res.data.length > 1) {
+              that.setData({
+                relationship: true
+              })
+            } else {
+              that.data.innerM.chooseRelations(that)
+              relationData = res.data[0]
+            }
+          },
+          fail:function(res) {
+            console.log(res)
+          }
+        })
+      } else {
+        // get user information
+        that.setData({
+          userInfo: JSON.parse(options.seeker)
+        })
+      }
+      
       console.log('user detail', options, this.properties);
       this.setData({
         source: source
