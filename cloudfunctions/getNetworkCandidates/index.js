@@ -1,21 +1,14 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
-const db = wx.cloud.database()
-const nexus = db.collection('nexus')
-const maxResume = 10
-const {
-  ENV,
-  OPENID,
-  APPID
-} = cloud.getWXContext()
-// 云函数入口函数
+cloud.init({
+  env: 'test-t2od1'
+})
+const db = cloud.database()
+const MaxResume = 10
+const MaxLevel = 3
+const _ = db.command
 
-var getFriendOpenid = function (userNexus) {
-  var friends = userNexus.friends
-  var friendIds = 
-}
 
 function getRandomArrayElements(arr, count) {
   var shuffled = arr.slice(0),
@@ -31,49 +24,44 @@ function getRandomArrayElements(arr, count) {
   return shuffled.slice(min);
 }
 
-var getSingleFriends = function (userNexus) {
-  if (userNexus.single == false) {
-    return Promise.resolve(null);
+let candidates = [];
+async function getNetworkCandidates(userNexus, level, gendor, starter, chain) {
+  if (level >= MaxLevel) {
+    return Promise.resolve(null)
   } else {
+    let promises = [];
+    var friends = userNexus.friends
+    for (var i of friends) {
+      if (i._openid == starter || i._openid == userNexus._openid){
+        continue
+      }
+      let friendNexus = await getUserNexus(i._openid)
+      if (friendNexus.gendor != gendor && friendNexus.single == true){
 
-    return nexus.where({
-      _openid: _eq(userNexus.friends),
-      gendor: _neq(userNexus.gendor)
-    })
-      .get()
-      .then(res => {
-        if (res.data.length < 10) {
-          return res.data
-        } else {
-          return getRandomArrayElements(res.data, maxResume)
-        }
-      })
+        candidates.push(friendNexus)
+      }
+      await getNetworkCandidates(friendNexus, level + 1, gendor, starter);
+       
+    }
+
   }
 }
 
-var getUserNexus = function (openId) {
-  return nexus.where({
-    _openid: OPENID
-  })
-    .get()
-    .then(res => {
-      return res.data[0];
-    })
+async function getUserNexus(openid) {
+  let res = await db.collection("nexus").where({
+    _openid: openid
+  }).get()
+  return res.data[0]
+
 }
 
-exports.main = async (event, context) => {
+exports.main = async (event) => {
+  let openid = event.openid
+  let userNexus = await getUserNexus(openid)
+  let chain = []
+  let employees = await getNetworkCandidates(userNexus, 0, userNexus.gendor, openid, chain)
 
-  let candidates = await getUserNexus(OPENID).then(res => {
-    return getSingleFriends(res).then(res => {
-      return res
-    })
-  })
+  //console.log('candidates', candidates)
+  return candidates
 
-  return {
-    event,
-    openid: wxContext.OPENID,
-    appid: wxContext.APPID,
-    unionid: wxContext.UNIONID,
-    candidates: candidates
-  }
 }
