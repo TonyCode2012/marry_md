@@ -1,22 +1,14 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
-
-const db = wx.cloud.database()
-//const nexus = db.collection('nexus')
+cloud.init({
+   env: 'test-t2od1'
+})
+const db = cloud.database()
 const maxResume = 10
+const _ = db.command
 
-/*
-const {
-  ENV,
-  OPENID,
-  APPID
-} = cloud.getWXContext()
-// 云函数入口函数
-*/
 
-/*
 function getRandomArrayElements(arr, count) {
   var shuffled = arr.slice(0),
     i = arr.length,
@@ -33,43 +25,41 @@ function getRandomArrayElements(arr, count) {
 
 
 
-var getAllEmployees = function (userNexus) {
+async function getAllEmployees(userNexus) {
   if (userNexus.company == "") {
     return Promise.resolve(null)
   } else {
-    let allEmployeeInfo = await nexus.where({
-      company: _neq(""),
-      gendor: _neq(userNexus.gendor)
+    console.log(userNexus)
+    let allEmployeeInfo = await db.collection("nexus").where({
+      company: _.neq(""),
+      gendor: _.neq(userNexus.gendor)
     }).get()
 
     if (allEmployeeInfo.data.length < 10) {
-      console.log("Here we got all employees, numbers:")
-      console.log(allEmployeeInfo.data)
-
       return allEmployeeInfo.data
     } else {
-      return getRandomArrayElements(res.data, maxResume)
+      return getRandomArrayElements(allEmployeeInfo.data, maxResume)
     }
   }
 }
-*/
+
 async function getUserNexus(openid) {
   console.log("HEHEHE getUserNexus!!!")
 
-  let userInfo = await db.collection("nexus").where({
+  let res = await db.collection("nexus").where({
     _openid: openid
   }).get()
 
-  return userInfo.date[0]
+  return res.data[0]
+
+  //return userInfo.date[0]
 }
 
 exports.main = async(event) => {
   console.log("HAHAHA started!!!")
   let openid = event.openid
-  console.log(openid)
   let userNexus = await getUserNexus(openid)
-  console.log(userNexus)
-  //let employees = await getAllEmployees(userNexus)
-  return userNexus
+  let employees = await getAllEmployees(userNexus)
+  return employees
 
 }
