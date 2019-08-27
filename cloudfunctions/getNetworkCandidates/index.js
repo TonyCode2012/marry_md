@@ -24,29 +24,6 @@ function getRandomArrayElements(arr, count) {
   return shuffled.slice(min);
 }
 
-let candidates = [];
-async function getNetworkCandidates(userNexus, level, gendor, starter, chain) {
-  if (level >= MaxLevel) {
-    return Promise.resolve(null)
-  } else {
-    let promises = [];
-    var friends = userNexus.friends
-    for (var i of friends) {
-      if (i._openid == starter || i._openid == userNexus._openid){
-        continue
-      }
-      let friendNexus = await getUserNexus(i._openid)
-      if (friendNexus.gendor != gendor && friendNexus.single == true){
-
-        candidates.push(friendNexus)
-      }
-      await getNetworkCandidates(friendNexus, level + 1, gendor, starter);
-       
-    }
-
-  }
-}
-
 async function getUserNexus(openid) {
   let res = await db.collection("nexus").where({
     _openid: openid
@@ -56,12 +33,37 @@ async function getUserNexus(openid) {
 }
 
 exports.main = async (event) => {
+  let candidates = [];
   let openid = event.openid
   let userNexus = await getUserNexus(openid)
   let chain = []
-  let employees = await getNetworkCandidates(userNexus, 0, userNexus.gendor, openid, chain)
+  chain.push(openid)
+  let employees = await getNetworkCandidates(userNexus, 0, userNexus.gendor, openid, chain, "")
 
-  //console.log('candidates', candidates)
   return candidates
+
+  async function getNetworkCandidates(userNexus, level, gendor, starter, chain, last) {
+    if (level >= MaxLevel) {
+      return Promise.resolve(null)
+    } else {
+      let promises = [];
+      var friends = userNexus.friends
+
+      for (var i of friends) {
+        if (i._openid == starter || i._openid == userNexus._openid || i._openid == last) {
+          continue
+        }
+        let friendNexus = await getUserNexus(i._openid)
+        let tmpChain = chain
+        tmpChain.push(friendNexus._openid + ":" + i.relationship)
+
+        if (friendNexus.gendor != gendor && friendNexus.single == true) {
+
+          candidates.push(tmpChain.concat([]))
+        }
+        await getNetworkCandidates(friendNexus, level + 1, gendor, starter, tmpChain, userNexus._openid);
+      }
+    }
+  }
 
 }
