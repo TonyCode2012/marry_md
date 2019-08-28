@@ -11,9 +11,10 @@ const {
 
 const app = getApp()
 const {
+  db,
   globalData
 } = app
-const db = wx.cloud.database({})
+
 Page({
 
   /**
@@ -22,18 +23,20 @@ Page({
   data: {
 
     album: [],
+    dateNow: formatDate(new Date()),
+    info: {
+      nickName: '',
+      school: '',
+      job: '',
+      company: '',
+      weixin: '',
+      phone: ''
+    },
 
-    now: formatDate(new Date()),
+    gender: 'female',
+    birthday: '1990-01-01',
+    maritalStatus: 'unmarried', // unmarried, divorced
 
-    nickName: '',
-    gender: '',
-    birthday: '',
-    maritalStatus: '', // single,divorced
-    school: '',
-    job: '',
-    company: '',
-    weixin: '',
-    phone: '',
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -66,90 +69,72 @@ Page({
       heightIndex: e.detail.value
     })
   },
-  bindRegionChange: function(e) {
+  bindRegionChange: function (e) {
     this.setData({
       region: e.detail.value
     })
   },
-  bindHomeRegionChange: function(e) {
+  bindHomeRegionChange: function (e) {
     this.setData({
       homeRegion: e.detail.value
     })
   },
-  bindJobInput: function(e) {
-    this.setData({
-      jobIndex: e.detail.value
-    })
-  },
-  bindEducationChange: function(e) {
+  bindEducationChange: function (e) {
     this.setData({
       educationIndex: e.detail.value
     })
   },
-  bindIncomeChange: function(e) {
+  bindIncomeChange: function (e) {
     this.setData({
       incomeIndex: e.detail.value
     })
   },
-  bindNickInput: function(e) {
+  bindGenderChange: function (e) {
     this.setData({
-      nickName: e.detail.value
+      gender: e.currentTarget.dataset.gender
     })
   },
-  bindCompanyInput: function(e) {
+  bindMarryChange: function (e) {
     this.setData({
-      company: e.detail.value
+      maritalStatus: e.currentTarget.dataset.married
     })
   },
-
-  bindWeixinInput: function(e) {
+  bindFieldInput: function (e) {
+    let ds = e.currentTarget.dataset;
+    let value = e.detail.value;
+    let form = ds.form || "info";
+    this.data[form][ds.field] = value;
     this.setData({
-      weixin: e.detail.value
+      [form]: this.data[form]
     })
   },
-  bindPhoneInput: function(e) {
-    this.setData({
-      phone: e.detail.value
-    })
-  },
-  bindTapMarriage: function(e) {
-  },
-  Save: function(e) {
-    let user_profile_model = {
-      nickName: this.data.nickName,
+  Save: async function (e) {
+    let basic_info = {
+      nickName: this.data.info.nickName,
       gender: this.data.gender,
       birthday: this.data.birthday,
       weight: this.data.weightRange[this.data.weightIndex],
       height: this.data.heightRange[this.data.heightIndex],
-      region: this.data.region,
-      home_region: this.data.home_region,
-      marital_status: this.data.maritalStatus,
+      location: this.data.region,
+      hometown: this.data.homeRegion,
+      marryStatus: this.data.maritalStatus,
 
       education: this.data.educationRange[this.data.educationIndex],
-      school: this.data.school,
+      college: this.data.info.college,
 
-      job: this.data.job,
-      company: this.data.company,
+      profession: this.data.info.profession,
+      company: this.data.info.company,
       income: this.data.incomeRange[this.data.incomeIndex],
 
-      school: this.data.school,
-      weixin: this.data.weixin,
-      phone: this.data.phone
+      wechat: this.data.info.weixin,
+      phone: this.data.info.phone
     }
+    console.log('basic_info', basic_info);
 
-
-    db.collection('users').where({
-      _openid: globalData.openid
-    }).get().then(res => {
-      return res.data[0]._id;
-    }).then(id => {
-      db.collection('users').doc(id)
-        .update({
-          data: user_profile_model
-        }).then(res => {
-          console.log(res)
-        })
-    })
+    let res = await db.collection('users').where({ _openid: globalData.openid }).get()
+    let user = res.data[0]
+    res = await db.collection('users').doc(user._id).update({ data: {basic_info: basic_info } })
+    console.log(res)
   },
   ChooseImage() {
     wx.chooseImage({
@@ -195,7 +180,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     const {
       userProfile
     } = globalData
@@ -222,49 +207,49 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {
+  onReady: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
+  onShow: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
+  onUnload: function () {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   }
 })

@@ -1,8 +1,8 @@
 // miniprogram/pages/meet/authorize/authorize.js
 
-const db = wx.cloud.database({})
 const app = getApp()
 let {
+  db,
   globalData
 } = app
 Page({

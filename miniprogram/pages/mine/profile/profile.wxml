@@ -19,147 +19,150 @@
   </view>
 </view>
 
-<view class="cu-form-group">
-  <view class="grid col-4 grid-square flex-sub">
-    <view class="bg-img" wx:for="{{album}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{album[index]}}">
-      <image src='{{album[index]}}' mode='aspectFill'></image>
-      <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
-        <text class="cuIcon-close"></text>
+
+<form bindsubmit="formSubmit" bindreset="formReset">
+
+  <view class="cu-form-group">
+    <view class="grid col-4 grid-square flex-sub">
+      <view class="bg-img" wx:for="{{album}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{album[index]}}">
+        <image src='{{album[index]}}' mode='aspectFill'></image>
+        <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+          <text class="cuIcon-close"></text>
+        </view>
+      </view>
+      <view class="solids" bindtap="ChooseImage" wx:if="{{album.length<4}}">
+        <text class="cuIcon-cameraadd"></text>
       </view>
     </view>
-    <view class="solids" bindtap="ChooseImage" wx:if="{{album.length<4}}">
-      <text class="cuIcon-cameraadd"></text>
+  </view>
+
+  <!-- basic -->
+  <view class="cu-form-group margin-top">
+    <view class="title">昵称</view>
+    <input class='text-right padding-lr-xs' value="{{nickName}}" placeholder="" data-field="nickName" bindinput="bindFieldInput"></input>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">性别</view>
+    <view>
+      <view data-gender="male" bindtap="bindGenderChange" class="{{gender =='male' ? 'bg-pink':'line-pink'}} cu-tag  round padding-lr-sm">小哥哥</view>
+      <view data-gender="female" bindtap="bindGenderChange" class="{{gender == 'female' ? 'bg-pink':'line-pink'}} cu-tag  round padding-lr-sm">小姐姐</view>
     </view>
   </view>
-</view>
 
-<!-- basic -->
-<view class="cu-form-group margin-top">
-  <view class="title">昵称</view>
-  <input class='text-right padding-lr-xs' value="{{nickName}}" placeholder=""  bindinput="bindNickInput"></input>
-</view>
-<view class="cu-form-group">
-  <view class="title">性别</view>
-  <view>
-    <view class='cu-tag line-pink round padding-lr-sm'>小哥哥</view>
-    <view class='cu-tag bg-pink round padding-lr-sm'>小姐姐</view>
+  <view class="cu-form-group">
+    <view class="title">生日</view>
+    <picker bindchange="bindBirthdayChange" mode="date" value="{{birthday}}" start="1970-01-01" end="{{dateNow}}">
+      <view class="picker">
+        {{birthday}}
+      </view>
+    </picker>
   </view>
-</view>
 
-<view class="cu-form-group">
-  <view class="title">生日</view>
-  <picker bindchange="bindBirthdayChange" mode="date" value="{{birthday}}" start="1970-01-01" end="{{now}}">
-    <view class="picker">
-      {{birthday}}
-    </view>
-  </picker>
-</view>
-
-<view class="cu-form-group">
-  <view class="title">体重</view>
-  <picker bindchange="bindWeightChange" value="{{weightIndex}}" range="{{weightRange}}">
-    <view class="picker">
-      {{ weightRange[weightIndex] }} kg
-    </view>
-  </picker>
-</view>
-
-<view class="cu-form-group">
-  <view class="title">身高</view>
-  <picker bindchange="bindHeightChange" value="{{heightIndex}}" range="{{heightRange}}">
-    <view class="picker">
-      {{ heightRange[heightIndex] }} cm
-    </view>
-  </picker>
-</view>
-
-<view class="cu-form-group">
-  <view class="title">所在地</view>
-  <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
-    <view class="picker">
-      {{region[0]}}，{{region[1]}}，{{region[2]}}
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">家乡</view>
-  <picker mode="region" bindchange="bindHomeRegionChange" value="{{homeRegion}}">
-    <view class="picker">
-      {{homeRegion[0]}}，{{homeRegion[1]}}，{{homeRegion[2]}}
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">婚姻</view>
-  <view>
-    <view data-married="false" bindtap='bindTapMarried' class='cu-tag line-pink round padding-lr-sm'>未婚</view>
-    <view data-married="true" bindtap='bindTapMarried' class='cu-tag bg-pink round padding-lr-sm'>离异</view>
+  <view class="cu-form-group">
+    <view class="title">体重</view>
+    <picker bindchange="bindWeightChange" value="{{weightIndex}}" range="{{weightRange}}">
+      <view class="picker">
+        {{ weightRange[weightIndex] }} kg
+      </view>
+    </picker>
   </view>
-</view>
 
-<!-- education -->
-<view class="cu-form-group margin-top">
-  <view class="title">最高学历</view>
-  <picker bindchange="bindEducationChange" value="{{educationIndex}}" range="{{educationRange}}">
-    <view class="picker">
-      {{educationRange[educationIndex]}}
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">毕业院校</view>
-  <input placeholder="" class='text-right' value='{{school}}'></input>
-</view>
+  <view class="cu-form-group">
+    <view class="title">身高</view>
+    <picker bindchange="bindHeightChange" value="{{heightIndex}}" range="{{heightRange}}">
+      <view class="picker">
+        {{ heightRange[heightIndex] }} cm
+      </view>
+    </picker>
+  </view>
 
-
-<!-- job -->
-<view class="cu-form-group margin-top">
-  <view class="title">职位/职业</view>
-  <input placeholder="" class='text-right' bindinput='bindJobInput' value="{{job}}"></input>
-</view>
-<view class="cu-form-group">
-  <view class="title">公司</view>
-  <input placeholder="" class='text-right' bindinput='bindCompanyInput' value="{{company}}"></input>
-</view>
-<view class="cu-form-group">
-  <view class="title">年收入</view>
-  <picker bindchange="bindIncomeChange" value="{{incomeIndex}}" range="{{incomeRange}}">
-    <view class="picker">
-      {{incomeRange[incomeIndex]}}
-    </view>
-  </picker>
-</view>
-
-
-<view class="padding">
-  <view class='padding-tb-xs text-sm block text-gray'>* 只有你同意后才能看到对方微信号</view>
-  <view class='padding-tb-xs text-sm block text-gray'>* 确认微信号可被搜索</view>
-  <view class='padding-tb-xs text-sm block text-gray'>* 微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
-  <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view>
-</view>
-
-
-<view class="cu-list menu shadow-lg">
-  <view class="cu-item">
-    <view class="content flex align-center">
-      <!-- <text class="cuIcon-weixin text-green "></text> -->
-      <text class="">微信号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{weixin}}" bindinput='bindWeixinInput'></input>
-
+  <view class="cu-form-group">
+    <view class="title">所在地</view>
+    <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
+      <view class="picker">
+        {{region[0]}}，{{region[1]}}，{{region[2]}}
+      </view>
+    </picker>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">家乡</view>
+    <picker mode="region" bindchange="bindHomeRegionChange" value="{{homeRegion}}">
+      <view class="picker">
+        {{homeRegion[0]}}，{{homeRegion[1]}}，{{homeRegion[2]}}
+      </view>
+    </picker>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">婚姻</view>
+    <view>
+      <view data-married="unmarried" bindtap='bindMarryChange' class="{{maritalStatus =='unmarried' ? 'bg-pink':'line-pink'}} cu-tag round padding-lr-sm">未婚</view>
+      <view data-married="divorced" bindtap='bindMarryChange' class="{{maritalStatus =='divorced' ? 'bg-pink':'line-pink'}} cu-tag round padding-lr-sm">离异</view>
     </view>
   </view>
-  <view class='divider solid-bottom'></view>
-  <view class="cu-item">
-    <view class="content flex align-center">
-      <!-- <text class="cuIcon-phone text-green"></text> -->
-      <text class=" text-right">手机号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{phone}}"  bindinput='bindPhoneInput'></input>
-    </view>
-    <!-- <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button> -->
+
+  <!-- education -->
+  <view class="cu-form-group margin-top">
+    <view class="title">最高学历</view>
+    <picker bindchange="bindEducationChange" value="{{educationIndex}}" range="{{educationRange}}">
+      <view class="picker">
+        {{educationRange[educationIndex]}}
+      </view>
+    </picker>
   </view>
-</view>
+  <view class="cu-form-group">
+    <view class="title">毕业院校</view>
+    <input placeholder="" class='text-right' value='{{info.college}}' data-field="college" bindinput="bindFieldInput"></input>
+  </view>
 
 
+  <!-- job -->
+  <view class="cu-form-group margin-top">
+    <view class="title">职位/职业</view>
+    <input placeholder="" class='text-right' value="{{info.profession}}" data-field="profession" bindinput="bindFieldInput"></input>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">公司</view>
+    <input placeholder="" class='text-right' value="{{info.company}}" data-field="company" bindinput="bindFieldInput"></input>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">年收入</view>
+    <picker bindchange="bindIncomeChange" value="{{incomeIndex}}" range="{{incomeRange}}">
+      <view class="picker">
+        {{incomeRange[incomeIndex]}}
+      </view>
+    </picker>
+  </view>
+
+
+  <view class="padding">
+    <view class='padding-tb-xs text-sm block text-gray'>* 只有你同意后才能看到对方微信号</view>
+    <view class='padding-tb-xs text-sm block text-gray'>* 确认微信号可被搜索</view>
+    <view class='padding-tb-xs text-sm block text-gray'>* 微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
+    <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view>
+  </view>
+
+
+  <view class="cu-list menu shadow-lg">
+    <view class="cu-item">
+      <view class="content flex align-center">
+        <!-- <text class="cuIcon-weixin text-green "></text> -->
+        <text class="">微信号</text>
+        <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{info.weixin}}" data-field="weixin" bindinput="bindFieldInput"></input>
+
+      </view>
+    </view>
+    <view class='divider solid-bottom'></view>
+    <view class="cu-item">
+      <view class="content flex align-center">
+        <!-- <text class="cuIcon-phone text-green"></text> -->
+        <text class=" text-right">手机号</text>
+        <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{info.phone}}" data-field="phone" bindinput="bindFieldInput"></input>
+      </view>
+      <!-- <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button> -->
+    </view>
+  </view>
+
+</form>
 
 <view class="cu-tabbar-height lg"></view>
 <view class='foot padding-lr'>

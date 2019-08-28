@@ -1,6 +1,6 @@
-<loading wx:if="{{false}}"> </loading>
+<loading wx:if="{{!isLogin}}"> </loading>
 
-<view>
+<view wx:if="{{isLogin}}">
   <scroll-view scroll-y class="scrollPage">
     {{PageCur=='meet'?wode:nide}}
     <meet style="display:{{PageCur=='meet'?'block':'none'}}" seekerList="{{seekerList}}" id="meetCom"></meet>

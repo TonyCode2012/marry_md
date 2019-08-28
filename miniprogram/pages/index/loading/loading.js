@@ -1,6 +1,7 @@
-const db = wx.cloud.database({})
+const observer = require("../../../utils/observer.js")
 const app = getApp()
 let {
+  db,
   globalData
 } = app
 
@@ -19,7 +20,6 @@ Component({
 
   },
   ready() {
-    // console.log(this) 
     this.checkAuthorize()
   },
 
@@ -39,9 +39,7 @@ Component({
           } else {
             globalData.userProfile = res.data[0];
             console.log('user profile from loading: ', globalData.userProfile);
-            wx.navigateTo({
-              url: '/pages/index/index',
-            })
+            observer.store.isLogin = true;
           }
         })
       });

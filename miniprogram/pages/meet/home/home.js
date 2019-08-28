@@ -1,7 +1,5 @@
-// pages/recommend/home/home.js
-const app = getApp();
 const observer = require("../../../utils/observer.js");
-
+const app = getApp();
 Component({
   options: {
     addGlobalClass: true,
