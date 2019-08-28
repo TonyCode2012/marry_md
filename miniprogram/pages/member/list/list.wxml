@@ -1,33 +1,34 @@
-
-<view class="cu-card case">
-  <!-- repeat area -->
-  <view wx:for="{{1}}" wx:key class="cu-item shadow" data-user="lancer" bindtap="gotoDetail">  
-    <!-- image area -->
-    <view class="image">
-      <image src="cloud://test-t2od1.7465-test-t2od1/WechatIMG8.jpeg" mode="widthFix"></image>
-      <!-- <view class="cu-tag bg-blue">史诗</view> -->
-      <!-- <view class="cu-bar bg-shadeBottom"> -->
-        <!-- <text class="text-cut">我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。</text> -->
-      <!-- </view> -->
-    </view>
-    <!-- text area -->
-    <view class="cu-list menu-no-avatar">
-      <view class="cu-item">
-        <view class="content">
-          <view class="flex align-center">
-            <text class="text-cut margin-right-xs text-black text-bold text-df">马达</text>
-            <text class="cu-tag round bg-orange sm">
-            <text class='cuIcon-safe lg text-white'></text> 已认证</text>
-          </view>
-          <view class='text-sm text-gray margin-top-xs'>
-                <text>  94年・水瓶座・160CM・深大 本科・教师</text>
-          </view>
-          <view class="text-gray text-sm flex">
-            <text class="text-cut">
-            <text class="cuIcon-locationfill margin-right-xs"></text> 现居深圳・广东人</text>
+<view wx:for="{{seekerList}}" wx:key>
+  <view class="cu-card case">
+    <!-- repeat area -->
+    <view class="cu-item shadow" data-user="lancer" bindtap="gotoDetail" data-info="{{item}}">  
+      <!-- image area -->
+      <view class="image">
+        <image src="{{item.photos[0]}}" mode="widthFix"></image>
+        <!-- <view class="cu-tag bg-blue">史诗</view> -->
+        <!-- <view class="cu-bar bg-shadeBottom"> -->
+          <!-- <text class="text-cut">我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。</text> -->
+        <!-- </view> -->
+      </view>
+      <!-- text area -->
+      <view class="cu-list menu-no-avatar">
+        <view class="cu-item">
+          <view class="content">
+            <view class="flex align-center">
+              <text class="text-cut margin-right-xs text-black text-bold text-df">{{item.basic_info.name}}</text>
+              <text class="cu-tag round bg-orange sm">
+              <text class='cuIcon-safe lg text-white'></text> 已认证</text>
+            </view>
+            <view class='text-sm text-gray margin-top-xs'>
+                  <text>  {{item.basic_info.birthday}}年・水瓶座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
+            </view>
+            <view class="text-gray text-sm flex">
+              <text class="text-cut">
+              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location}}・{{item.basic_info.hometown}}</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
-  </view> 
+    </view> 
+  </view>
 </view>

@@ -10,15 +10,17 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    seekerList: Array
   },
 
   /**
    * 组件的初始数据
    */
   data: { 
-    isAuth: false
+    isAuth: false,
+    TabCur: 0
   },
+  
   ready: function(){
     observer.observe(observer.store, 'isAuth', (value)=>{
       this.setData({
@@ -31,6 +33,11 @@ Component({
    * 组件的方法列表
    */
   methods: {
- 
+    tabSelect(e) {
+      this.setData({
+        TabCur: e.currentTarget.dataset.id,
+        scrollLeft: (e.currentTarget.dataset.id - 1) * 60
+      })
+    },
   }
 })

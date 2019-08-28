@@ -14,6 +14,7 @@
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
+	"compileType": "miniprogram",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -31,7 +32,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 11,
+			"current": 12,
 			"list": [
 				{
 					"id": -1,
@@ -114,7 +115,15 @@
 					"id": -1,
 					"name": "index",
 					"pathName": "pages/index/index",
+					"query": "",
 					"scene": null
+				},
+				{
+					"id": 12,
+					"name": "enter_mini_card",
+					"pathName": "pages/member/detail/detail",
+					"query": "starter=yaoz&rear=yudayan",
+					"scene": 1007
 				}
 			]
 		}
