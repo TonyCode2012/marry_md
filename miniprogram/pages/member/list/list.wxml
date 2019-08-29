@@ -15,7 +15,7 @@
         <view class="cu-item">
           <view class="content">
             <view class="flex align-center">
-              <text class="text-cut margin-right-xs text-black text-bold text-df">{{item.basic_info.name}}</text>
+              <text class="text-cut margin-right-xs text-black text-bold text-df">{{item.basic_info.nickName}}</text>
               <text class="cu-tag round bg-orange sm">
               <text class='cuIcon-safe lg text-white'></text> 已认证</text>
             </view>

@@ -15,19 +15,19 @@
     图片上传
   </view>
   <view class="action">
-    {{album.length}}/4
+    {{photos.length}}/10
   </view>
 </view>
 
 <view class="cu-form-group">
   <view class="grid col-4 grid-square flex-sub">
-    <view class="bg-img" wx:for="{{album}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{album[index]}}">
-      <image src='{{album[index]}}' mode='aspectFill'></image>
+    <view class="bg-img" wx:for="{{photos}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{photos[index]}}">
+      <image src='{{photos[index]}}' mode='aspectFill'></image>
       <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
         <text class="cuIcon-close"></text>
       </view>
     </view>
-    <view class="solids" bindtap="ChooseImage" wx:if="{{album.length<4}}">
+    <view class="solids" bindtap="ChooseImage" wx:if="{{photos.length<4}}">
       <text class="cuIcon-cameraadd"></text>
     </view>
   </view>
@@ -36,96 +36,96 @@
 <!-- basic -->
 <view class="cu-form-group margin-top">
   <view class="title">昵称</view>
-  <input class='text-right padding-lr-xs' value="{{nickName}}" placeholder=""  bindinput="bindNickInput"></input>
+  <input class='text-right padding-lr-xs' value="{{basic_info.nickName}}" placeholder=""  data-type="nickName" bindinput="bindInfoInput"></input>
 </view>
 <view class="cu-form-group">
   <view class="title">性别</view>
   <view>
-    <view class='cu-tag line-pink round padding-lr-sm'>小哥哥</view>
-    <view class='cu-tag bg-pink round padding-lr-sm'>小姐姐</view>
+    <view class="cu-tag {{basic_info.gender=='male'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="male" bindtap="bindInfoChange">小哥哥</view>
+    <view class="cu-tag {{basic_info.gender=='female'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="female" bindtap="bindInfoChange">小姐姐</view>
   </view>
 </view>
 
 <view class="cu-form-group">
   <view class="title">生日</view>
-  <picker bindchange="bindBirthdayChange" mode="date" value="{{birthday}}" start="1970-01-01" end="{{now}}">
+  <picker data-type="birthday" bindchange="bindInfoInput" mode="date" value="{{basic_info.birthday}}" start="1970-01-01" end="{{now}}">
     <view class="picker">
-      {{birthday}}
+      {{basic_info.birthday}}
     </view>
   </picker>
 </view>
 
 <view class="cu-form-group">
   <view class="title">体重</view>
-  <picker bindchange="bindWeightChange" value="{{weightIndex}}" range="{{weightRange}}">
+  <picker data-type="weight" bindchange="bindInfoRange" value="{{rangeIndexObj.weightIndex}}" range="{{weightRange}}">
     <view class="picker">
-      {{ weightRange[weightIndex] }} kg
+      {{ weightRange[rangeIndexObj.weightIndex] }} kg
     </view>
   </picker>
 </view>
 
 <view class="cu-form-group">
   <view class="title">身高</view>
-  <picker bindchange="bindHeightChange" value="{{heightIndex}}" range="{{heightRange}}">
+  <picker data-type="height" bindchange="bindInfoRange" value="{{rangeIndexObj.heightIndex}}" range="{{heightRange}}">
     <view class="picker">
-      {{ heightRange[heightIndex] }} cm
+      {{ heightRange[rangeIndexObj.heightIndex] }} cm
     </view>
   </picker>
 </view>
 
 <view class="cu-form-group">
   <view class="title">所在地</view>
-  <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
+  <picker mode="region" data-type="location" bindchange="bindInfoRegion" value="{{basic_info.location}}">
     <view class="picker">
-      {{region[0]}}，{{region[1]}}，{{region[2]}}
+      {{basic_info.location[0]}}，{{basic_info.location[1]}}，{{basic_info.location[2]}}
     </view>
   </picker>
 </view>
 <view class="cu-form-group">
   <view class="title">家乡</view>
-  <picker mode="region" bindchange="bindHomeRegionChange" value="{{homeRegion}}">
+  <picker mode="region" data-type="hometown" bindchange="bindInfoRegion" value="{{basic_info.hometown}}">
     <view class="picker">
-      {{homeRegion[0]}}，{{homeRegion[1]}}，{{homeRegion[2]}}
+      {{basic_info.hometown[0]}}，{{basic_info.hometown[1]}}，{{basic_info.hometown[2]}}
     </view>
   </picker>
 </view>
 <view class="cu-form-group">
   <view class="title">婚姻</view>
   <view>
-    <view data-married="false" bindtap='bindTapMarried' class='cu-tag line-pink round padding-lr-sm'>未婚</view>
-    <view data-married="true" bindtap='bindTapMarried' class='cu-tag bg-pink round padding-lr-sm'>离异</view>
+    <view data-type="marryStatus" data-value="unmarried" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='unmarried'?'bg':'line'}}-pink round padding-lr-sm">未婚</view>
+    <view data-type="marryStatus" data-value="divorced" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='divorced'?'bg':'line'}}-pink round padding-lr-sm">离异</view>
   </view>
 </view>
 
 <!-- education -->
 <view class="cu-form-group margin-top">
   <view class="title">最高学历</view>
-  <picker bindchange="bindEducationChange" value="{{educationIndex}}" range="{{educationRange}}">
+  <picker data-type="education" bindchange="bindInfoRange" value="{{rangeIndexObj.educationIndex}}" range="{{educationRange}}">
     <view class="picker">
-      {{educationRange[educationIndex]}}
+      {{educationRange[rangeIndexObj.educationIndex]}}
     </view>
   </picker>
 </view>
 <view class="cu-form-group">
   <view class="title">毕业院校</view>
-  <input placeholder="" class='text-right' value='{{school}}'></input>
+  <input placeholder="" class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
 </view>
 
 
 <!-- job -->
 <view class="cu-form-group margin-top">
   <view class="title">职位/职业</view>
-  <input placeholder="" class='text-right' bindinput='bindJobInput' value="{{job}}"></input>
+  <input placeholder="" class='text-right' value="{{basic_info.profession}}" data-type="profession" bindinput='bindInfoInput'></input>
 </view>
 <view class="cu-form-group">
   <view class="title">公司</view>
-  <input placeholder="" class='text-right' bindinput='bindCompanyInput' value="{{company}}"></input>
+  <input placeholder="" class='text-right' value="{{basic_info.company}}" data-type="company" bindinput='bindInfoInput'></input>
 </view>
 <view class="cu-form-group">
   <view class="title">年收入</view>
-  <picker bindchange="bindIncomeChange" value="{{incomeIndex}}" range="{{incomeRange}}">
+  <picker data-type="income" bindchange="bindInfoRange" value="{{rangeIndexObj.incomeIndex}}" range="{{incomeRange}}">
     <view class="picker">
-      {{incomeRange[incomeIndex]}}
+      {{incomeRange[rangeIndexObj.incomeIndex]}}
     </view>
   </picker>
 </view>
@@ -144,7 +144,7 @@
     <view class="content flex align-center">
       <!-- <text class="cuIcon-weixin text-green "></text> -->
       <text class="">微信号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{weixin}}" bindinput='bindWeixinInput'></input>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.weixin}}" data-type="wechat" bindinput='bindInfoInput'></input>
 
     </view>
   </view>
@@ -153,7 +153,7 @@
     <view class="content flex align-center">
       <!-- <text class="cuIcon-phone text-green"></text> -->
       <text class=" text-right">手机号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{phone}}"  bindinput='bindPhoneInput'></input>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.phone}}" data-type="phone" bindinput='bindInfoInput'></input>
     </view>
     <!-- <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button> -->
   </view>

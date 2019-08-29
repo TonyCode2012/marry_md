@@ -5,6 +5,7 @@ Page({
   data: {
     PageCur: 'meet',
     query: null,
+    userInfo: {},
     seekerList: []
   },
   NavChange(e) {
@@ -21,7 +22,7 @@ Page({
         PageCur: value
       })
     })
-    // get data from db
+    // get seekers info from db
     const that = this
     const db = wx.cloud.database({
       env: 'test-t2od1'
@@ -38,7 +39,19 @@ Page({
         console.log(res)
       }
     })
-    
+    // get my profile from db
+    db.collection('users').where({
+      _openid: 'testuser1'
+    }).get({
+      success:function(res) {
+        that.setData({
+          userInfo: res.data[0]
+        })
+      },
+      fail:function(res) {
+        console.log(res)
+      }
+    })
   },
 
   onReady() {

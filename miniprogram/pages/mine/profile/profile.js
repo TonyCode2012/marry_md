@@ -13,7 +13,9 @@ const app = getApp()
 const {
   globalData
 } = app
-const db = wx.cloud.database({})
+const db = wx.cloud.database({
+  env: 'test-t2od1'
+})
 Page({
 
   /**
@@ -21,19 +23,27 @@ Page({
    */
   data: {
 
-    album: [],
-
     now: formatDate(new Date()),
 
-    nickName: '',
-    gender: '',
-    birthday: '',
-    maritalStatus: '', // single,divorced
-    school: '',
-    job: '',
-    company: '',
-    weixin: '',
-    phone: '',
+    basic_info: {
+      nickName: '',
+      gender: 'male',
+      birthday: '2000-01-01',
+      height: '160',
+      weight: '50',
+      marryStatus: 'unmarried',
+      education: '本科',
+      college: '',
+      company: '',
+      profession: '',
+      income: '5-15w',
+      location: [],
+      hometown: [],
+      phone: '',
+      wechat: ''
+    },
+
+    photos: [],
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -47,124 +57,78 @@ Page({
     incomeIndex: 0,
     incomeRange: incomeRange,
 
+    rangeArry: ['weight','height','education','income'],
+    rangeIndexObj: {
+      weightIndex: 0,
+      heightIndex: 0,
+      educationIndex: 0,
+      incomeIndex: 0
+    },
+
     region: ['广东省', '广州市', '海珠区'],
     homeRegion: ['广东省', '广州市', '海珠区'],
   },
 
-  birthdayChange(e) {
+  bindInfoChange(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.currentTarget.dataset.value
     this.setData({
-      birthday: e.detail.value
+      ['basic_info.'+type+'']: value
     })
   },
-  bindWeightChange(e) {
+  bindInfoInput(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.detail.value
     this.setData({
-      weightIndex: e.detail.value
+      ['basic_info.' + type + '']: value
     })
   },
-  bindHeightChange(e) {
+  bindInfoRange(e) {
+    let type = e.currentTarget.dataset.type
+    let value = this.data[type+'Range'][e.detail.value]
     this.setData({
-      heightIndex: e.detail.value
+      ['basic_info.' + type + '']: value,
+      ['rangeIndexObj.'+type+'Index']: e.detail.value
     })
   },
-  bindRegionChange: function(e) {
+  bindInfoRegion(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.detail.value
     this.setData({
-      region: e.detail.value
-    })
-  },
-  bindHomeRegionChange: function(e) {
-    this.setData({
-      homeRegion: e.detail.value
-    })
-  },
-  bindJobInput: function(e) {
-    this.setData({
-      jobIndex: e.detail.value
-    })
-  },
-  bindEducationChange: function(e) {
-    this.setData({
-      educationIndex: e.detail.value
-    })
-  },
-  bindIncomeChange: function(e) {
-    this.setData({
-      incomeIndex: e.detail.value
-    })
-  },
-  bindNickInput: function(e) {
-    this.setData({
-      nickName: e.detail.value
-    })
-  },
-  bindCompanyInput: function(e) {
-    this.setData({
-      company: e.detail.value
+      ['basic_info.' + type + '']: value
     })
   },
 
-  bindWeixinInput: function(e) {
-    this.setData({
-      weixin: e.detail.value
-    })
-  },
-  bindPhoneInput: function(e) {
-    this.setData({
-      phone: e.detail.value
-    })
-  },
-  bindTapMarriage: function(e) {
-    debugger
-  },
   Save: function(e) {
-    let user_profile_model = {
-      nickName: this.data.nickName,
-      gender: this.data.gender,
-      birthday: this.data.birthday,
-      weight: this.data.weightRange[this.data.weightIndex],
-      height: this.data.heightRange[this.data.heightIndex],
-      region: this.data.region,
-      home_region: this.data.home_region,
-      marital_status: this.data.maritalStatus,
-
-      education: this.data.educationRange[this.data.educationIndex],
-      school: this.data.school,
-
-      job: this.data.job,
-      company: this.data.company,
-      income: this.data.incomeRange[this.data.incomeIndex],
-
-      school: this.data.school,
-      weixin: this.data.weixin,
-      phone: this.data.phone
-    }
-
-
+    const that = this
+    console.log(that.data.basic_info)
     db.collection('users').where({
-      _openid: globalData.openid
-    }).get().then(res => {
+      _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+    }).get().then(res=>{
       return res.data[0]._id;
-    }).then(id => {
-      db.collection('users').doc(id)
-        .update({
-          data: user_profile_model
-        }).then(res => {
-          console.log(res)
-        })
+    }).then(id=>{
+      db.collection('users').doc(id).update({
+        data: {
+          basic_info: that.data.basic_info
+        }
+      }).then(res=>{
+        console.log(res)
+      })
     })
   },
   ChooseImage() {
     wx.chooseImage({
       count: 4, //默认9
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album'], //从相册选择
+      sourceType: ['photos'], //从相册选择
       success: (res) => {
-        if (this.data.album.length != 0) {
+        if (this.data.photos.length != 0) {
           this.setData({
-            album: this.data.album.concat(res.tempFilePaths)
+            photos: this.data.photos.concat(res.tempFilePaths)
           })
         } else {
           this.setData({
-            album: res.tempFilePaths
+            photos: res.tempFilePaths
           })
         }
       }
@@ -172,7 +136,7 @@ Page({
   },
   ViewImage(e) {
     wx.previewImage({
-      urls: this.data.album,
+      urls: this.data.photos,
       current: e.currentTarget.dataset.url
     });
   },
@@ -184,9 +148,9 @@ Page({
       confirmText: '确定',
       success: res => {
         if (res.confirm) {
-          this.data.album.splice(e.currentTarget.dataset.index, 1);
+          this.data.photos.splice(e.currentTarget.dataset.index, 1);
           this.setData({
-            album: this.data.album
+            photos: this.data.photos
           })
         }
       }
@@ -197,7 +161,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    debugger;
+    const that = this
+    // debugger;
     const {
       userProfile
     } = globalData
@@ -205,20 +170,71 @@ Page({
       userInfo
     } = userProfile
 
-    let data = {
-      nickName: userProfile.nickName || userInfo.nickName,
-      gender: userProfile.gender || userInfo.gender,
-      birthday: userProfile.birthday || '1990-01-01',
-      maritalStatus: userProfile.marital_status || 'single', // single,divorced
-      school: userProfile.school,
-      job: userProfile.job,
-      company: userProfile.company,
-      weixin: userProfile.weixin,
-      phone: userProfile.phone,
-      album: userProfile.album
+    // get basic info
+    let basic_info = JSON.parse(options.basic_info)
+    let photos = JSON.parse(options.photos).data
+    that.setData({
+      basic_info: basic_info,
+      photos: photos
+    })
+    let rangeIndexObj = {
+      weightIndex: 0,
+      heightIndex: 0,
+      educationIndex: 0,
+      incomeIndex: 0
     }
-    console.log(data)
-    this.setData(data)
+    for (let j = 0; j < that.data.rangeArry.length; j++) {
+      let range = that.data.rangeArry[j]
+      if (basic_info[range] == '') continue
+      let concretRange = that.data[range + 'Range']
+      for (let i = 0; i < concretRange.length; i++) {
+        if (concretRange[i] == basic_info[range]) {
+          rangeIndexObj[range + 'Index'] = i
+          break
+        }
+      }
+    }
+    that.setData({
+      rangeIndexObj: rangeIndexObj
+    })
+
+    // get data from db
+    // db.collection('users').where({
+    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+    // }).get({
+    //   success:function(res){
+    //     if(res.data.length > 0) {
+    //       that.setData({
+    //         basic_info: res.data[0].basic_info,
+    //         photos: res.data[0].photos
+    //       })
+    //       let rangeIndexObj =  {
+    //         weightIndex: 0,
+    //         heightIndex: 0,
+    //         educationIndex: 0,
+    //         incomeIndex: 0
+    //       }
+    //       let basic_info = res.data[0].basic_info
+    //       for(let j=0;j<that.data.rangeArry.length;j++) {
+    //         let range = that.data.rangeArry[j]
+    //         if(basic_info[range] == '') continue
+    //         let concretRange = that.data[range+'Range']
+    //         for (let i = 0; i < concretRange.length; i++) {
+    //           if (concretRange[i] == basic_info[range]) {
+    //             rangeIndexObj[range+'Index'] = i
+    //             break
+    //           }
+    //         }
+    //       }
+    //       that.setData({
+    //         rangeIndexObj: rangeIndexObj
+    //       })
+    //     }
+    //   },
+    //   fail:function(res) {
+    //     console.log(res)
+    //   }
+    // })
   },
 
   /**

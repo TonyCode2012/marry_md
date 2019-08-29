@@ -18,7 +18,7 @@
     </view>
     <view class="padding text-sm">
       <textarea auto-focus auto-height="true" maxlength="500" bindinput="textareaAInput" 
-      placeholder="{{item.desc}}"></textarea>
+      placeholder="{{item.desc}}" value="{{loveDetail.content}}"></textarea>
     </view>
   </view>
   <view class="cu-item shadow">
@@ -30,17 +30,17 @@
           图片上传
         </view>
         <view class="action">
-          {{imgList.length}}/4
+          {{loveDetail.photos.length}}/4
         </view>
       </view>
       <view class="grid col-4 grid-square flex-sub margin-top-sm">
-        <view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}">
-          <image src='{{imgList[index]}}' mode='aspectFill'></image>
+        <view class="bg-img" wx:for="{{loveDetail.photos}}" wx:for-item="photoUrl" wx:key="{{index}}" bindtap="ViewImage" data-url="{{photoUrl}}">
+          <image src='{{photoUrl}}' mode='aspectFill'></image>
           <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
             <text class="cuIcon-close"></text>
           </view>
         </view>
-        <view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length<4}}">
+        <view class="solids" bindtap="ChooseImage" wx:if="{{loveDetail.photos.length<4}}">
           <text class="cuIcon-cameraadd"></text>
         </view>
       </view>

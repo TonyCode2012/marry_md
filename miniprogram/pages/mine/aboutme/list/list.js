@@ -9,7 +9,7 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    loveInfo: Object
   },
 
   /**
@@ -25,8 +25,9 @@ Component({
   methods: {
     gotoEdit(e){
       const type = e.currentTarget.dataset.type;
+      const loveDetail = JSON.stringify(this.data.loveInfo[type])
       wx.navigateTo({
-        url: `/pages/mine/aboutme/edit/edit?type=${type}`
+        url: `/pages/mine/aboutme/edit/edit?type=${type}&loveDetail=${loveDetail}`
       })
     }
   }
