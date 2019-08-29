@@ -23,12 +23,12 @@
 
         <view class="margin-bottom-xl">
           <view class='margin-bottom-xs flex align-center'>
-            <text class="text-cut margin-right-sm text-black text-bold text-df">马达</text>
+            <text class="text-cut margin-right-sm text-black text-bold text-df">{{userInfo.basic_info.nickName}}</text>
             <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white text-xs'></text> 已认证</text>
           </view>
           <view class='text-gray text-sm'>
             <text class='cuIcon-female text-pink'></text>
-            <text>  {{userInfo.basic_info.birthday}}年・水瓶座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.academic}}・{{userInfo.basic_info.profession}}</text>
+            <text>  {{userInfo.basic_info.birthday}}年・水瓶座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.education}}・{{userInfo.basic_info.profession}}</text>
           </view>
           <view class='text-gray text-sm'>
             <text><text class="cuIcon-locationfill"></text> 现居{{userInfo.basic_info.location}}・{{userInfo.basic_info.hometown}}</text>
@@ -91,9 +91,9 @@
             <text class="text-df">自我描述</text>
           </view>
           <view class="section-content margin-top-sm">
-            {{userInfo.self_info.selfIntro.content}}
+            {{userInfo.love_info.selfIntro.content}}
           </view>
-          <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.selfIntro.photos}}" wx:key="*this">
+          <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.selfIntro.photos}}" wx:key="*this">
             <image src="{{item}}" mode='widthFix'></image>
           </view>
         </view>
@@ -103,9 +103,9 @@
             <text class="text-df">家庭背景</text>
           </view>
           <view class="section-content margin-top-sm">
-            {{userInfo.self_info.homeBg.content}}
+            {{userInfo.love_info.homeBg.content}}
           </view>
-          <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.homeBg.photos}}" wx:key="*this">
+          <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.homeBg.photos}}" wx:key="*this">
             <image src="{{item}}" mode='widthFix'></image>
           </view>
         </view>
@@ -116,9 +116,9 @@
             <text class="text-df">兴趣爱好</text>
           </view>
           <view class="section-content margin-top-sm">
-            <text>{{userInfo.self_info.hobby.content}}
+            <text>{{userInfo.love_info.hobby.content}}
             </text>
-            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.hobby.photos}}" wx:key="*this">
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.hobby.photos}}" wx:key="*this">
               <image src="{{item}}" mode='widthFix'></image>
             </view>
           </view>
@@ -130,9 +130,9 @@
             <text class="text-df">爱情观</text>
           </view>
           <view class="section-content margin-top-sm">
-            <text>{{userInfo.self_info.aboutLove.content}}
+            <text>{{userInfo.love_info.aboutLove.content}}
             </text>
-            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.aboutLove.photos}}" wx:key="*this">
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.aboutLove.photos}}" wx:key="*this">
               <image src="{{item}}" mode='widthFix'></image>
             </view>
           </view>
@@ -145,8 +145,8 @@
             <text class="text-df">理想的另一半</text>
           </view>
           <view class="section-content margin-top-sm">
-            <text>{{userInfo.self_info.idealLover.content}}</text>
-            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.idealLover.photos}}" wx:key="*this">
+            <text>{{userInfo.love_info.idealLover.content}}</text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.idealLover.photos}}" wx:key="*this">
               <image src="{{item}}" mode='widthFix'></image>
             </view>
           </view>
@@ -159,8 +159,8 @@
             <text class="text-df">我为什么单身？</text>
           </view>
           <view class="section-content margin-top-sm">
-          <text>{{userInfo.self_info.singleReason.content}}</text>
-            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.singleReason.photos}}" wx:key="*this">
+          <text>{{userInfo.love_info.singleReason.content}}</text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.singleReason.photos}}" wx:key="*this">
               <image src="{{item}}" mode='widthFix'></image>
             </view>
           </view>
@@ -173,8 +173,8 @@
             <text class="text-df">如果遇到对的人，我期待什么样的生活？</text>
           </view>
           <view class="section-content margin-top-sm">
-          <text>{{userInfo.self_info.idealLife.content}}</text>
-            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.self_info.idealLife.photos}}" wx:key="*this">
+          <text>{{userInfo.love_info.idealLife.content}}</text>
+            <view class='margin-top flex flex-direction justify-between' wx:for="{{userInfo.love_info.idealLife.photos}}" wx:key="*this">
               <image src="{{item}}" mode='widthFix'></image>
             </view>
           </view>

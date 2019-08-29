@@ -9,58 +9,70 @@
 </view>
 
 <view class="cu-form-group">
+  <view class="title">身高</view>
+  <zy-slider min="{{minHeight}}" max="{{maxHeight}}" minValue="{{startHeight}}" maxValue="{{endHeight}}" unit="cm" bind:lowValueChange="heightLowValueChange" bind:highValueChange="heightHighValueChange" />
+</view>
+
+<view class="cu-form-group">
   <view class="title">年龄</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'26-32'}}
-    </view>
-  </picker>
+  <zy-slider min="{{minAge}}" max="{{maxAge}}" minValue="{{startAge}}" maxValue="{{endAge}}" unit="岁" bind:lowValueChange="ageLowValueChange" bind:highValueChange="ageHighValueChange" />
 </view>
 
 <view class="cu-form-group">
   <view class="title">学历</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+  <picker data-type="education" bindchange="bindInfoRange" value="{{rangeIndexObj.educationIndex}}" range="{{educationRange}}">
     <view class="picker">
-      {{index_job?picker[index_job]:'本科以上'}}
+      {{educationRange[rangeIndexObj.educationIndex]}}以上
     </view>
   </picker>
 </view>
 
-
-<view class="cu-form-group">
-  <view class="title">距离</view>
-   <view class='flex align-center'>
-   <slider  min="0" max="100" step="3" show-value value='50'/><text>km 以内</text>
-   </view>
-</view>
-
-
-<view class="cu-form-group">
-  <view class="title">身高</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'175'}}cm+
-    </view>
-  </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">体重</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
-    <view class="picker">
-      {{index_job?picker[index_job]:'无要求'}}
-    </view>
-  </picker>
-</view>
 <view class="cu-form-group">
   <view class="title">婚姻状况</view>
-  <picker bindchange="PickerChange" value="{{index_assets}}" range="{{}}">
+  <picker data-type="marryStatus" bindchange="bindInfoRange" value="{{rangeIndexObj.marryStatusIndex}}" range="{{marryStatusRange}}">
     <view class="picker">
-      {{index_job?picker[index_job]:'无要求'}}
+      {{marryStatusRange[rangeIndexObj.marryStatusIndex]}}
     </view>
   </picker>
 </view>
 
 <view class="cu-form-group">
+  <view class="title">所在地</view>
+  <picker mode="region" data-type="location" bindchange="bindInfoRegion" value="{{expect_info.location}}">
+    <view class="picker">
+      {{expect_info.location[0]}}，{{expect_info.location[1]}}，{{expect_info.location[2]}}
+    </view>
+  </picker>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">家乡</view>
+  <picker mode="region" data-type="hometown" bindchange="bindInfoRegion" value="{{expect_info.hometown}}">
+    <view class="picker">
+      {{expect_info.hometown[0]}}，{{expect_info.hometown[1]}}，{{expect_info.hometown[2]}}
+    </view>
+  </picker>
+</view>
+
+<!-- <view class="cu-form-group">
+  <view class="title" style="width:16%">距离</view>
+  <view style="position:relative;width:100%;flex-direction:row;display:flex;align-items:center">
+
+    <view style="position:absolute;height:2px;width:{{leftUnselectedLen}}px;background-color:#ddd;"></view>
+
+    <view style="position:relative;border-radius: 50%;width: 40rpx; height: 40rpx; background-color: #19896f;left:{{leftPos}}px" catchtouchmove="_minMove"></view>
+
+    <view style="position:absolute;left:{{leftPos+17}}px;height:2px;width:{{selectedLen}}px;background-color:#19896f;"></view>
+
+    <view style="position:relative;border-radius: 50%;width: 40rpx; height: 40rpx; background-color: #19896f;left:{{rightPos}}px" catchtouchmove="_maxMove"></view>
+
+    <view style="position:absolute;height:2px;left:{{rightPos+34}}px;width:{{rightUnselectedLen}}px;background-color:#ddd;"></view>
+    
+  </view>
+  <text style="width:20%">{{leftVal}}-{{rightVal}} 岁</text>
+</view> -->
+
+<!-- <view class="cu-form-group">
   <view class="title">资产</view>
   <picker bindchange="PickerChange" value="{{index_assets}}" range="{{assets}}">
     <view class="picker">
@@ -75,12 +87,4 @@
       {{index_job?picker[index_job]:'5-15W'}}
     </view>
   </picker>
-</view>
-<view class="cu-form-group">
-  <view class="title">籍贯</view>
-  <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
-    <view class="picker">
-      {{region[0]}}，{{region[1]}}，{{region[2]}}
-    </view>
-  </picker>
-</view>
+</view> -->

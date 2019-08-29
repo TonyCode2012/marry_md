@@ -13,6 +13,7 @@ Page({
       desc: ''
     },
     imgList: [],
+    loveDetail: {},
   },
 
   /**
@@ -21,8 +22,10 @@ Page({
   onLoad: function (options) {
     const type = this.options.type;
     const curItem = listItem.find((item) => item.type == type);
+    var loveDetail = JSON.parse(options.loveDetail)
     this.setData({
-      item: curItem
+      item: curItem,
+      loveDetail: loveDetail
     })
   },
 

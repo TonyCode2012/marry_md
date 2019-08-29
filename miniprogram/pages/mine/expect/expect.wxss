@@ -1,4 +1,50 @@
 /* miniprogram/pages/mine/expect/expect.wxss */
 slider{
-  width: 350rpx;
+  width: 175rpx;
+}
+
+.sliderHCon {
+  /* margin: 0 40rpx 0 40rpx; */
+  height: 250rpx;
+  border: 1rpx solid red;
+  width: 70%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.MoneyValue {
+  font-size: 30rpx;
+  text-align: center;
+  color: #999;
+  margin-top: 15rpx;
+}
+
+.showMoney text {
+  margin-right: 30rpx;
+}
+
+.twoSlider {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.sliderView{
+  position: relative;
+  width: 93%;
+  margin: 0 15rpx
+}
+.left{
+  position: absolute;
+  width: 90%
+}
+.right{
+  position: absolute;
+  width: 90%
 }

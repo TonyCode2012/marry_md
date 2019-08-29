@@ -26,7 +26,6 @@ Page({
         PageCur: value
       })
     })
-
     observer.observe(observer.store, 'isLogin', (value) => {
       console.log('isLogin', value)
       this.setData({
@@ -52,12 +51,12 @@ Page({
     db.collection('users').where({
       _openid: 'testuser1'
     }).get({
-      success: function (res) {
+      success:function(res) {
         that.setData({
           userInfo: res.data[0]
         })
       },
-      fail: function (res) {
+      fail:function(res) {
         console.log(res)
       }
     })
