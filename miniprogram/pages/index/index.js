@@ -9,6 +9,7 @@ Page({
     PageCur: 'meet',
     query: null,
     isLogin: observer.store.isLogin,
+    userInfo: {},
     seekerList: []
   },
   NavChange(e) {
@@ -23,9 +24,9 @@ Page({
     observer.observe(observer.store, 'PageCur', (value) => {
       this.setData({
         PageCur: value
-      })``
+      })
     })
-    
+
     observer.observe(observer.store, 'isLogin', (value) => {
       console.log('isLogin', value)
       this.setData({
@@ -33,9 +34,7 @@ Page({
       })
     })
 
-    console.log('observer.store', observer.store)
-
-    // get data from db
+    // get seekers info from db
     const that = this
     db.collection('users').where({
       'auth_info.personal_auth': false
@@ -49,7 +48,19 @@ Page({
         console.log(res)
       }
     })
-    
+    // get my profile from db
+    db.collection('users').where({
+      _openid: 'testuser1'
+    }).get({
+      success: function (res) {
+        that.setData({
+          userInfo: res.data[0]
+        })
+      },
+      fail: function (res) {
+        console.log(res)
+      }
+    })
   },
 
   onReady() {

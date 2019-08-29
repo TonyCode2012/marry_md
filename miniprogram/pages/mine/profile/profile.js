@@ -11,10 +11,11 @@ const {
 
 const app = getApp()
 const {
-  db,
   globalData
 } = app
-
+const db = wx.cloud.database({
+  env: 'test-t2od1'
+})
 Page({
 
   /**
@@ -22,21 +23,27 @@ Page({
    */
   data: {
 
-    album: [],
-    dateNow: formatDate(new Date()),
-    info: {
+    now: formatDate(new Date()),
+
+    basic_info: {
       nickName: '',
-      school: '',
-      job: '',
+      gender: 'male',
+      birthday: '2000-01-01',
+      height: '160',
+      weight: '50',
+      marryStatus: 'unmarried',
+      education: '本科',
+      college: '',
       company: '',
-      weixin: '',
-      phone: ''
+      profession: '',
+      income: '5-15w',
+      location: [],
+      hometown: [],
+      phone: '',
+      wechat: ''
     },
 
-    gender: 'female',
-    birthday: '1990-01-01',
-    maritalStatus: 'unmarried', // unmarried, divorced
-
+    photos: [],
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -50,105 +57,78 @@ Page({
     incomeIndex: 0,
     incomeRange: incomeRange,
 
+    rangeArry: ['weight','height','education','income'],
+    rangeIndexObj: {
+      weightIndex: 0,
+      heightIndex: 0,
+      educationIndex: 0,
+      incomeIndex: 0
+    },
+
     region: ['广东省', '广州市', '海珠区'],
     homeRegion: ['广东省', '广州市', '海珠区'],
   },
 
-  birthdayChange(e) {
+  bindInfoChange(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.currentTarget.dataset.value
     this.setData({
-      birthday: e.detail.value
+      ['basic_info.'+type+'']: value
     })
   },
-  bindWeightChange(e) {
+  bindInfoInput(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.detail.value
     this.setData({
-      weightIndex: e.detail.value
+      ['basic_info.' + type + '']: value
     })
   },
-  bindHeightChange(e) {
+  bindInfoRange(e) {
+    let type = e.currentTarget.dataset.type
+    let value = this.data[type+'Range'][e.detail.value]
     this.setData({
-      heightIndex: e.detail.value
+      ['basic_info.' + type + '']: value,
+      ['rangeIndexObj.'+type+'Index']: e.detail.value
     })
   },
-  bindRegionChange: function (e) {
+  bindInfoRegion(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.detail.value
     this.setData({
-      region: e.detail.value
+      ['basic_info.' + type + '']: value
     })
   },
-  bindHomeRegionChange: function (e) {
-    this.setData({
-      homeRegion: e.detail.value
-    })
-  },
-  bindEducationChange: function (e) {
-    this.setData({
-      educationIndex: e.detail.value
-    })
-  },
-  bindIncomeChange: function (e) {
-    this.setData({
-      incomeIndex: e.detail.value
-    })
-  },
-  bindGenderChange: function (e) {
-    this.setData({
-      gender: e.currentTarget.dataset.gender
-    })
-  },
-  bindMarryChange: function (e) {
-    this.setData({
-      maritalStatus: e.currentTarget.dataset.married
-    })
-  },
-  bindFieldInput: function (e) {
-    let ds = e.currentTarget.dataset;
-    let value = e.detail.value;
-    let form = ds.form || "info";
-    this.data[form][ds.field] = value;
-    this.setData({
-      [form]: this.data[form]
-    })
-  },
-  Save: async function (e) {
-    let basic_info = {
-      nickName: this.data.info.nickName,
-      gender: this.data.gender,
-      birthday: this.data.birthday,
-      weight: this.data.weightRange[this.data.weightIndex],
-      height: this.data.heightRange[this.data.heightIndex],
-      location: this.data.region,
-      hometown: this.data.homeRegion,
-      marryStatus: this.data.maritalStatus,
 
-      education: this.data.educationRange[this.data.educationIndex],
-      college: this.data.info.college,
-
-      profession: this.data.info.profession,
-      company: this.data.info.company,
-      income: this.data.incomeRange[this.data.incomeIndex],
-
-      wechat: this.data.info.weixin,
-      phone: this.data.info.phone
-    }
-    console.log('basic_info', basic_info);
-
-    let res = await db.collection('users').where({ _openid: globalData.openid }).get()
-    let user = res.data[0]
-    res = await db.collection('users').doc(user._id).update({ data: {basic_info: basic_info } })
-    console.log(res)
+  Save: function(e) {
+    const that = this
+    console.log(that.data.basic_info)
+    db.collection('users').where({
+      _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+    }).get().then(res=>{
+      return res.data[0]._id;
+    }).then(id=>{
+      db.collection('users').doc(id).update({
+        data: {
+          basic_info: that.data.basic_info
+        }
+      }).then(res=>{
+        console.log(res)
+      })
+    })
   },
   ChooseImage() {
     wx.chooseImage({
       count: 4, //默认9
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album'], //从相册选择
+      sourceType: ['photos'], //从相册选择
       success: (res) => {
-        if (this.data.album.length != 0) {
+        if (this.data.photos.length != 0) {
           this.setData({
-            album: this.data.album.concat(res.tempFilePaths)
+            photos: this.data.photos.concat(res.tempFilePaths)
           })
         } else {
           this.setData({
-            album: res.tempFilePaths
+            photos: res.tempFilePaths
           })
         }
       }
@@ -156,7 +136,7 @@ Page({
   },
   ViewImage(e) {
     wx.previewImage({
-      urls: this.data.album,
+      urls: this.data.photos,
       current: e.currentTarget.dataset.url
     });
   },
@@ -168,9 +148,9 @@ Page({
       confirmText: '确定',
       success: res => {
         if (res.confirm) {
-          this.data.album.splice(e.currentTarget.dataset.index, 1);
+          this.data.photos.splice(e.currentTarget.dataset.index, 1);
           this.setData({
-            album: this.data.album
+            photos: this.data.photos
           })
         }
       }
@@ -180,7 +160,9 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
+    const that = this
+    // debugger;
     const {
       userProfile
     } = globalData
@@ -188,68 +170,119 @@ Page({
       userInfo
     } = userProfile
 
-    let data = {
-      nickName: userProfile.nickName || userInfo.nickName,
-      gender: userProfile.gender || userInfo.gender,
-      birthday: userProfile.birthday || '1990-01-01',
-      maritalStatus: userProfile.marital_status || 'single', // single,divorced
-      school: userProfile.school,
-      job: userProfile.job,
-      company: userProfile.company,
-      weixin: userProfile.weixin,
-      phone: userProfile.phone,
-      album: userProfile.album
+    // get basic info
+    let basic_info = JSON.parse(options.basic_info)
+    let photos = JSON.parse(options.photos).data
+    that.setData({
+      basic_info: basic_info,
+      photos: photos
+    })
+    let rangeIndexObj = {
+      weightIndex: 0,
+      heightIndex: 0,
+      educationIndex: 0,
+      incomeIndex: 0
     }
-    console.log(data)
-    this.setData(data)
+    for (let j = 0; j < that.data.rangeArry.length; j++) {
+      let range = that.data.rangeArry[j]
+      if (basic_info[range] == '') continue
+      let concretRange = that.data[range + 'Range']
+      for (let i = 0; i < concretRange.length; i++) {
+        if (concretRange[i] == basic_info[range]) {
+          rangeIndexObj[range + 'Index'] = i
+          break
+        }
+      }
+    }
+    that.setData({
+      rangeIndexObj: rangeIndexObj
+    })
+
+    // get data from db
+    // db.collection('users').where({
+    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+    // }).get({
+    //   success:function(res){
+    //     if(res.data.length > 0) {
+    //       that.setData({
+    //         basic_info: res.data[0].basic_info,
+    //         photos: res.data[0].photos
+    //       })
+    //       let rangeIndexObj =  {
+    //         weightIndex: 0,
+    //         heightIndex: 0,
+    //         educationIndex: 0,
+    //         incomeIndex: 0
+    //       }
+    //       let basic_info = res.data[0].basic_info
+    //       for(let j=0;j<that.data.rangeArry.length;j++) {
+    //         let range = that.data.rangeArry[j]
+    //         if(basic_info[range] == '') continue
+    //         let concretRange = that.data[range+'Range']
+    //         for (let i = 0; i < concretRange.length; i++) {
+    //           if (concretRange[i] == basic_info[range]) {
+    //             rangeIndexObj[range+'Index'] = i
+    //             break
+    //           }
+    //         }
+    //       }
+    //       that.setData({
+    //         rangeIndexObj: rangeIndexObj
+    //       })
+    //     }
+    //   },
+    //   fail:function(res) {
+    //     console.log(res)
+    //   }
+    // })
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })
