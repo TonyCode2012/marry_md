@@ -1,1 +1,4 @@
 
+.navbar{
+  font-size: 30rpx;
+}

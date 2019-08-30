@@ -34,14 +34,14 @@ Component({
           _openid: globalData.openid
         }).get().then(res => {
           if (res.data.length === 0) {
-            wx.navigateTo({
+            wx.reLaunch({
               url: '/pages/index/authorize/authorize',
             })
           } else {
             app.globalData.weixin_info = res.data[0];
             console.log('user profile from loading: ', app.globalData.weixin_info);
             app.globalData.isLogin = true;
-            wx.navigateTo({
+            wx.reLaunch({
               url: '/pages/index/index',
             })
           }

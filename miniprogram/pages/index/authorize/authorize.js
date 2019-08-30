@@ -82,7 +82,7 @@ Page({
           weixin_info: e.detail.userInfo
         }
       })    
-      wx.redirectTo({
+      wx.reLaunch({
         url: '/pages/index/index',
       })
     });
