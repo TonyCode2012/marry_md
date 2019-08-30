@@ -116,7 +116,7 @@
 				{
 					"id": -1,
 					"name": "authorize",
-					"pathName": "pages/meet/authorize/authorize",
+					"pathName": "pages/index/authorize/authorize",
 					"query": "",
 					"scene": null
 				},

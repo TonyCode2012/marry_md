@@ -4,8 +4,8 @@ App({
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
-      // env: 'test-t2od1'
-      let env = 'dev-od3w5'
+      let env = 'test-t2od1'
+      // let env = 'dev-od3w5'
       wx.cloud.init({
         env: {
           database: env,

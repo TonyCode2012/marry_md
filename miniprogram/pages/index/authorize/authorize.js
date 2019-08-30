@@ -1,3 +1,5 @@
+// miniprogram/pages/meet/authorize/authorize.js
+
 const app = getApp()
 let {
   db,

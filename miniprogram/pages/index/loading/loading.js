@@ -34,7 +34,7 @@ Component({
         }).get().then(res => {
           if (res.data.length === 0) {
             wx.navigateTo({
-              url: '/pages/meet/authorize/authorize',
+              url: '/pages/index/authorize/authorize',
             })
           } else {
             globalData.userProfile = res.data[0];
