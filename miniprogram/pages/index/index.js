@@ -1,10 +1,14 @@
 const observer = require("../../utils/observer.js")
 const app = getApp()
-
+const {
+  db,
+  globalData
+} = app
 Page({
   data: {
     PageCur: 'meet',
     query: null,
+    isLogin: observer.store.isLogin,
     userInfo: {},
     seekerList: []
   },
@@ -22,11 +26,15 @@ Page({
         PageCur: value
       })
     })
+    observer.observe(observer.store, 'isLogin', (value) => {
+      console.log('isLogin', value)
+      this.setData({
+        isLogin: value
+      })
+    })
+
     // get seekers info from db
     const that = this
-    const db = wx.cloud.database({
-      env: 'test-t2od1'
-    })
     db.collection('users').where({
       'auth_info.personal_auth': false
     }).get({
@@ -60,6 +68,7 @@ Page({
         PageCur: this.data.query.cur
       })
     }
+
   },
 
   onShareAppMessage() {

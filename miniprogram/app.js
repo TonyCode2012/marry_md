@@ -1,17 +1,22 @@
-
 App({
   onLaunch: function() {
 
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
+      let env = 'test-t2od1'
+      // let env = 'dev-od3w5'
       wx.cloud.init({
-        env: 'dev-od3w5',
-        // env: 'test-t2od1',
+        env: {
+          database: env,
+          storage: env,
+          functions: env
+        },
         traceUser: true,
       })
     }
 
+    this.db = wx.cloud.database()
     this.globalData = {
       userProfile: {}
     };

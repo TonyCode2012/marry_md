@@ -29,7 +29,7 @@ watch: {
   name: function(newVal, oldVal) {  }
 }
 */
-export function setWatcher(page) {
+function setWatcher(page) {
   let data = page.data;
   let watch = page.watch;
   Object.keys(watch).forEach((item) => {
