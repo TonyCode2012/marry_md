@@ -7,7 +7,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    matchInfo: {
+      type: Object,
+      value: {}
+    }
   },
 
   /**
@@ -47,6 +50,10 @@ Component({
       basic_profile: '93年・本科・产品经理・安徽人・现居深圳',
       decision: 'yes'
     }]
+  },
+
+  ready: function() {
+
   },
 
   /**

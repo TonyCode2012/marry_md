@@ -6,7 +6,8 @@ Page({
     PageCur: 'meet',
     query: null,
     userInfo: {},
-    seekerList: []
+    seekerList: [],
+    matchInfo: {},
   },
   NavChange(e) {
     this.setData({
@@ -40,12 +41,13 @@ Page({
       }
     })
     // get my profile from db
-    db.collection('users').where({
+    db.collection('zy_users').where({
       _openid: 'testuser1'
     }).get({
       success:function(res) {
         that.setData({
-          userInfo: res.data[0]
+          userInfo: res.data[0],
+          matchInfo: res.data[0].match_info
         })
       },
       fail:function(res) {
