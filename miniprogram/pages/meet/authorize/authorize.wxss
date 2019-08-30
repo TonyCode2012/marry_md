@@ -1,6 +1,0 @@
-.cu-btn.xxl {
-  padding: 20rpx 160rpx;
-  font-size: 34rpx;
-  height: 100rpx;
-  letter-spacing: 5rpx;
-}

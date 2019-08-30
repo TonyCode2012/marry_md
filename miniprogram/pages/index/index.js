@@ -1,14 +1,16 @@
 const observer = require("../../utils/observer.js")
 const app = getApp()
+
 const {
   db,
   globalData
 } = app
+
 Page({
   data: {
     PageCur: 'meet',
     query: null,
-    isLogin: observer.store.isLogin,
+    isLogin: false,
     userInfo: {},
     seekerList: []
   },
@@ -18,19 +20,14 @@ Page({
     })
   },
   onLoad(query) {
+    if (!app.globalData.isLogin){
+      return false
+    }
     this.setData({
       query: query
     })
-    observer.observe(observer.store, 'PageCur', (value) => {
-      this.setData({
-        PageCur: value
-      })
-    })
-    observer.observe(observer.store, 'isLogin', (value) => {
-      console.log('isLogin', value)
-      this.setData({
-        isLogin: value
-      })
+    this.setData({
+      isLogin: app.globalData.isLogin
     })
 
     // get seekers info from db
@@ -38,12 +35,12 @@ Page({
     db.collection('users').where({
       'auth_info.personal_auth': false
     }).get({
-      success: function (res) {
+      success: function(res) {
         that.setData({
           seekerList: res.data
         })
       },
-      fail: function (res) {
+      fail: function(res) {
         console.log(res)
       }
     })
@@ -51,12 +48,12 @@ Page({
     db.collection('users').where({
       _openid: 'testuser1'
     }).get({
-      success:function(res) {
+      success: function(res) {
         that.setData({
           userInfo: res.data[0]
         })
       },
-      fail:function(res) {
+      fail: function(res) {
         console.log(res)
       }
     })

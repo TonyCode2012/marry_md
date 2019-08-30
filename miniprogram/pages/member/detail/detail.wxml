@@ -1,7 +1,7 @@
 <!--pages/member/home/home.wxml-->
 
 <view class="section">
-  <view class="section__title">普通选择器</view>
+  <view class="section__title"></view>
   <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" disabled="{{ship}}">
     <view class="picker">
 

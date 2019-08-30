@@ -1,6 +1,3 @@
-// pages/member/home/home.js
-
-const observer = require("../../../utils/observer.js")
 const app = getApp()
 let {
   db,

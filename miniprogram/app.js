@@ -18,7 +18,9 @@ App({
 
     this.db = wx.cloud.database()
     this.globalData = {
-      userProfile: {}
+      weixin_info: {},
+      openid: null,
+      isLogin: false
     };
 
     wx.getSystemInfo({

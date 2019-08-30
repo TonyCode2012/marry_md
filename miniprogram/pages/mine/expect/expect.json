@@ -1,7 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "zy-slider": "/myComponent/zy-slider/zySlider"
   },
   "navigationBarTitleText": "zy-slider"
 }

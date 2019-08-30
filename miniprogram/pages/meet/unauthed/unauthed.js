@@ -1,6 +1,3 @@
-
-const observer = require("../../../utils/observer.js");
-
 Component({
   options: {
     addGlobalClass: true,

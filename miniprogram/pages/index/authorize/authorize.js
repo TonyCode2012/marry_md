@@ -79,13 +79,9 @@ Page({
       }
       db.collection('users').add({
         data: {
-          weixin_info: e.detail.userInfo,
-          album: [e.detail.userInfo.avatarUrl]
+          weixin_info: e.detail.userInfo
         }
-      }).then(res => {
-        console.log(res)
-      })
-      wx.clear
+      })    
       wx.redirectTo({
         url: '/pages/index/index',
       })

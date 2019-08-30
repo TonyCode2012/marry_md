@@ -1,4 +1,3 @@
-const observer = require("../../../utils/observer.js")
 const app = getApp()
 let {
   db,
@@ -20,7 +19,9 @@ Component({
 
   },
   ready() {
-    this.checkAuthorize()
+    if (!app.globalData.isLogin) {
+      this.checkAuthorize()
+    }
   },
 
   /**
@@ -37,9 +38,12 @@ Component({
               url: '/pages/index/authorize/authorize',
             })
           } else {
-            globalData.userProfile = res.data[0];
-            console.log('user profile from loading: ', globalData.userProfile);
-            observer.store.isLogin = true;
+            app.globalData.weixin_info = res.data[0];
+            console.log('user profile from loading: ', app.globalData.weixin_info);
+            app.globalData.isLogin = true;
+            wx.navigateTo({
+              url: '/pages/index/index',
+            })
           }
         })
       });

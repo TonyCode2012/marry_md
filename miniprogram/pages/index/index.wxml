@@ -1,5 +1,3 @@
-<loading wx:if="{{!isLogin}}"> </loading>
-
 <view wx:if="{{isLogin}}">
   <scroll-view scroll-y class="scrollPage">
     <meet style="display:{{PageCur=='meet'?'block':'none'}}" seekerList="{{seekerList}}" id="meetCom"></meet>
@@ -42,3 +40,4 @@
   </view>
 
 </view>
+<loading wx:else> </loading>
