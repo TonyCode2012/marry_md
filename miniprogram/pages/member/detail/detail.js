@@ -1,8 +1,8 @@
-// pages/member/home/home.js
-
-const observer = require("../../../utils/observer.js")
 const app = getApp()
-let db = null
+let {
+  db,
+  globalData
+} = app
 let relationData = []
 // const db = wx.cloud.database({
 //   env: 'test-t2od1'
@@ -104,9 +104,6 @@ Component({
     onLoad: function (options) {
       const that = this
       const {source} = options;
-      db = wx.cloud.database({
-        env: 'test-t2od1'
-      })
       const _ = db.command
       // get transmition
       if(options.starter != undefined) {

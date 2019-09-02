@@ -197,13 +197,6 @@ Page({
    */
   onLoad: function(options) {
     const that = this
-    // debugger;
-    const {
-      userProfile
-    } = globalData
-    const {
-      userInfo
-    } = userProfile
 
     // get basic info
     let basic_info = JSON.parse(options.basic_info)

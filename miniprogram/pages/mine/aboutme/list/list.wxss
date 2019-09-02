@@ -8,5 +8,9 @@
 }
 
 .list-item{
-  height: 180rpx;
+}
+
+.about-content-desc{
+  height: 122rpx;
+  overflow: hidden;
 }

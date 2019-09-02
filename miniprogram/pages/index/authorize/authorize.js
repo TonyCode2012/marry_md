@@ -1,8 +1,8 @@
 // miniprogram/pages/meet/authorize/authorize.js
 
-const db = wx.cloud.database({})
 const app = getApp()
 let {
+  db,
   globalData
 } = app
 Page({
@@ -79,14 +79,10 @@ Page({
       }
       db.collection('users').add({
         data: {
-          userInfo: e.detail.userInfo,
-          album: [e.detail.userInfo.avatarUrl]
+          weixin_info: e.detail.userInfo
         }
-      }).then(res => {
-        console.log(res)
-      })
-      wx.clear
-      wx.redirectTo({
+      })    
+      wx.reLaunch({
         url: '/pages/index/index',
       })
     });

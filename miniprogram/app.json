@@ -10,7 +10,7 @@
     "pages/mine/expect/expect",
     "pages/mine/aboutme/edit/edit",
     "pages/authcorp/authcorp",
-    "pages/meet/authorize/authorize"
+    "pages/index/authorize/authorize"
   ],
   "window": {
     "navigationBarBackgroundColor": "#39b54a",

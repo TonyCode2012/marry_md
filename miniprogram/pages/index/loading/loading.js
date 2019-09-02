@@ -1,6 +1,6 @@
-const db = wx.cloud.database({})
 const app = getApp()
 let {
+  db,
   globalData
 } = app
 
@@ -19,8 +19,9 @@ Component({
 
   },
   ready() {
-    // console.log(this) 
-    this.checkAuthorize()
+    if (!app.globalData.isLogin) {
+      this.checkAuthorize()
+    }
   },
 
   /**
@@ -33,13 +34,14 @@ Component({
           _openid: globalData.openid
         }).get().then(res => {
           if (res.data.length === 0) {
-            wx.navigateTo({
-              url: '/pages/meet/authorize/authorize',
+            wx.reLaunch({
+              url: '/pages/index/authorize/authorize',
             })
           } else {
-            globalData.userProfile = res.data[0];
-            console.log('user profile from loading: ', globalData.userProfile);
-            wx.navigateTo({
+            app.globalData.weixin_info = res.data[0];
+            console.log('user profile from loading: ', app.globalData.weixin_info);
+            app.globalData.isLogin = true;
+            wx.reLaunch({
               url: '/pages/index/index',
             })
           }

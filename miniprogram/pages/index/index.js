@@ -2,10 +2,16 @@ const observer = require("../../utils/observer.js")
 const app = getApp()
 const { aboutme } = require("../../utils/data.js");
 
+const {
+  db,
+  globalData
+} = app
+
 Page({
   data: {
     PageCur: 'meet',
     query: null,
+    isLogin: false,
     userInfo: {},
     seekerList: [],
     matchInfo: {},
@@ -16,28 +22,27 @@ Page({
     })
   },
   onLoad(query) {
+    if (!app.globalData.isLogin){
+      return false
+    }
     this.setData({
       query: query
     })
-    observer.observe(observer.store, 'PageCur', (value) => {
-      this.setData({
-        PageCur: value
-      })
+    this.setData({
+      isLogin: app.globalData.isLogin
     })
+
     // get seekers info from db
     const that = this
-    const db = wx.cloud.database({
-      env: 'test-t2od1'
-    })
     db.collection('users').where({
       'auth_info.personal_auth': false
     }).get({
-      success: function (res) {
+      success: function(res) {
         that.setData({
           seekerList: res.data
         })
       },
-      fail: function (res) {
+      fail: function(res) {
         console.log(res)
       }
     })
@@ -45,14 +50,14 @@ Page({
     db.collection('zy_users').where({
       _openid: 'testuser1'
     }).get({
-      success:function(res) {
+      success: function(res) {
         that.setData({
           userInfo: res.data[0],
           matchInfo: res.data[0].match_info,
         })
         // app.globalData.userInfo = res.data[0]
       },
-      fail:function(res) {
+      fail: function(res) {
         console.log(res)
       }
     })
@@ -64,6 +69,7 @@ Page({
         PageCur: this.data.query.cur
       })
     }
+
   },
 
   onShareAppMessage() {

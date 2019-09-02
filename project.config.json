@@ -3,14 +3,23 @@
 	"cloudfunctionRoot": "cloudfunctions/",
 	"setting": {
 		"urlCheck": true,
-		"es6": true,
+		"es6": false,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
 	},
 	"appid": "wxbec5ea22913b5173",
 	"projectname": "weapp_match_a",
-	"libVersion": "2.7.3",
+	"libVersion": "2.8.1",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
@@ -107,7 +116,7 @@
 				{
 					"id": -1,
 					"name": "authorize",
-					"pathName": "pages/meet/authorize/authorize",
+					"pathName": "pages/index/authorize/authorize",
 					"query": "",
 					"scene": null
 				},
