@@ -15,14 +15,10 @@ Page({
     // set height slider
     minHeight: 150,
     maxHeight: 190,
-    startHeight: 0,
-    endHeight: 0,
 
     // set age slider
     minAge: 21,
     maxAge: 50,
-    startAge: 0,
-    endAge: 0,
 
     rangeArry: ['marryStatus','education'],
     rangeIndexObj: {
@@ -59,22 +55,22 @@ Page({
 
   ageLowValueChange: function (e) {
     this.setData({
-      startAge: e.detail.lowValue
+      "expect_info.startAge": e.detail.lowValue
     })
   },
   ageHighValueChange: function (e) {
     this.setData({
-      endAge: e.detail.highValue
+      "expect_info.endAge": e.detail.highValue
     })
   },
   heightLowValueChange: function (e) {
     this.setData({
-      startHeight: e.detail.lowValue
+      "expect_info.startHeight": e.detail.lowValue
     })
   },
   heightHighValueChange: function (e) {
     this.setData({
-      endHeight: e.detail.highValue
+      "expect_info.endHeight": e.detail.highValue
     })
   },
 
@@ -143,10 +139,10 @@ Page({
     }
     that.setData({
       rangeIndexObj: rangeIndexObj,
-      startAge: expect_info.startAge,
-      endAge: expect_info.endAge,
-      startHeight: expect_info.startHeight,
-      endHeight: expect_info.endHeight,
+      // startAge: expect_info.startAge,
+      // endAge: expect_info.endAge,
+      // startHeight: expect_info.startHeight,
+      // endHeight: expect_info.endHeight,
     })
     // get data from db
     // const db = wx.cloud.database({
