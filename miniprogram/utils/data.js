@@ -19,7 +19,7 @@ const listItem = [{
     title: '理想的另一半',
     desc: '说出你对另一伴的期许'
   }, {
-    type: 'singReason',
+    type: 'singleReason',
     title: '我为什么单身？',
     desc: '说说单身的原因'
   }, {

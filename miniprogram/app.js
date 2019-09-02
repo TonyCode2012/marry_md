@@ -6,14 +6,15 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
       wx.cloud.init({
-        env: 'dev-od3w5',
-        // env: 'test-t2od1',
+        // env: 'dev-od3w5',
+        env: 'test-t2od1',
         traceUser: true,
       })
     }
 
     this.globalData = {
-      userProfile: {}
+      userProfile: {},
+      userInfo: {}
     };
 
     wx.getSystemInfo({

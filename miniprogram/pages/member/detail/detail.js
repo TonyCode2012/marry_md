@@ -110,8 +110,8 @@ Component({
       const _ = db.command
       // get transmition
       if(options.starter != undefined) {
-        db.collection('users').where({
-          _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+        db.collection('zy_users').where({
+          _openid: 'testuser1'
         }).get({
           success:function(res) {
             that.setData({
@@ -140,7 +140,21 @@ Component({
             console.log(res)
           }
         })
-      } else {
+      } else if(options.openid != undefined) {
+        db.collection('zy_users').where({
+          _openid: options.openid
+        }).get({
+          success:function(res) {
+            that.setData({
+              userInfo: res.data[0]
+            })
+          },
+          fail:function(res) {
+            console.log(res)
+          }
+        })
+      } 
+      else {
         // get user information
         that.setData({
           userInfo: JSON.parse(options.seeker)

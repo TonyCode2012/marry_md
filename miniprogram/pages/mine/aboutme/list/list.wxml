@@ -1,5 +1,5 @@
 <view class='padding-tb'>
-  <view data-type="{{item.type}}" bindtap='gotoEdit' wx:for="{{listItem}}" wx:key="type" wx:for-item="item" class='list-item padding-sm bg-white border-dotted margin-bottom'>
+  <view wx:for="{{listItem}}" wx:key="type" wx:for-item="item" data-type="{{item.type}}" bindtap='gotoEdit' class='list-item padding-sm bg-white border-dotted margin-bottom'>
     <view class="text-sm text-gray">{{item.title}}</view>
     <view class="text-sm text-gray margin-top-sm">{{loveInfo[item.type].content}}</view>
   </view>

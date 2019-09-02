@@ -7,19 +7,10 @@ Page({
   data: {
     expect_info: {},
 
-    // region: ['广东省', '广州市', '海珠区'],
-    // index_height: null,
-    // height: [170, 171, 172, 173, 174, 175, 176],
-    // index_weight: null,
-    // weight: [50, 51, 52, 53, 54, 55, 56, 57, 58],
-    // index: null,
-    // index_job: null,
-    // index_assets: null,
-    // assets: ['有车', '有房', '有车有房'],
-    // index_earning: null,
-    // earning: ['5-15W', '15-30W', '30-50W', '50-100W'],
-    educationRange: ['大专', '本科', '硕士', '博士'],
-    marryStatusRange: ['未婚','离异','无要求'],
+    educationRange: ['都可以', '本科', '硕士'],
+    marryStatusRange: ['未婚','可以离异'],
+    locationRange: ['同城优先','只要同城'],
+    hometownRange: ['都可以','同省'],
 
     // set height slider
     minHeight: 150,
@@ -42,6 +33,13 @@ Page({
   },
 
 
+  bindInfoChange(e) {
+    let type = e.currentTarget.dataset.type
+    let value = e.currentTarget.dataset.value
+    this.setData({
+      ['expect_info.' + type + '']: value
+    })
+  },
   bindInfoRegion(e) {
     let type = e.currentTarget.dataset.type
     let value = e.detail.value
@@ -77,6 +75,44 @@ Page({
   heightHighValueChange: function (e) {
     this.setData({
       endHeight: e.detail.highValue
+    })
+  },
+
+  Save: function() {
+    const that = this
+    wx.showLoading({
+      title: '正在保存',
+    })
+    wx.cloud.callFunction({
+      name: 'dbupdate',
+      data: {
+        table: 'zy_users',
+        _openid: 'testuser1',
+        field: 'expect_info',
+        data: that.data.expect_info
+      },
+      success: function (res) {
+        // update parent page data
+        var pages = getCurrentPages()
+        var prePage = pages[pages.length - 2]
+        prePage.setData({
+          "userInfo.expect_info": that.data.expect_info
+        })
+        wx.hideLoading()
+        wx.showToast({
+          title: '成功',
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail: function (res) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '失败',
+          icon: 'fail',
+          duration: 2000
+        })
+      }
     })
   },
 

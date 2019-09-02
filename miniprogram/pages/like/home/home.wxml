@@ -53,9 +53,9 @@
   <view class="cu-list menu-avatar">
     <view wx:for="{{matchInfo.ilike}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
-      <view bindtap="gotoUserDetail" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
       <view class="content">
-        <view  bindtap="gotoUserDetail" class="text-grey">{{item.basic_info.nickName}}</view>
+        <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
         <view class="text-gray text-sm text-cut">
           <text class='cuIcon-female text-pink margin-right-xs'></text>
           <text>{{ageModule.deal(item.basic_info.birthday,2,4)}} · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{ageModule.deal(item.basic_info.hometown[0],0,2)}}人 · 现居{{item.basic_info.location[1]}}</text>
@@ -114,9 +114,9 @@
   <view class="cu-list menu-avatar">
     <view wx:for="{{matchInfo.likeme}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
-      <view bindtap="gotoUserDetail" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
       <view class="content">
-        <view  bindtap="gotoUserDetail" class="text-grey">{{item.basic_info.nickName}}</view>
+        <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
         <view class="text-gray text-sm text-cut">
 
           <text class='cuIcon-female text-pink margin-right-xs'></text>
@@ -133,7 +133,7 @@
           <text class='text-white'>同意</text>
         </view>
         <!-- after clicking -->
-        <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适</text>
+        <text wx:if="{{item.decision=='no'}}" class='text-grey'>已拒绝</text>
         <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text>
           <text>查看</text>

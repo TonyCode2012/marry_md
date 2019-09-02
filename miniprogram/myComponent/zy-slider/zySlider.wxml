@@ -1,0 +1,16 @@
+<!-- <view style="display:flex;width:87%;"> -->
+  <view style="position:relative;width:100%;flex-direction:row;display:flex;align-items:center">
+
+      <view style="position:absolute;height:2px;width:{{leftUnselectedLen}}px;background-color:#ddd;"></view>
+
+      <view style="position:relative;border-radius: 50%;width: 40rpx; height: 40rpx; background-color: #19896f;left:{{leftPos}}px" catchtouchmove="_minMove"></view>
+
+      <view style="position:absolute;left:{{leftPos+17}}px;height:2px;width:{{selectedLen}}px;background-color:#19896f;"></view>
+
+      <view style="position:relative;border-radius: 50%;width: 40rpx; height: 40rpx; background-color: #19896f;left:{{rightPos}}px" catchtouchmove="_maxMove"></view>
+
+      <view style="position:absolute;height:2px;left:{{rightPos+34}}px;width:{{rightUnselectedLen}}px;background-color:#ddd;"></view>
+    
+  </view>
+  <text style="position:relative;width:30%;text-align:center">{{minValue}}-{{maxValue}} {{unit}}</text>
+<!-- </view> -->

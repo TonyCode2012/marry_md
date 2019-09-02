@@ -1,5 +1,6 @@
 const observer = require("../../utils/observer.js")
 const app = getApp()
+const { aboutme } = require("../../utils/data.js");
 
 Page({
   data: {
@@ -47,8 +48,9 @@ Page({
       success:function(res) {
         that.setData({
           userInfo: res.data[0],
-          matchInfo: res.data[0].match_info
+          matchInfo: res.data[0].match_info,
         })
+        // app.globalData.userInfo = res.data[0]
       },
       fail:function(res) {
         console.log(res)
