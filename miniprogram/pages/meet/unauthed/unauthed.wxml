@@ -1,3 +1,6 @@
-<memberlist source="meet" id="memberlistCom" seekerList="{{seekerList}}"></memberlist>
+<!-- <memberlist source="meet" id="memberlistCom" seekerList="{{seekerList}}"></memberlist> -->
+<memberlist wx:if="{{tabCur===0}}" source="meet" id="memberlistCom" seekerList="{{networkCandidates}}"></memberlist>
+<memberlist wx:if="{{tabCur===1}}" source="meet" id="memberlistCom" seekerList="{{bigCompanyCandidates}}"></memberlist>
+<memberlist wx:if="{{tabCur===2}}" source="meet" id="memberlistCom" seekerList="{{myCompanyCandidates}}"></memberlist>
 
 <auth wx:if="{{true}}"></auth>

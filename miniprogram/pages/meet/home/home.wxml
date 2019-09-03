@@ -5,7 +5,7 @@
   <view slot="content" class="text-bold">遇见</view>
 </cu-custom>
 
-<scroll-view scroll-x class="bg-white nav text-center navbar">
+<scroll-view scroll-x class="bg-white nav text-center navbar ">
   <view class="cu-item {{0==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
     亲友关系
   </view>
@@ -18,7 +18,8 @@
 </scroll-view>
 
 <authed wx:if="{{isAuth}}"></authed> 
-<unauthed wx:if="{{!isAuth}}" seekerList="{{seekerList}}"></unauthed> 
+<!-- <unauthed wx:if="{{!isAuth}}" seekerList="{{seekerList}}"></unauthed>  -->
+<unauthed wx:if="{{!isAuth}}" tabCur="{{TabCur}}"></unauthed> 
 
 
 <view class="cu-tabbar-height"></view>

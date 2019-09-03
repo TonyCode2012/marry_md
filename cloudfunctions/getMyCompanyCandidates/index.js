@@ -11,17 +11,18 @@ const _ = db.command
 
 async function getAllEmployees(userNexus) {
   if (userNexus.company == "") {
-    return Promise.resolve(null)
-  } else {
-    console.log(userNexus)
-    let allEmployeeInfo = await db.collection("nexus").where({
-      company: _.eq(userNexus.company),
-      _openid: _.neq(userNexus._openid)
-    }).get()
-
-      return allEmployeeInfo.data
-
+    return null
   }
+
+  console.log(userNexus)
+  let allEmployeeInfo = await db.collection("nexus").where({
+    company: _.eq(userNexus.company),
+    _openid: _.neq(userNexus._openid)
+  }).get()
+
+  return allEmployeeInfo.data
+
+
 }
 
 async function getUserNexus(openid) {
@@ -36,7 +37,7 @@ async function getUserNexus(openid) {
   //return userInfo.date[0]
 }
 
-exports.main = async (event) => {
+exports.main = async(event) => {
   console.log("HAHAHA started!!!")
   let openid = event.openid
   let userNexus = await getUserNexus(openid)
