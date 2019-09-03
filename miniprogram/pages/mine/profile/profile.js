@@ -102,19 +102,54 @@ Page({
   Save: function(e) {
     const that = this
     console.log(that.data.basic_info)
-    db.collection('users').where({
-      _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
-    }).get().then(res=>{
-      return res.data[0]._id;
-    }).then(id=>{
-      db.collection('users').doc(id).update({
-        data: {
-          basic_info: that.data.basic_info
-        }
-      }).then(res=>{
-        console.log(res)
-      })
+    wx.showLoading({
+      title: '正在保存',
     })
+
+    wx.cloud.callFunction({
+      name: 'dbupdate',
+      data: {
+        table: 'zy_users',
+        _openid: 'testuser1',
+        field: 'basic_info',
+        data: that.data.basic_info,
+      },
+      success: function (res) {
+        // update parent page data
+        var pages = getCurrentPages()
+        var prePage = pages[pages.length - 2]
+        prePage.setData({
+          "userInfo.basic_info": that.data.basic_info
+        })
+        wx.hideLoading()
+        wx.showToast({
+          title: '成功',
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail:function(res) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '失败',
+          icon: 'fail',
+          duration: 2000
+        })
+      }
+    })
+    // db.collection('users').where({
+    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+    // }).get().then(res=>{
+    //   return res.data[0]._id;
+    // }).then(id=>{
+    //   db.collection('users').doc(id).update({
+    //     data: {
+    //       basic_info: that.data.basic_info
+    //     }
+    //   }).then(res=>{
+    //     console.log(res)
+    //   })
+    // })
   },
   ChooseImage() {
     wx.chooseImage({

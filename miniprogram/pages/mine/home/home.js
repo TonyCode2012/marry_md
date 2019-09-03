@@ -1,5 +1,6 @@
 // pages/mine/home/home.js
-
+const { aboutme } = require("../../../utils/data.js");
+const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
 const db = wx.cloud.database({
   env: 'test-t2od1'
@@ -13,7 +14,8 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    userInfo: Object
+    userInfo: Object,
+    completePercent: Number,
   },
 
   /**
@@ -24,6 +26,33 @@ Component({
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
     isExpand: false,
+    
+    // check data change by hashcode
+    hashCode: {
+      expect_info: '',
+      love_info: '',
+    }
+  },
+
+  observers: {
+    'userInfo': function(data) {
+      if(data.love_info == undefined || data.love_info == '') return
+      let hashCode = stringHash(JSON.stringify(data.love_info))
+      // if hashcode is not changed, return
+      if(hashCode == this.data.hashCode.love_info) return
+      let love_info = data.love_info
+      let completePercent = 0
+      for(let i=0;i<aboutme.listItem.length;i++) {
+        if(love_info[aboutme.listItem[i].type].content != '') {
+          completePercent++
+        }
+      }
+      completePercent = parseInt(completePercent / aboutme.listItem.length * 100)
+      this.setData({
+        completePercent: completePercent,
+        "hashCode.love_info": hashCode,
+      })
+    }
   },
 
   ready: function() {

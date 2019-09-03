@@ -10,15 +10,15 @@
 
 <view class="cu-form-group">
   <view class="title">身高</view>
-  <zy-slider min="{{minHeight}}" max="{{maxHeight}}" minValue="{{startHeight}}" maxValue="{{endHeight}}" unit="cm" bind:lowValueChange="heightLowValueChange" bind:highValueChange="heightHighValueChange" />
+  <zy-slider min="{{minHeight}}" max="{{maxHeight}}" minValue="{{expect_info.startHeight}}" maxValue="{{expect_info.endHeight}}" unit="cm" bind:lowValueChange="heightLowValueChange" bind:highValueChange="heightHighValueChange" />
 </view>
 
 <view class="cu-form-group">
   <view class="title">年龄</view>
-  <zy-slider min="{{minAge}}" max="{{maxAge}}" minValue="{{startAge}}" maxValue="{{endAge}}" unit="岁" bind:lowValueChange="ageLowValueChange" bind:highValueChange="ageHighValueChange" />
+  <zy-slider min="{{minAge}}" max="{{maxAge}}" minValue="{{expect_info.startAge}}" maxValue="{{expect_info.endAge}}" unit="岁" bind:lowValueChange="ageLowValueChange" bind:highValueChange="ageHighValueChange" />
 </view>
 
-<view class="cu-form-group">
+<!-- <view class="cu-form-group">
   <view class="title">学历</view>
   <picker data-type="education" bindchange="bindInfoRange" value="{{rangeIndexObj.educationIndex}}" range="{{educationRange}}">
     <view class="picker">
@@ -34,9 +34,41 @@
       {{marryStatusRange[rangeIndexObj.marryStatusIndex]}}
     </view>
   </picker>
+</view> -->
+
+<view class="cu-form-group">
+  <view class="title">最低学历</view>
+  <view wx:for="{{educationRange}}" wx:key>
+    <view class="cu-tag {{expect_info.education==item?'bg':'line'}}-pink round padding-lr-sm" data-type="education" data-value="{{item}}" bindtap="bindInfoChange">{{item}}</view>
+  </view>
 </view>
 
 <view class="cu-form-group">
+  <view class="title">婚姻状况</view>
+  <view wx:for="{{marryStatusRange}}" wx:key>
+    <view class="cu-tag {{expect_info.marryStatus==item?'bg':'line'}}-pink round padding-lr-sm" data-type="marryStatus" data-value="{{item}}" bindtap="bindInfoChange">{{item}}</view>
+  </view>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">所在地</view>
+  <view wx:for="{{locationRange}}" wx:key>
+    <view class="cu-tag {{expect_info.location==item?'bg':'line'}}-pink round padding-lr-sm" data-type="location" data-value="{{item}}" bindtap="bindInfoChange">{{item}}</view>
+  </view>
+</view>
+
+<view class="cu-form-group">
+  <view class="title">家乡</view>
+  <view wx:for="{{hometownRange}}" wx:key>
+    <view class="cu-tag {{expect_info.hometown==item?'bg':'line'}}-pink round padding-lr-sm" data-type="hometown" data-value="{{item}}" bindtap="bindInfoChange">{{item}}</view>
+  </view>
+</view>
+
+
+
+
+
+<!-- <view class="cu-form-group">
   <view class="title">所在地</view>
   <picker mode="region" data-type="location" bindchange="bindInfoRegion" value="{{expect_info.location}}">
     <view class="picker">
@@ -52,7 +84,7 @@
       {{expect_info.hometown[0]}}，{{expect_info.hometown[1]}}，{{expect_info.hometown[2]}}
     </view>
   </picker>
-</view>
+</view> -->
 
 <!-- <view class="cu-form-group">
   <view class="title" style="width:16%">距离</view>
@@ -88,3 +120,8 @@
     </view>
   </picker>
 </view> -->
+
+<view class="cu-tabbar-height lg"></view>
+<view class='foot padding-lr'>
+  <button bindtap="Save" class='cu-btn block bg-red lg'>保 存</button>
+</view>

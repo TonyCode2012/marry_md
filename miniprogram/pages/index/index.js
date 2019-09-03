@@ -1,5 +1,6 @@
 const observer = require("../../utils/observer.js")
 const app = getApp()
+const { aboutme } = require("../../utils/data.js");
 
 const {
   db,
@@ -12,7 +13,8 @@ Page({
     query: null,
     isLogin: false,
     userInfo: {},
-    seekerList: []
+    seekerList: [],
+    matchInfo: {},
   },
   NavChange(e) {
     this.setData({
@@ -45,13 +47,15 @@ Page({
       }
     })
     // get my profile from db
-    db.collection('users').where({
+    db.collection('zy_users').where({
       _openid: 'testuser1'
     }).get({
       success: function(res) {
         that.setData({
-          userInfo: res.data[0]
+          userInfo: res.data[0],
+          matchInfo: res.data[0].match_info,
         })
+        // app.globalData.userInfo = res.data[0]
       },
       fail: function(res) {
         console.log(res)

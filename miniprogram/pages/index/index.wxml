@@ -2,7 +2,7 @@
   <scroll-view scroll-y class="scrollPage">
     <meet style="display:{{PageCur=='meet'?'block':'none'}}" seekerList="{{seekerList}}" id="meetCom"></meet>
     <!-- <meet wx:if="{{PageCur=='meet'}}" seekerList="{{seekerList}}" id="meetCom"></meet> -->
-    <like style="display:{{PageCur=='like'?'block':'none'}}" userInfo="{{userInfo}}"></like>
+    <like style="display:{{PageCur=='like'?'block':'none'}}" matchInfo="{{matchInfo}}"></like>
     <!-- <intro wx:if="{{PageCur=='intro'}}"></intro> -->
     <mine style="display:{{PageCur=='mine'?'block':'none'}}" userInfo="{{userInfo}}"></mine>
   </scroll-view>
