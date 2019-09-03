@@ -1,6 +1,6 @@
 <!-- <memberlist source="meet" id="memberlistCom" seekerList="{{seekerList}}"></memberlist> -->
-<memberlist wx:if="{{tabCur===0}}" source="meet" id="memberlistCom" seekerList="{{networkCandidates}}"></memberlist>
-<memberlist wx:if="{{tabCur===1}}" source="meet" id="memberlistCom" seekerList="{{bigCompanyCandidates}}"></memberlist>
-<memberlist wx:if="{{tabCur===2}}" source="meet" id="memberlistCom" seekerList="{{myCompanyCandidates}}"></memberlist>
+<memberlist class="{{tabCur===0? 'show': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{networkCandidates}}"></memberlist>
+<memberlist class="{{tabCur===1? 'show': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{bigCompanyCandidates}}"></memberlist>
+<memberlist class="{{tabCur===2? 'show': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{myCompanyCandidates}}"></memberlist>
 
 <auth wx:if="{{true}}"></auth>
