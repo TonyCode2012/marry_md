@@ -6,35 +6,8 @@ cloud.init({
 })
 const db = cloud.database()
 const _ = db.command
-const maxResume = 10
+const MaxResume = 10
 
-
-// async function getAllEmployees(userNexus) {
-//   if (userNexus.company == "") {
-//     return null
-//   }
-//   let res = await db.collection("nexus").where({
-//     company: _.eq(userNexus.company),
-//     _openid: _.neq(userNexus._openid)
-//   }).get()
-//   return res.data
-// }
-
-// async function getUserNexus(openid) {
-//   let res = await db.collection("nexus").where({
-//     _openid: openid
-//   }).get()
-//   return res.data[0]
-// }
-
-// exports.main = async(event) => {
-//   console.log("HAHAHA started!!!")
-//   let openid = event.openid
-//   let userNexus = await getUserNexus(openid)
-//   let employees = await getAllEmployees(userNexus)
-//   return employees
-
-// }
 
 /* payload =
 {
@@ -79,12 +52,28 @@ exports.main = async(event) => {
   }
   let openids = res.data.map(n => n._openid)
   openids = [...new Set(openids)]
+  openids = getRandomArrayElements(openids, MaxResume)
 
   // ger userInfo
   res = await db.collection('users').field(fields).where({
     _openid: _.in(openids)
-  }).limit(maxResume).get()
+  }).get()
   console.log('get userInfo', res)
 
   return res.data
+}
+
+
+function getRandomArrayElements(arr, count) {
+  var shuffled = arr.slice(0),
+    i = arr.length,
+    min = i - count,
+    temp, index;
+  while (i-- > min) {
+    index = Math.floor((i + 1) * Math.random());
+    temp = shuffled[index];
+    shuffled[index] = shuffled[i];
+    shuffled[i] = temp;
+  }
+  return shuffled.slice(min);
 }
