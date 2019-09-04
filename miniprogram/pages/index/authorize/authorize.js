@@ -79,7 +79,7 @@ Page({
       }
       db.collection('users').add({
         data: {
-          weixin_info: e.detail.userInfo
+          wechat_info: e.detail.userInfo
         }
       })    
       wx.reLaunch({

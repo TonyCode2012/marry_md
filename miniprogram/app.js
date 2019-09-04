@@ -1,5 +1,5 @@
 App({
-  onLaunch: function() {
+  onLaunch: function () {
 
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -18,7 +18,7 @@ App({
 
     this.db = wx.cloud.database()
     this.globalData = {
-      weixin_info: {},
+      wechat_info: {},
       openid: null,
       isLogin: false
     };
