@@ -1,5 +1,10 @@
 const observer = require("../../../utils/observer.js");
 const app = getApp();
+
+const {
+  db,
+  globalData
+} = app
 Component({
   options: {
     addGlobalClass: true,
@@ -16,7 +21,8 @@ Component({
    */
   data: { 
     isAuth: false,
-    TabCur: 0
+    TabCur: 0,
+    CustomBar: globalData.CustomBar
   },
   
   ready: function(){

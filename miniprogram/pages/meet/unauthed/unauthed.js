@@ -46,14 +46,24 @@ Component({
    * 组件的方法列表
    */
   methods: {
-    getNetworkCandidates: async function (force) {
+    getNetworkCandidates: async function(force) {
       if (force !== true && this.data.networkCandidates.length > 0) {
         return
       }
-      wx.showLoading({ title: '加载中…' })
-      let res = await wx.cloud.callFunction({
-        name: "getNetworkCandidates"
+      wx.showLoading({
+        title: '加载中…'
       })
+      let res
+      try {
+        res = await wx.cloud.callFunction({
+          name: "getNetworkCandidates"
+        })
+      } catch (e) {
+        wx.hideLoading()
+        console.log(e)
+        return
+      }
+
       let candidates = res.result;
       candidates = candidates.flat();
       let openids = candidates.filter(n => !!n.openid).map(n => n.openid)
@@ -73,10 +83,19 @@ Component({
       if (force !== true && this.data.bigCompanyCandidates.length > 0) {
         return
       }
-      wx.showLoading({ title: '加载中…' })
-      let res = await wx.cloud.callFunction({
-        name: "getBigCompanyCandidates"
+      wx.showLoading({
+        title: '加载中…'
       })
+      let res
+      try {
+        res = await wx.cloud.callFunction({
+          name: "getBigCompanyCandidates"
+        })
+      } catch (e) {
+        wx.hideLoading()
+        console.log(e)
+        return
+      }
       let candidates = res.result;
       let openids = candidates.map(n => n._openid)
       if (openids.length === 0) {
@@ -94,22 +113,32 @@ Component({
       if (force !== true && this.data.myCompanyCandidates.length > 0) {
         return
       }
-      wx.showLoading({ title: '加载中…' })
-      let res = await wx.cloud.callFunction({
-        name: "getMyCompanyCandidates"
+      wx.showLoading({
+        title: '加载中…'
       })
-      let candidates = res.result;
-      let openids = candidates.map(n => n._openid)
-      if (openids.length === 0) {
+      let res
+      try {
+        res = await wx.cloud.callFunction({
+          name: "getMyCompanyCandidates",
+          data: {
+            openid: 'testuser0',
+            fields: {
+              basic_info: true,
+              photos: true
+            }
+          }
+        })
+      } catch (e) {
         wx.hideLoading()
+        console.log(e)
         return
       }
-      let candidatesInfo = await this.getUserInfo(openids)
+      let candidatesInfo = res.result;
       this.setData({
         myCompanyCandidates: candidatesInfo
       })
       wx.hideLoading()
-      console.log('myCompanyCandidates', candidates, openids, candidatesInfo)
+      console.log('myCompanyCandidates', candidatesInfo)
     },
     getUserInfo: async function(openids) {
       // 如果没有指定 limit，则默认最多取 20 条记录。

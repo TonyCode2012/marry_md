@@ -1,6 +1,10 @@
 <!-- <memberlist source="meet" id="memberlistCom" seekerList="{{seekerList}}"></memberlist> -->
-<memberlist class="{{tabCur===0? 'show': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{networkCandidates}}"></memberlist>
-<memberlist class="{{tabCur===1? 'show': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{bigCompanyCandidates}}"></memberlist>
-<memberlist class="{{tabCur===2? 'show': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{myCompanyCandidates}}"></memberlist>
+<memberlist 
+class="{{tabCur===0? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{networkCandidates}}"></memberlist>
+
+<memberlist 
+class="{{tabCur===1? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{bigCompanyCandidates}}"></memberlist>
+
+<memberlist class="{{tabCur===2? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{myCompanyCandidates}}"></memberlist>
 
 <auth wx:if="{{true}}"></auth>
