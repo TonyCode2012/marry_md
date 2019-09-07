@@ -53,31 +53,21 @@ Component({
       wx.showLoading({
         title: '加载中…'
       })
-      let res
-      try {
-        res = await wx.cloud.callFunction({
-          name: "getNetworkCandidates"
-        })
-      } catch (e) {
-        wx.hideLoading()
-        console.log(e)
-        return
-      }
-
-      let candidates = res.result;
-      candidates = candidates.flat();
-      let openids = candidates.filter(n => !!n.openid).map(n => n.openid)
-      openids = [...new Set(openids)]
-      if (openids.length === 0) {
-        wx.hideLoading()
-        return
-      }
-      let candidatesInfo = await this.getUserInfo(openids)
-      this.setData({
-        networkCandidates: candidatesInfo
+      let _openid = 'testuser0' // globalData.openid
+      let res = await wx.cloud.callFunction({
+        name: "getNetworkCandidates",
+        data: {
+          openid: _openid
+        }
       })
+      console.log('call getNetworkCandidates:', _openid, res)
       wx.hideLoading()
-      console.log('networkCandidates', candidates, openids, candidatesInfo)
+      if (res.errCode) {
+        return
+      }
+      this.setData({
+        networkCandidates: res.result
+      })
     },
     getBigCompanyCandidates: async function(force) {
       if (force !== true && this.data.bigCompanyCandidates.length > 0) {
@@ -86,28 +76,25 @@ Component({
       wx.showLoading({
         title: '加载中…'
       })
-      let res
-      try {
-        res = await wx.cloud.callFunction({
-          name: "getBigCompanyCandidates"
-        })
-      } catch (e) {
-        wx.hideLoading()
-        console.log(e)
-        return
-      }
-      let candidates = res.result;
-      let openids = candidates.map(n => n._openid)
-      if (openids.length === 0) {
-        wx.hideLoading()
-        return
-      }
-      let candidatesInfo = await this.getUserInfo(openids)
-      this.setData({
-        bigCompanyCandidates: candidatesInfo
+      let _openid = 'testuser0' // globalData.openid
+      let res = await wx.cloud.callFunction({
+        name: "getBigCompanyCandidates",
+        data: {
+          openid: _openid,
+          fields: {
+            basic_info: true,
+            photos: true
+          }
+        }
       })
+      console.log('call getBigCompanyCandidates:', _openid, res)
       wx.hideLoading()
-      console.log('bigCompanyCandidates', candidates, openids, candidatesInfo)
+      if (res.errCode) {
+        return
+      }
+      this.setData({
+        bigCompanyCandidates: res.result
+      })
     },
     getMyCompanyCandidates: async function(force) {
       if (force !== true && this.data.myCompanyCandidates.length > 0) {
@@ -116,29 +103,25 @@ Component({
       wx.showLoading({
         title: '加载中…'
       })
-      let res
-      try {
-        res = await wx.cloud.callFunction({
-          name: "getMyCompanyCandidates",
-          data: {
-            openid: 'testuser0',
-            fields: {
-              basic_info: true,
-              photos: true
-            }
+      let _openid = 'testuser0' // globalData.openid
+      let res = await wx.cloud.callFunction({
+        name: "getMyCompanyCandidates",
+        data: {
+          openid: _openid,
+          fields: {
+            basic_info: true,
+            photos: true
           }
-        })
-      } catch (e) {
-        wx.hideLoading()
-        console.log(e)
+        }
+      })
+      console.log('call getMyCompanyCandidates:', _openid, res)
+      wx.hideLoading()
+      if (res.errCode) {
         return
       }
-      let candidatesInfo = res.result;
       this.setData({
-        myCompanyCandidates: candidatesInfo
+        myCompanyCandidates: res.result
       })
-      wx.hideLoading()
-      console.log('myCompanyCandidates', candidatesInfo)
     },
     getUserInfo: async function(openids) {
       // 如果没有指定 limit，则默认最多取 20 条记录。
