@@ -5,10 +5,10 @@ cloud.init({
    env: 'test-t2od1'
 })
 const db = cloud.database()
-const maxResume = 10
+const MaxResume = 10
 const _ = db.command
 
-
+/*
 function getRandomArrayElements(arr, count) {
   var shuffled = arr.slice(0),
     i = arr.length,
@@ -38,7 +38,7 @@ async function getAllEmployees(userNexus) {
     if (allEmployeeInfo.data.length < 10) {
       return allEmployeeInfo.data
     } else {
-      return getRandomArrayElements(allEmployeeInfo.data, maxResume)
+      return getRandomArrayElements(allEmployeeInfo.data, MaxResume)
     }
   }
 }
@@ -62,4 +62,50 @@ exports.main = async(event) => {
   let employees = await getAllEmployees(userNexus)
   return employees
 
+}
+*/
+
+
+exports.main = async (event) => {
+
+  let openid = event.openid
+  let fields = event.fields
+
+  // get users' nexus
+  let res = await db.collection("nexus").field({
+    _openid: true,
+    company: true
+  }).where({
+    _openid: openid
+  }).get()
+  console.log('get nexus', res)
+  if (res.data.length === 0) {
+    return [];
+  }
+  let userNexus = res.data[0]
+  if (userNexus.company == "") {
+    return [];
+  }
+
+  // get employees 
+  res = await db.collection("nexus").field({
+    _openid: true
+  }).where({
+    company: _.neq(userNexus.company),
+    _openid: _.neq(userNexus._openid)
+  }).get()
+  console.log('get employees', res)
+  if (res.data.length === 0) {
+    return []
+  }
+  let openids = res.data.map(n => n._openid)
+  openids = [...new Set(openids)]
+
+  // ger userInfo
+  res = await db.collection('users').field(fields).where({
+    _openid: _.in(openids)
+  }).limit(MaxResume).get()
+  console.log('get userInfo', res)
+
+  return res.data
 }
