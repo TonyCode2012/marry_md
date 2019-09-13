@@ -53,7 +53,7 @@
                   </view>
                   <view class='source-connection'>
                     <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">父亲</text>
+                    <text class="cu-tag round bg-green sm">亲戚</text>
                   </view>
                 </view>
                 <view class="source-item flex">
@@ -73,7 +73,7 @@
                   </view>
                   <view class='source-connection'>
                     <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">儿子</text>
+                    <text class="cu-tag round bg-green sm">亲戚</text>
                   </view>
                 </view>
                 <view class="source-item flex">

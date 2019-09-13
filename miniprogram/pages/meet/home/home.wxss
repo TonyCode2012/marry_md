@@ -1,4 +1,11 @@
+:host{
+  padding-top: 90rpx;
+}
 
-.navbar{
+.navbar {
   font-size: 30rpx;
+}
+
+.memberlist {
+  position: relative;
 }

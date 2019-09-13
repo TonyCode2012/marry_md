@@ -38,8 +38,8 @@ Component({
               url: '/pages/index/authorize/authorize',
             })
           } else {
-            app.globalData.weixin_info = res.data[0];
-            console.log('user profile from loading: ', app.globalData.weixin_info);
+            app.globalData.wechat_info = res.data[0];
+            console.log('user profile from loading: ', app.globalData.wechat_info);
             app.globalData.isLogin = true;
             wx.reLaunch({
               url: '/pages/index/index',

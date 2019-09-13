@@ -70,7 +70,7 @@ Page({
 
   },
 
-  bindGetUserInfo(e) {
+  bindGetUserInfo (e) {
     db.collection('users').where({
       _openid: globalData.openid
     }).get().then(res => {
@@ -79,7 +79,10 @@ Page({
       }
       db.collection('users').add({
         data: {
-          weixin_info: e.detail.userInfo
+          wechat_info: e.detail.userInfo
+        },
+        complete: function(res){
+          console.log('users add', res)
         }
       })    
       wx.reLaunch({
