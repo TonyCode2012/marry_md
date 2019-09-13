@@ -1,4 +1,9 @@
 // pages/like/home/home.js
+const app = getApp()
+const {
+  globalData
+} = app
+
 Component({
   options: {
     addGlobalClass: true,
@@ -7,7 +12,11 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    matchInfo: {
+    match_info: {
+      type: Object,
+      value: {}
+    },
+    userInfo: {
       type: Object,
       value: {}
     }
@@ -23,35 +32,60 @@ Component({
     decision: 'pending',
     ListTouchStartPos: 0,
     ListTouchDirection: '',
-    // fromMe: [{
-    //   avatar: '',
-    //   name: 'Anais DING',
-    //   basic_profile: '89年・本科・广告策划・浙江人・现居上海',
-    //   decision: 'pending',
-    //   date: '6天前'
-    // }, {
-    //   avatar: '',
-    //   name: '皮皮',
-    //   basic_profile: '93年・硕士・涉外法务・湖北人・现居深圳',
-    //   decision: 'no',
-    //   date: '7天前'
-    // }, {
-    //   avatar: '',
-    //   name: '芙洛拉',
-    //   basic_profile: '92年・本科・前程无忧・湖南人・现居上海',
-    //   decision: 'yes'
-    // }],
-    // toMe: [{
-    //   avatar: '',
-    //   name: '向',
-    //   basic_profile: '91年・本科・IQVIA・临床观察员・江西・现居上海',
-    //   decision: 'pending'
-    // }, {
-    //   avatar: '',
-    //   name: '王小野',
-    //   basic_profile: '93年・本科・产品经理・安徽人・现居深圳',
-    //   decision: 'yes'
-    // }]
+
+    methods: {
+      _deleteLike: function(data) {
+        const that = data.that
+        wx.showLoading({
+          title: '正在删除',
+        })
+        wx.cloud.callFunction({
+          name: 'likeAction_delete',
+          data: {
+            table: 'zy_users',
+            delItem: data.delItem,
+            ilike: {
+              myOpenid: data.ilike.fromOpenid,
+              hhOpenid: data.ilike.toOpenid
+            },
+            likeme: {
+              myOpenid: data.likeme.fromOpenid,
+              hhOpenid: data.likeme.toOpenid
+            }
+          },
+          success: res => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success',
+              duration: 2000
+            })
+            console.log("delete "+data.delItem+" item successfully!" + JSON.stringify(res))
+            that.setData({
+              userInfo: data.userInfo
+            })
+            app.globalData.userInfo = data.userInfo
+            // update father page data
+            var param = {userInfo: app.globalData.userInfo}
+            that.triggerEvent('userInfoChange',param)
+            // var pages = getCurrentPages()
+            // var prePage = pages[0]
+            // prePage.setData({
+            //   userInfo: data.userInfo
+            // })
+          },
+          fail: res => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '删除失败',
+              icon: 'none',
+              duration: 2000
+            })
+            console.log(res)
+          }
+        })
+      }
+    }
   },
 
   ready: function() {
@@ -98,13 +132,66 @@ Component({
         }
       })
     },
-    sayYes(e) {
+    decide(e) {
+      const that = this
       let index = e.currentTarget.dataset.index
       const decision = e.currentTarget.dataset.decision
-      this.data.matchInfo.likeme[index].decision = decision;
-       this.setData({
-        matchInfo: this.data.matchInfo
+      this.data.userInfo.match_info.likeme[index].decision = decision;
+      wx.cloud.callFunction({
+        name: 'likeAction_decide',
+        data: {
+          table: 'zy_users',
+          likefrom_openid: this.data.userInfo.match_info.likeme[index]._openid,
+          liketo_openid: this.data.userInfo._openid,
+          decision: decision
+        },
+        success: res=> {
+          if (res.result.statuscode == 200) {
+            that.setData({
+              userInfo: this.data.userInfo
+              // match_info: that.data.match_info
+            })
+          }
+          console.log(res)
+        },
+        fail: res=> {
+          console.log(res)
+        }
       })
+    },
+    deleteILike(e) {
+      let ilikeItem = (this.data.userInfo.match_info.ilike.splice(e.currentTarget.dataset.index, 1))[0]
+      let data = {
+        delItem: 'ilike',
+        ilike: {
+          fromOpenid: this.data.userInfo._openid,
+          toOpenid: ilikeItem._openid
+        },
+        likeme: {
+          fromOpenid: ilikeItem._openid,
+          toOpenid: this.data.userInfo._openid
+        },
+        userInfo: this.data.userInfo,
+        that: this
+      }
+      this.data.methods._deleteLike(data)
+    },
+    deleteLikeMe(e) {
+      let likemeItem = (this.data.userInfo.match_info.likeme.splice(e.currentTarget.dataset.index, 1))[0]
+      let data = {
+        delItem: 'likeme',
+        ilike: {
+          fromOpenid: likemeItem._openid,
+          toOpenid: this.data.userInfo._openid
+        },
+        likeme: {
+          fromOpenid: this.data.userInfo._openid,
+          toOpenid: likemeItem._openid
+        },
+        userInfo: this.data.userInfo,
+        that: this
+      }
+      this.data.methods._deleteLike(data)
     },
     // ListTouch触摸开始
     ListTouchStart(e) {
@@ -135,5 +222,21 @@ Component({
         ListTouchDirection: null
       })
     },
+
+    // get relation
+    getRelation(e) {
+      wx.showLoading({
+        title: '正在处理',
+      })
+      wx.cloud.callFunction({
+        name: 'getRelativeCandidates',
+        data: {
+          tag: 'test'
+        },
+        complete: res=> {
+          wx.hideLoading()
+        }
+      })
+    }
   }
 })

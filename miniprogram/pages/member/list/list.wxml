@@ -1,3 +1,12 @@
+<wxs module="ageModule">
+  var deal = function(data,start,len) {
+    if (typeof(data) == 'string') return data.slice(start,len)
+    else return ""
+  }
+  module.exports = {
+    deal : deal
+  }
+</wxs>
 <view wx:for="{{seekerList}}" wx:key>
   <view class="cu-card case">
     <!-- repeat area -->
@@ -24,7 +33,7 @@
             </view>
             <view class="text-gray text-sm flex">
               <text class="text-cut">
-              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location}}・{{item.basic_info.hometown}}</text>
+              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location[1]}}・{{ageModule.deal(item.basic_info.hometown[1],0,2)}}人</text>
             </view>
           </view>
         </view>

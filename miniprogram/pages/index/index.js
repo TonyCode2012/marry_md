@@ -12,15 +12,20 @@ Page({
     PageCur: 'meet',
     query: null,
     isLogin: false,
-    userInfo: {},
+    userInfo: app.globalData.userInfo,
     seekerList: [],
-    matchInfo: {},
   },
   NavChange(e) {
     this.setData({
       PageCur: e.currentTarget.dataset.cur
     })
   },
+  updateUserInfo(e) {
+    this.setData({
+      userInfo: e.detail.userInfo
+    })
+  },
+
   onLoad(query) {
     if (!app.globalData.isLogin){
       return false
@@ -32,10 +37,18 @@ Page({
       isLogin: app.globalData.isLogin
     })
 
+    // get parameter
+    let openid = 'testuser2'
+    if(query.openid != undefined) {
+      openid = query.openid
+    }
+    
+
     // get seekers info from db
     const that = this
-    db.collection('users').where({
-      'auth_info.personal_auth': false
+    const _ = db.command
+    db.collection('zy_users').where({
+      _openid: _.neq(openid)
     }).get({
       success: function(res) {
         that.setData({
@@ -47,20 +60,26 @@ Page({
       }
     })
     // get my profile from db
-    db.collection('zy_users').where({
-      _openid: 'testuser1'
-    }).get({
-      success: function(res) {
-        that.setData({
-          userInfo: res.data[0],
-          matchInfo: res.data[0].match_info,
-        })
-        // app.globalData.userInfo = res.data[0]
-      },
-      fail: function(res) {
-        console.log(res)
-      }
-    })
+    if(app.globalData.userInfo.match_info != undefined) {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      })
+    } else {
+      db.collection('zy_users').where({
+        _openid: openid
+      }).get({
+        success: function(res) {
+          app.globalData.userInfo = res.data[0]
+          let userInfo =  app.globalData.userInfo
+          that.setData({
+            userInfo: userInfo,
+          })
+        },
+        fail: function(res) {
+          console.log(res)
+        }
+      })
+    }
   },
 
   onReady() {

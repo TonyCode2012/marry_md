@@ -41,7 +41,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 14,
+			"current": 15,
 			"list": [
 				{
 					"id": -1,
@@ -146,6 +146,20 @@
 					"name": "expect",
 					"pathName": "pages/mine/expect/expect",
 					"query": "",
+					"scene": null
+				},
+				{
+					"id": 15,
+					"name": "user1",
+					"pathName": "pages/index/index",
+					"query": "openid=testuser1",
+					"scene": 1001
+				},
+				{
+					"id": 16,
+					"name": "user2",
+					"pathName": "pages/index/index",
+					"query": "openid=testuser2",
 					"scene": null
 				}
 			]

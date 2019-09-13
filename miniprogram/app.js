@@ -19,6 +19,7 @@ App({
     this.db = wx.cloud.database()
     this.globalData = {
       weixin_info: {},
+      userInfo: {},
       openid: null,
       isLogin: false
     };

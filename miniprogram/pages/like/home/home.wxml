@@ -51,7 +51,7 @@
 
 <view wx:if="{{TabCur==0}}">
   <view class="cu-list menu-avatar">
-    <view wx:for="{{matchInfo.ilike}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+    <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
       <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
       <view class="content">
@@ -64,13 +64,14 @@
       <view class="btn-group-decision flex-direction flex align-start text-sm">
         <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适{{item.date}}</text>
         <text wx:if="{{item.decision=='pending'}}" class='text-grey'>待处理{{item.date}}</text>
+        <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
         <view catchtap='showModal' wx:if="{{item.decision=='yes'}}" class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text>
           <text>查看</text>
         </view>
       </view>
       <view class="move">
-        <view class="bg-red">删除</view>
+        <view class="bg-red" bindtap="deleteILike" data-index="{{index}}">删除</view>
       </view>
     </view>
   </view>
@@ -91,10 +92,10 @@
 
       </view>
       <view class="btn-group-decision text-sm">      
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='sayYes' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
+        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
           <text class='text-white'>不合适</text>
         </view>
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='sayYes' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
+        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
           <text class='text-white'>同意</text>
         </view>
         <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适</text>
@@ -112,7 +113,7 @@
 
 <view wx:if="{{TabCur==1}}">
   <view class="cu-list menu-avatar">
-    <view wx:for="{{matchInfo.likeme}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+    <view wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
       <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
       <view class="content">
@@ -126,14 +127,15 @@
       </view>
       <!-- pending request -->
       <view class="btn-group-decision text-sm">      
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='sayYes' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
+        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
           <text class='text-white'>不合适</text>
         </view>
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='sayYes' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
+        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
           <text class='text-white'>同意</text>
         </view>
         <!-- after clicking -->
         <text wx:if="{{item.decision=='no'}}" class='text-grey'>已拒绝</text>
+        <text wx:if="{{item.decision=='delete'}}" class='text-grey'>您已结束对话{{item.date}}</text>
         <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text>
           <text>查看</text>
@@ -147,7 +149,7 @@
         </view>
       </view> -->
       <view class="move">
-        <view class="bg-red">删除</view>
+        <view class="bg-red" bindtap="deleteLikeMe" data-index="{{index}}">删除</view>
       </view>
     </view>
   </view>
@@ -174,5 +176,7 @@
   </view>
 </view>
 
+
+  <button bindtap="getRelation" class='cu-btn block bg-red lg'>保 存</button>
 
 <view class="cu-tabbar-height"></view>

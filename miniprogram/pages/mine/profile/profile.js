@@ -25,23 +25,7 @@ Page({
 
     now: formatDate(new Date()),
 
-    basic_info: {
-      nickName: '',
-      gender: 'male',
-      birthday: '2000-01-01',
-      height: '160',
-      weight: '50',
-      marryStatus: 'unmarried',
-      education: '本科',
-      college: '',
-      company: '',
-      profession: '',
-      income: '5-15w',
-      location: [],
-      hometown: [],
-      phone: '',
-      wechat: ''
-    },
+    basic_info: {},
 
     photos: [],
 
@@ -64,9 +48,6 @@ Page({
       educationIndex: 0,
       incomeIndex: 0
     },
-
-    region: ['广东省', '广州市', '海珠区'],
-    homeRegion: ['广东省', '广州市', '海珠区'],
   },
 
   bindInfoChange(e) {
@@ -110,7 +91,7 @@ Page({
       name: 'dbupdate',
       data: {
         table: 'zy_users',
-        _openid: 'testuser1',
+        _openid: globalData.userInfo._openid,
         field: 'basic_info',
         data: that.data.basic_info,
       },
@@ -137,19 +118,6 @@ Page({
         })
       }
     })
-    // db.collection('users').where({
-    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
-    // }).get().then(res=>{
-    //   return res.data[0]._id;
-    // }).then(id=>{
-    //   db.collection('users').doc(id).update({
-    //     data: {
-    //       basic_info: that.data.basic_info
-    //     }
-    //   }).then(res=>{
-    //     console.log(res)
-    //   })
-    // })
   },
   ChooseImage() {
     wx.chooseImage({
@@ -196,12 +164,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    const that = this
-
     // get basic info
     let basic_info = JSON.parse(options.basic_info)
     let photos = JSON.parse(options.photos).data
-    that.setData({
+    this.setData({
       basic_info: basic_info,
       photos: photos
     })
@@ -211,10 +177,10 @@ Page({
       educationIndex: 0,
       incomeIndex: 0
     }
-    for (let j = 0; j < that.data.rangeArry.length; j++) {
-      let range = that.data.rangeArry[j]
+    for (let j = 0; j < this.data.rangeArry.length; j++) {
+      let range = this.data.rangeArry[j]
       if (basic_info[range] == '') continue
-      let concretRange = that.data[range + 'Range']
+      let concretRange = this.data[range + 'Range']
       for (let i = 0; i < concretRange.length; i++) {
         if (concretRange[i] == basic_info[range]) {
           rangeIndexObj[range + 'Index'] = i
@@ -222,47 +188,9 @@ Page({
         }
       }
     }
-    that.setData({
+    this.setData({
       rangeIndexObj: rangeIndexObj
     })
-
-    // get data from db
-    // db.collection('users').where({
-    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
-    // }).get({
-    //   success:function(res){
-    //     if(res.data.length > 0) {
-    //       that.setData({
-    //         basic_info: res.data[0].basic_info,
-    //         photos: res.data[0].photos
-    //       })
-    //       let rangeIndexObj =  {
-    //         weightIndex: 0,
-    //         heightIndex: 0,
-    //         educationIndex: 0,
-    //         incomeIndex: 0
-    //       }
-    //       let basic_info = res.data[0].basic_info
-    //       for(let j=0;j<that.data.rangeArry.length;j++) {
-    //         let range = that.data.rangeArry[j]
-    //         if(basic_info[range] == '') continue
-    //         let concretRange = that.data[range+'Range']
-    //         for (let i = 0; i < concretRange.length; i++) {
-    //           if (concretRange[i] == basic_info[range]) {
-    //             rangeIndexObj[range+'Index'] = i
-    //             break
-    //           }
-    //         }
-    //       }
-    //       that.setData({
-    //         rangeIndexObj: rangeIndexObj
-    //       })
-    //     }
-    //   },
-    //   fail:function(res) {
-    //     console.log(res)
-    //   }
-    // })
   },
 
   /**

@@ -99,7 +99,7 @@ Page({
         name: 'dbupdate',
         data: {
           table: 'zy_users',
-          _openid: 'testuser1',
+          _openid: globalData.userInfo._openid,
           field: 'love_info.' + that.type,
           data: that.loveDetail
         },

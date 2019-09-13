@@ -1,4 +1,7 @@
 // miniprogram/pages/mine/expect/expect.js
+
+const app = getApp()
+
 Page({
 
   /**
@@ -83,7 +86,7 @@ Page({
       name: 'dbupdate',
       data: {
         table: 'zy_users',
-        _openid: 'testuser1',
+        _openid: app.globalData.userInfo._openid,
         field: 'expect_info',
         data: that.data.expect_info
       },
@@ -116,20 +119,19 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const that = this
     // set expect_info
     let expect_info = JSON.parse(options.expect_info)
-    that.setData({
+    this.setData({
       expect_info: expect_info,
     })
     let rangeIndexObj = {
       educationIndex: 0,
       marryStatusIndex: 0
     }
-    for (let j = 0; j < that.data.rangeArry.length; j++) {
-      let range = that.data.rangeArry[j]
+    for (let j = 0; j < this.data.rangeArry.length; j++) {
+      let range = this.data.rangeArry[j]
       if (expect_info[range] == '') continue
-      let concretRange = that.data[range + 'Range']
+      let concretRange = this.data[range + 'Range']
       for (let i = 0; i < concretRange.length; i++) {
         if (concretRange[i] == expect_info[range]) {
           rangeIndexObj[range + 'Index'] = i
@@ -137,54 +139,9 @@ Page({
         }
       }
     }
-    that.setData({
+    this.setData({
       rangeIndexObj: rangeIndexObj,
-      // startAge: expect_info.startAge,
-      // endAge: expect_info.endAge,
-      // startHeight: expect_info.startHeight,
-      // endHeight: expect_info.endHeight,
     })
-    // get data from db
-    // const db = wx.cloud.database({
-    //   env: 'test-t2od1'
-    // })
-    // db.collection('users').where({
-    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
-    // }).get({
-    //   success: function (res) {
-    //     if (res.data.length > 0) {
-    //       that.setData({
-    //         expect_info: res.data[0].expect_info,
-    //       })
-    //       let rangeIndexObj = {
-    //         educationIndex: 0,
-    //         marryStatusIndex: 0
-    //       }
-    //       let expect_info = res.data[0].expect_info
-    //       for (let j = 0; j < that.data.rangeArry.length; j++) {
-    //         let range = that.data.rangeArry[j]
-    //         if (expect_info[range] == '') continue
-    //         let concretRange = that.data[range + 'Range']
-    //         for (let i = 0; i < concretRange.length; i++) {
-    //           if (concretRange[i] == expect_info[range]) {
-    //             rangeIndexObj[range + 'Index'] = i
-    //             break
-    //           }
-    //         }
-    //       }
-    //       that.setData({
-    //         rangeIndexObj: rangeIndexObj,
-    //         startAge: expect_info.startAge,
-    //         endAge: expect_info.endAge,
-    //         startHeight: expect_info.startHeight,
-    //         endHeight: expect_info.endHeight,
-    //       })
-    //     }
-    //   },
-    //   fail: function (res) {
-    //     console.log(res)
-    //   }
-    // })
   },
 
   /**
