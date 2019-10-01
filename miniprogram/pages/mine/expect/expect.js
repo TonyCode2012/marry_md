@@ -22,6 +22,8 @@ Page({
     // set age slider
     minAge: 21,
     maxAge: 50,
+    tsminAge: 21,
+    tsmaxAge: 50,
 
     rangeArry: ['marryStatus','education'],
     rangeIndexObj: {

@@ -14,23 +14,25 @@ Component({
    */
   properties: {
     tabCur: Number,
+    seekers: Object
   },
-  observers: {
-    'tabCur': function(tabCur) {
-      console.log('tabCur', tabCur);
-      switch (tabCur) {
-        case 0:
-          this.getNetworkCandidates();
-          break;
-        case 1:
-          this.getBigCompanyCandidates();
-          break;
-        case 2:
-          this.getMyCompanyCandidates();
-          break;
-      }
-    }
-  },
+  // observers: {
+  //   'tabCur': function(tabCur) {
+  //     console.log('tabCur', tabCur);
+  //     switch (tabCur) {
+  //       case 0:
+  //         this.getNetworkCandidates();
+  //         this.getRelativeCandidates();
+  //         break;
+  //       case 1:
+  //         this.getBigCompanyCandidates();
+  //         break;
+  //       case 2:
+  //         this.getMyCompanyCandidates();
+  //         break;
+  //     }
+  //   },
+  // },
   /**
    * 组件的初始数据
    */
@@ -38,6 +40,15 @@ Component({
     networkCandidates: [],
     bigCompanyCandidates: [],
     myCompanyCandidates: [],
+
+    relativeCandidates: [],
+
+    relationMap: {
+      family: '亲戚',
+      friend: '朋友',
+      schoolmate: '同学',
+      colleague: '同事'
+    }
   },
 
   ready: function(options) {},

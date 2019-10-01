@@ -19,7 +19,11 @@ App({
     this.db = wx.cloud.database()
     this.globalData = {
       weixin_info: {},
+      gotData: false,
       userInfo: {},
+      seekers: {},
+      userIDs: [],
+      userMap: null,
       openid: null,
       isLogin: false
     };
@@ -36,6 +40,5 @@ App({
         console.log('getMenuButtonBoundingClientRect', this.globalData, e);
       }
     })
-
   }
 })

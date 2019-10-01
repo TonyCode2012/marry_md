@@ -1,4 +1,6 @@
 // miniprogram/pages/mine/expect/expect.js
+
+
 Component({
 
   /**
@@ -13,10 +15,10 @@ Component({
       type: Number,
       value: 50
     },
-    minValue: {
+    lowValue: {
       type: Number
     },
-    maxValue: {
+    highValue: {
       type: Number
     },
     unit: {
@@ -32,42 +34,36 @@ Component({
     range: 0,
     leftPos: 0,
     rightPos: 100,
-    minValue: 0,
-    maxValue: 0,
+    rightestPos: 100,
+    lowValue: 0,
+    highValue: 0,
     totalLength: 0,
     bigLength: 0,
     ratio: 0.5,
     sliderLength: 190,
-    containerLeft: 68, //标识整个组件，距离屏幕左边的距离
-    borderWidth: 68,
+    containerLeft: 0, //标识整个组件，距离屏幕左边的距离
     hideOption: '', //初始状态为显示组件
-    itemWidth: 17,
-    leftUnselectedLen: 0,
-    selectedLen: 0,
-    rightUnselectedLen: 0,
+    itemWidth: 20,
   },
 
   observers: {
-    'minValue,maxValue': function(minValue,maxValue) {
+    'lowValue,highValue': function(lowValue,highValue) {
 
-      if (minValue < this.data.min) minValue = this.data.min
-      else if (minValue > this.data.max) minValue = this.data.max
-      if (maxValue > this.data.max) maxValue = this.data.max
-      else if (maxValue < this.data.min) maxValue = this.data.min
-      if (minValue > maxValue) minValue = maxValue
+      if (lowValue < this.data.min) lowValue = this.data.min
+      else if (lowValue > this.data.max) lowValue = this.data.max
 
-      let leftPos = (minValue - this.data.min) / this.data.range * (this.data.sliderLength - this.data.itemWidth * 1.6)
-      let rightPos = (maxValue - this.data.min) / this.data.range * (this.data.sliderLength - this.data.itemWidth * 1.6)
-      let leftUnselectedLen = leftPos
-      let selectedLen = rightPos - leftPos
-      let rightUnselectedLen = this.data.sliderLength - rightPos - this.data.itemWidth * 2
+      if (highValue > this.data.max) highValue = this.data.max
+      else if (highValue < this.data.min) highValue = this.data.min
+
+      if (lowValue > highValue) lowValue = highValue
+      if (highValue < lowValue) highValue = lowValue
+
+      let leftPos = (lowValue - this.data.min) / this.data.range * this.data.rightestPos
+      let rightPos = (highValue - this.data.min) / this.data.range * this.data.rightestPos
 
       this.setData({
-        leftPos: leftPos,
-        rightPos: rightPos,
-        leftUnselectedLen: leftUnselectedLen,
-        selectedLen: selectedLen,
-        rightUnselectedLen: rightUnselectedLen,
+        // leftPos: leftPos,
+        // rightPos: rightPos,
       })
     }
   },
@@ -76,40 +72,40 @@ Component({
   methods: {
 
     _minMove: function (e) {
-      let pagex = e.changedTouches[0].pageX - this.data.borderWidth
+      let pagex = e.changedTouches[0].pageX - this.data.containerLeft - this.data.itemWidth * 0.5
+      // console.log(e.changedTouches[0].pageX)
       if (pagex > this.data.rightPos) pagex = this.data.rightPos
       else if (pagex < 0) pagex = 0
-      let minValue = parseInt(pagex / (this.data.sliderLength - this.data.itemWidth*1.8) * this.data.range + this.data.min)
-      let selectedLen = this.data.sliderLength - pagex - this.data.rightUnselectedLen - this.data.itemWidth
+
+      let lowValue = parseInt(pagex / this.data.rightestPos * this.data.range + this.data.min)
+
+      if(lowValue > this.data.highValue) lowValue = this.data.highValue
 
       this.setData({
         leftPos: pagex,
-        minValue: minValue,
-        leftUnselectedLen: pagex,
-        selectedLen: selectedLen
+        // lowValue: lowValue,
       })
 
-      let myEventDetail = { lowValue: minValue }
+      let myEventDetail = { lowValue: lowValue }
       this.triggerEvent('lowValueChange',myEventDetail)
     },
 
     _maxMove: function (e) {
-      let pagex = e.changedTouches[0].pageX - this.data.borderWidth
+      let pagex = e.changedTouches[0].pageX - this.data.containerLeft - this.data.itemWidth * 1.5
+      // console.log(e.changedTouches[0].pageX)
       if (pagex < this.data.leftPos) pagex = this.data.leftPos
-      else if (this.data.sliderLength - this.data.itemWidth * 2 < pagex) pagex = this.data.sliderLength - this.data.itemWidth * 2
+      else if (pagex > this.data.rightestPos) pagex = this.data.rightestPos
 
-      let maxValue = parseInt(pagex / (this.data.sliderLength - this.data.itemWidth*1.8) * this.data.range + this.data.min)
-      let rightUnselectedLen = this.data.sliderLength - pagex - this.data.itemWidth * 2
-      let selectedLen = this.data.sliderLength - this.data.leftUnselectedLen - rightUnselectedLen - this.data.itemWidth
+      let highValue = parseInt(pagex / this.data.rightestPos * this.data.range + this.data.min)
+
+      if(highValue < this.data.lowValue) highValue = this.data.lowValue
 
       this.setData({
         rightPos: pagex,
-        maxValue: maxValue,
-        rightUnselectedLen: rightUnselectedLen,
-        selectedLen: selectedLen
+        // highValue: highValue,
       })
 
-      let myEventDetail = { highValue: maxValue }
+      let myEventDetail = { highValue: highValue }
       this.triggerEvent('highValueChange', myEventDetail)
     },
   },
@@ -118,31 +114,37 @@ Component({
    * 生命周期函数--监听页面加载
    */
   ready: function () {
-    // set two-slider
-    let minValue = this.data.minValue
-    let maxValue = this.data.maxValue
-    if(minValue < this.data.min) minValue = this.data.min
-    else if(minValue > this.data.max) minValue = this.data.max
-    if(maxValue > this.data.max) maxValue = this.data.max
-    else if(maxValue < this.data.min) maxValue = this.data.min
-    if(minValue > maxValue) minValue = maxValue
+    const that = this
+    const query = wx.createSelectorQuery().in(this)
+    query.select('#scrollLine').boundingClientRect(function (res) {
+      let containerLeft = res.left
+      let sliderLength = res.right - res.left
+      let rightestPos = sliderLength - that.data.itemWidth * 1.5
+      // set two-slider
+      let lowValue = that.data.lowValue
+      let highValue = that.data.highValue
+      if(lowValue < that.data.min) lowValue = that.data.min
+      else if(lowValue > that.data.max) lowValue = that.data.max
+      if(highValue > that.data.max) highValue = that.data.max
+      else if(highValue < that.data.min) highValue = that.data.min
+      if(lowValue > highValue) lowValue = highValue
 
-    let range = this.data.max - this.data.min + 1
-    let leftPos = (minValue - this.data.min) / range * (this.data.sliderLength - this.data.itemWidth*1.6)
-    let rightPos = (maxValue - this.data.min) / range * (this.data.sliderLength - this.data.itemWidth*1.6)
-    let selectedLen = rightPos - leftPos
-    let rightUnselectedLen = this.data.sliderLength - rightPos - this.data.itemWidth * 2
+      let range = that.data.max - that.data.min + 1
+      let leftPos = (lowValue - that.data.min) / range * rightestPos
+      let rightPos = (highValue - that.data.min) / range * rightestPos
 
-    this.setData({
-      leftUnselectedLen: leftPos,
-      selectedLen: selectedLen,
-      rightUnselectedLen: rightUnselectedLen,
-      minValue: minValue,
-      maxValue: maxValue,
-      leftPos: parseInt(leftPos),
-      rightPos: parseInt(rightPos),
-      range: range,
-    })
+
+      that.setData({
+        lowValue: lowValue,
+        highValue: highValue,
+        leftPos: leftPos,
+        rightPos: rightPos,
+        range: range,
+        containerLeft: containerLeft,
+        sliderLength: sliderLength,
+        rightestPos: rightestPos
+      })
+    }).exec()
   },
 
 })

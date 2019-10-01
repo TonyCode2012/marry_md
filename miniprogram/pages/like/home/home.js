@@ -12,10 +12,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    match_info: {
-      type: Object,
-      value: {}
-    },
+    // match_info: {
+    //   type: Object,
+    //   value: {}
+    // },
     userInfo: {
       type: Object,
       value: {}
@@ -32,6 +32,7 @@ Component({
     decision: 'pending',
     ListTouchStartPos: 0,
     ListTouchDirection: '',
+    match_info: {},
 
     methods: {
       _deleteLike: function(data) {
@@ -68,11 +69,6 @@ Component({
             // update father page data
             var param = {userInfo: app.globalData.userInfo}
             that.triggerEvent('userInfoChange',param)
-            // var pages = getCurrentPages()
-            // var prePage = pages[0]
-            // prePage.setData({
-            //   userInfo: data.userInfo
-            // })
           },
           fail: res => {
             wx.hideLoading()
@@ -88,8 +84,18 @@ Component({
     }
   },
 
-  ready: function() {
+  pageLifetimes: {
+    show: function() {
+      if(globalData.gotData) {
+        this.setData({
+          'userInfo.match_info': globalData.userInfo.match_info
+        })
+      }
+    }
+  },
 
+  ready: function() {
+    
   },
 
   /**

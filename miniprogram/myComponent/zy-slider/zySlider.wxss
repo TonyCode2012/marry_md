@@ -1,4 +1,4 @@
 :host {
   display: flex;
-  width: 87%
+  width: 80%
 }

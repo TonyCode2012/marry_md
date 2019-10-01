@@ -89,8 +89,8 @@
     <view class="padding-xs user-recommend-tags">
       <view class="cu-tag bg-gray text-black">{{userInfo.expect_info.startAge}}-{{userInfo.expect_info.endAge}}岁</view>
       <view class="cu-tag bg-gray text-black">{{userInfo.expect_info.startHeight}}-{{userInfo.expect_info.endHeight}}CM</view>
-      <view class="cu-tag bg-gray text-black">所在地:{{userInfo.expect_info.location.length == 0 ? '都可以' : userInfo.expect_info.location[1]}}</view>
-      <view class="cu-tag bg-gray text-black">家乡:{{userInfo.expect_info.hometown.length == 0 ? '都可以' : userInfo.expect_info.hometown[1]}}</view>
+      <view class="cu-tag bg-gray text-black">所在地:{{userInfo.expect_info.location}}</view>
+      <view class="cu-tag bg-gray text-black">家乡:{{userInfo.expect_info.hometown}}</view>
       <view class="cu-tag bg-gray text-black">{{userInfo.expect_info.marryStatus}}</view>
       <view class="cu-tag bg-gray text-black">学历:{{userInfo.expect_info.education == '' ? '都可以' : userInfo.expect_info.education}}</view>
     </view>  

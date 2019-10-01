@@ -13,7 +13,8 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    seekerList: Array
+    seekers: Object,
+    userIDs: Array
   },
 
   /**
@@ -22,8 +23,10 @@ Component({
   data: { 
     isAuth: false,
     TabCur: 0,
-    CustomBar: globalData.CustomBar
+    CustomBar: globalData.CustomBar,
+    userIdx: 0
   },
+
   
   ready: function(){
     observer.observe(observer.store, 'isAuth', (value)=>{
@@ -42,6 +45,15 @@ Component({
         TabCur: e.currentTarget.dataset.id,
         scrollLeft: (e.currentTarget.dataset.id - 1) * 60
       })
+    },
+    userChange(e) {
+      var index = e.detail.index
+      this.setData({
+        userIdx: index
+      })
+      var openid = this.properties.userIDs[index]
+      openid = openid.substring(0,openid.indexOf(':'))
+      this.triggerEvent('selectUser', {openid:openid})
     },
   }
 })

@@ -1,4 +1,6 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "zy-selector": "/myComponent/zy-selector/zySelector"
+  }
 }

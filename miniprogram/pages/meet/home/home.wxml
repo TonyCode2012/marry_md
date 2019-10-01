@@ -1,3 +1,12 @@
+<wxs module="ageModule">
+  var deal = function(data,start,len) {
+    if (typeof(data) == 'string') return data.slice(start,len)
+    else return ""
+  }
+  module.exports = {
+    deal : deal
+  }
+</wxs>
 
 
 <cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{false}}">
@@ -10,16 +19,17 @@
     亲友关系
   </view>
   <view class="cu-item {{1==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
-    名企资源
+    同事资源
   </view>
   <view class="cu-item {{2==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="2">
-    同事资源
+    名企白领
   </view>
 </scroll-view>
 
+<zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
 <authed wx:if="{{isAuth}}"></authed> 
 <!-- <unauthed wx:if="{{!isAuth}}" seekerList="{{seekerList}}"></unauthed>  -->
-<unauthed wx:if="{{!isAuth}}" tabCur="{{TabCur}}"></unauthed> 
+<unauthed wx:if="{{!isAuth}}" seekers="{{seekers}}" tabCur="{{TabCur}}"></unauthed> 
 
 
 <view class="cu-tabbar-height"></view>

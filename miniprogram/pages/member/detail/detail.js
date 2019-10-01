@@ -18,10 +18,7 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    // userId: {
-    //   type: String,
-    //   value: ''
-    // }
+    
   },
 
   /**
@@ -31,6 +28,7 @@ Component({
     relationship: "",
     relations: false,
     relationArry: ['请选择你和介绍人的关系', '亲戚', '同事', '朋友', '同学', '其他'],
+    relationRArry: ['unknown','family','colleague','friend','schoolmate','other'],
     relationIndex: 0,
     ship: true,
     array: ['请选择你和介绍人的关系', '朋友', '同学', '亲戚', '同事'],
@@ -42,6 +40,10 @@ Component({
 
     userInfo: {},
     likeTag: "感兴趣",
+    showLike: true,
+
+    userIdx: 0,
+    userIDs: [],
 
     avatar: [
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg',
@@ -51,8 +53,9 @@ Component({
     ],
 
     
-    innerM: {
-      chooseRelations: function (that) {
+    methods: {
+      chooseRelations: function (data) {
+        var { openid, that } = data
         wx.showActionSheet({
           itemList: that.data.relationArry,
           complete(res) {
@@ -60,11 +63,11 @@ Component({
               that.data.relationIndex = res.tapIndex
               console.log("relationship is:" + that.data.relationArry[that.data.relationIndex])
               // generate relation data and insert into db
-              var newRelation = JSON.parse(JSON.stringify(relationData))
-              delete newRelation._id
-              newRelation.rear = "zhaoyao2"
-              newRelation.path.push("zhaoyao2")
-              newRelation.relationship.push(that.data.relationArry[that.data.relationIndex])
+              // var newRelation = JSON.parse(JSON.stringify(relationData))
+              // delete newRelation._id
+              // newRelation.rear = "zhaoyao2"
+              // newRelation.path.push("zhaoyao2")
+              // newRelation.relationship.push(that.data.relationArry[that.data.relationIndex])
               // db.collection('transmition').add({
               //   data: newRelation,
               //   success: function (res) {
@@ -72,6 +75,35 @@ Component({
               //   },
               //   fail: console.error
               // })
+              wx.showLoading({
+                title: '正在分享',
+              })
+              wx.cloud.callFunction({
+                name: 'updateRelation',
+                data: {
+                  to_openid: openid,
+                  from_openid: globalData.userInfo._openid,
+                  relationship: that.data.relationRArry[that.data.relationIndex],
+                },
+                success: res => {
+                  console.log(res)
+                  wx.hideLoading()
+                  wx.showToast({
+                    title: '分享成功',
+                    icon: 'success',
+                    duration: 1500
+                  })
+                },
+                fail: err => {
+                  console.log(err)
+                  wx.hideLoading()
+                  wx.showToast({
+                    title: '分享失败',
+                    icon: 'none',
+                    duration: 1500
+                  })
+                }
+              })
             } else if (res.tapIndex == undefined || res.tapIndex == 0 ||
               (res.errMsg != undefined && res.errMsg.indexOf("cancel") != -1)) {
               wx.showModal({
@@ -87,7 +119,7 @@ Component({
                     })
                   } else if (res.cancel) {
                     console.log('选择关系')
-                    that.data.innerM.chooseRelations(that)
+                    that.data.methods.chooseRelations(data)
                   }
                 }
               })
@@ -103,6 +135,47 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    share2Friend: function(e) {
+      const that = this
+      var openid = e.detail.index
+      openid = this.data.userIDs[openid]
+      openid = openid.substring(0,openid.indexOf(':'))
+      this.data.methods.chooseRelations({
+        openid: openid,
+        that: that
+      })
+      // wx.showLoading({
+      //   title: '正在分享',
+      // })
+      // wx.cloud.callFunction({
+      //   name: 'updateRelation',
+      //   data: {
+      //     to_openid: openid,
+      //     from_openid: globalData.userInfo._openid,
+      //     relationship: that.data.relationRArry[that.data.relationIndex],
+      //     name: that.data.userInfo.basic_info.nickName
+      //   },
+      //   success: res => {
+      //     console.log(res)
+      //     wx.hideLoading()
+      //     wx.showToast({
+      //       title: '分享成功',
+      //       icon: 'success',
+      //       duration: 1500
+      //     })
+      //   },
+      //   fail: err => {
+      //     console.log(err)
+      //     wx.hideLoading()
+      //     wx.showToast({
+      //       title: '分享失败',
+      //       icon: 'none',
+      //       duration: 1500
+      //     })
+      //   }
+      // })
+    },
+
     onLoad: function (options) {
       const that = this
       const {source} = options;
@@ -128,7 +201,10 @@ Component({
                     relationship: true
                   })
                 } else {
-                  that.data.innerM.chooseRelations(that)
+                  that.data.methods.chooseRelations({
+                    openid: '',
+                    that: that
+                  })
                   relationData = res.data[0]
                 }
               },
@@ -141,22 +217,30 @@ Component({
             console.log(res)
           }
         })
-      } else if(options.openid != undefined) {
-        // show user info from other page
-        db.collection('zy_users').where({
-          _openid: options.openid
-        }).get({
-          success:function(res) {
-            that.setData({
-              userInfo: res.data[0]
-            })
-          },
-          fail:function(res) {
-            console.log(res)
-          }
-        })
-      } else {
-        var userInfo = JSON.parse(options.seeker)
+      } 
+      // else if(options.openid != undefined) {
+      //   // show user info from other page
+      //   db.collection('zy_users').where({
+      //     _openid: options.openid
+      //   }).get({
+      //     success:function(res) {
+      //       that.setData({
+      //         userInfo: res.data[0]
+      //       })
+      //     },
+      //     fail:function(res) {
+      //       console.log(res)
+      //     }
+      //   })
+      // } 
+      else {
+        var userInfo = globalData.userMap.get(options.openid)
+        // set show like tag
+        if(userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
+          that.setData({
+            showLike: false
+          })
+        }
         // check if this user info has been existed on the match list
         var loginILike = app.globalData.userInfo.match_info.ilike
         var loginLikeMe = app.globalData.userInfo.match_info.likeme
@@ -178,7 +262,8 @@ Component({
         }
         // get user information
         that.setData({
-          userInfo: userInfo
+          userInfo: userInfo,
+          userIDs: globalData.userIDs
         })
       }
       
@@ -257,9 +342,12 @@ Component({
           })
           console.log(res)
           app.globalData.userInfo.match_info.ilike = ilikeInfo
-          wx.navigateTo({
-            url: `/pages/index/index?cur=like`,
+          that.setData({
+            likeTag: '已感兴趣'
           })
+          // wx.redirectTo({
+          //   url: `/pages/index/index?cur=like`,
+          // })
         },
         fail: res => {
           wx.hideLoading()

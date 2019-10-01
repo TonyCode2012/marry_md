@@ -36,7 +36,7 @@
             <text class="cu-tag round bg-orange sm"><text class='cuIcon-safe lg text-white text-xs'></text> 已认证</text>
           </view>
           <view class='text-gray text-sm'>
-            <text class='cuIcon-female text-pink'></text>
+            <text class="cuIcon-{{userInfo.basic_info.gender}} text-{{userInfo.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
             <text>  {{userInfo.basic_info.birthday}}年・水瓶座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.education}}・{{userInfo.basic_info.profession}}</text>
           </view>
           <view class='text-gray text-sm'>
@@ -46,40 +46,14 @@
             <!-- <view class='text-gray'>来历：</view> -->
             <scroll-view scroll-x>
               <view class="source-group padding-lr-xs flex">
-                <view class="source-item flex">
+                <view wx:for="{{userInfo.relativeInfo.relation}}" wx:key class="source-item flex">
+                  <view style="display:{{!item.relation?'none':'block'}};text-align:center" class='source-connection'>
+                    <view class='source-line'></view>
+                    <text class="cu-tag round bg-green sm">{{item.relation}}</text>
+                  </view>
                   <view class='source-user flex flex-direction justify-center align-center'>
                     <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
-                    <view class='text-gray text-xs'>马达</view>
-                  </view>
-                  <view class='source-connection'>
-                    <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">亲戚</text>
-                  </view>
-                </view>
-                <view class="source-item flex">
-                  <view class='source-user flex flex-direction justify-center align-center'>
-                    <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10002.jpg);"></view>
-                    <view class='text-gray text-xs'>大强</view>
-                  </view>
-                  <view class='source-connection'>
-                    <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">朋友</text>
-                  </view>
-                </view>
-                <view class="source-item flex">
-                  <view class='source-user flex flex-direction justify-center align-center'>
-                    <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10003.jpg);"></view>
-                    <view class='text-gray text-xs'>谢广坤</view>
-                  </view>
-                  <view class='source-connection'>
-                    <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">亲戚</text>
-                  </view>
-                </view>
-                <view class="source-item flex">
-                  <view class='source-user flex flex-direction justify-center align-center'>
-                    <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10004.jpg);"></view>
-                    <view class='text-gray text-xs'>我</view>
+                    <view class='text-gray text-xs'>{{item.name}}</view>
                   </view>
                 </view>
               </view>
@@ -94,6 +68,9 @@
 
 
         </view>
+
+        <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="share2Friend"/>
+
         <view class="section">
           <view class="section-title">
             <text class="cuIcon-titles text-pink"></text>
@@ -192,7 +169,7 @@
       </view>
 
       <view wx:if="{{source == 'meet'}}" class="btn-group cu-bar tabbar foot">
-        <button bindtap="bindLike" class="cu-btn bg-red round">{{likeTag}}</button>
+        <button style="display:{{showLike?'block':'none'}}" bindtap="bindLike" class="cu-btn bg-red round">{{likeTag}}</button>
         <button open-type="bindShare" class="cu-btn bg-green round">推荐给好友</button>
       </view>
 

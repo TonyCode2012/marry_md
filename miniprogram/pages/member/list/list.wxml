@@ -29,7 +29,7 @@
               <text class='cuIcon-safe lg text-white'></text> 已认证</text>
             </view>
             <view class='text-sm text-gray margin-top-xs'>
-                  <text>  {{item.basic_info.birthday}}年・水瓶座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
+                  <text>  {{ageModule.deal(item.basic_info.birthday,0,4)}}年・水瓶座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
             </view>
             <view class="text-gray text-sm flex">
               <text class="text-cut">

@@ -36,11 +36,11 @@ Component({
     gotoDetail(option){
       console.log(option.currentTarget.dataset.info)
       const seeker = option.currentTarget.dataset.info
-      let seekerInfo = JSON.stringify(seeker)
-      const userId = 'test';
+      // let seekerInfo = JSON.stringify(seeker)
+      const openid = seeker._openid;
       const source = this.properties.source;
       wx.navigateTo({
-        url: `/pages/member/detail/detail?userId=${userId}&source=${source}&seeker=${seekerInfo}`
+        url: `/pages/member/detail/detail?openid=${openid}&source=${source}`
       })
     }
   }

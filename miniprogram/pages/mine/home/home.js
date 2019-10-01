@@ -26,6 +26,7 @@ Component({
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
     isExpand: false,
+    userInfo: null,
     
     // check data change by hashcode
     hashCode: {
@@ -56,11 +57,14 @@ Component({
   },
 
   ready: function() {
-    // db.collection('users').where({
-    //   _openid: 'o5lKm5CVkJC-0oaVSWrD9kJHADsg2'
+    // const that = this
+    // db.collection('zy_users').where({
+    //   _openid: 'cisco0'
     // }).get({
     //   success: function(res) {
-
+    //     that.setData({
+    //       userInfo: res.data[0]
+    //     })
     //   }
     // })
   },

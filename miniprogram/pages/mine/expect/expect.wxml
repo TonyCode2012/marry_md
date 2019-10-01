@@ -10,13 +10,18 @@
 
 <view class="cu-form-group">
   <view class="title">身高</view>
-  <zy-slider min="{{minHeight}}" max="{{maxHeight}}" minValue="{{expect_info.startHeight}}" maxValue="{{expect_info.endHeight}}" unit="cm" bind:lowValueChange="heightLowValueChange" bind:highValueChange="heightHighValueChange" />
+  <zy-slider min="{{minHeight}}" max="{{maxHeight}}" lowValue="{{expect_info.startHeight}}" highValue="{{expect_info.endHeight}}" unit="cm" bind:lowValueChange="heightLowValueChange" bind:highValueChange="heightHighValueChange" />
 </view>
 
 <view class="cu-form-group">
   <view class="title">年龄</view>
-  <zy-slider min="{{minAge}}" max="{{maxAge}}" minValue="{{expect_info.startAge}}" maxValue="{{expect_info.endAge}}" unit="岁" bind:lowValueChange="ageLowValueChange" bind:highValueChange="ageHighValueChange" />
+  <zy-slider min="{{minAge}}" max="{{maxAge}}" lowValue="{{expect_info.startAge}}" highValue="{{expect_info.endAge}}" unit="岁" bind:lowValueChange="ageLowValueChange" bind:highValueChange="ageHighValueChange" />
 </view>
+
+<!-- <view class="cu-form-group">
+  <view class="title">年龄</view>
+  <ts-slider min="{{tsminAge}}" max="{{tsmaxAge}}" minValue="{{expect_info.startAge}}" maxValue="{{expect_info.endAge}}" unit="岁" />
+</view> -->
 
 <!-- <view class="cu-form-group">
   <view class="title">学历</view>

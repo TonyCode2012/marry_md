@@ -2,7 +2,7 @@
   "component": true,
   "usingComponents": {
     "authed": "/pages/meet/authed/authed",
-    "unauthed": "/pages/meet/unauthed/unauthed"
-
+    "unauthed": "/pages/meet/unauthed/unauthed",
+    "zy-selector": "/myComponent/zy-selector/zySelector"
   }
 }
