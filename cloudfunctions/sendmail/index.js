@@ -2,43 +2,54 @@
 const cloud = require('wx-server-sdk')
 const nodemailer = require("nodemailer");
 
-cloud.init()
+cloud.init({
+  env: 'test-t2od1'
+})
+const db = cloud.database()
+const _ = db.command
 
-var transporter = nodemailer.createTransport({
-  // service: 'qq',
-  host: "smtpdm.aliyun.com",
-  port: 465,               // SMTP 端口
-  secure: true,            // 使用 SSL
-  auth: {
-    user: '362797060@qq.com',   //发邮件邮箱
-    pass: 'rmbiksifkublbjjf'        //此处不是qq密码是
-  }
-});
-var mailOptions = {
-  from: '362797060@qq.com',   // 发件地址
-  to: 'yaoz@cisco.com',    // 收件列表
-  subject: 'test send email',      // 标题
-  text: 'test send email',
-  html: "<b>Hello world?</b>"
-};
+exports.main = async(event, context) => {
+  let openid = cloud.getWXContext().OPENID
+  let emailTo = event.email
+  let auth_code = Math.floor(Math.random() * 899999 + 100000)
 
-// 云函数入口函数
-exports.main = async (event, context) => {
-  console.log("Start to sendemail")
-  //开始发送邮件
-  const info = await transporter.sendMail(mailOptions);
-  console.log('Message sent: ' + info.response);
-  return info
+  console.log(event, openid)
+
+  await db.collection('auth').where({
+    _openid: openid,
+    is_active: true
+  }).update({
+    data: {
+      is_active: false
+    }
+  })
+
+  await db.collection('auth').add({
+    data: {
+      _openid: openid,
+      auth_code: auth_code.toString(),
+      create_date: new Date(),
+      is_active: true
+    }
+  })
+
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.exmail.qq.com',
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'auth@zouheart.com',
+      pass: 'GGWq8tHkLp8AXqvt'
+    }
+  })
+
+  let info = await transporter.sendMail({
+    from: '"zouheart" <auth@zouheart.com>',
+    to: emailTo,
+    subject: '工作认证校验码',
+    text: `您的校验码是：${auth_code}`,
+    html: `您的校验码是：<b>${auth_code}</b>`
+  })
+
+  console.log('send email:', auth_code, info) 
 }
-
-// // 云函数入口函数
-// exports.main = async (event, context) => {
-//   const wxContext = cloud.getWXContext()
-
-//   return {
-//     event,
-//     openid: wxContext.OPENID,
-//     appid: wxContext.APPID,
-//     unionid: wxContext.UNIONID,
-//   }
-// }
