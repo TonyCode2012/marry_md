@@ -39,16 +39,16 @@ Component({
     },
     gotoAuthCorp(){
       
-      wx.cloud.callFunction({
-        name: "sendEmail",
-        data: "",
-        success: function(res) {
-          console.log("send mail successfully!")
-        },
-        fail: function(res) {
-          console.error("send mail failed!")
-        }
-      })
+      // wx.cloud.callFunction({
+      //   name: "sendEmail",
+      //   data: "",
+      //   success: function(res) {
+      //     console.log("send mail successfully!")
+      //   },
+      //   fail: function(res) {
+      //     console.error("send mail failed!")
+      //   }
+      // })
 
       wx.navigateTo({
         url: '/pages/authcorp/authcorp',
