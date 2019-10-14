@@ -27,7 +27,7 @@
         <text class="cuIcon-close"></text>
       </view>
     </view>
-    <view class="solids" bindtap="ChooseImage" wx:if="{{photos.length<4}}">
+    <view class="solids" bindtap="ChooseImage" wx:if="{{photos.length<10}}">
       <text class="cuIcon-cameraadd"></text>
     </view>
   </view>

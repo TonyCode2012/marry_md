@@ -2,8 +2,11 @@
 const { aboutme } = require("../../../utils/data.js");
 const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
+const {
+    globalData
+} = app
 const db = wx.cloud.database({
-  env: 'test-t2od1'
+  env: 'dev-2019'
 })
  
 Component({
@@ -56,6 +59,16 @@ Component({
     }
   },
 
+  pageLifetimes: {
+      show: function() {
+          if(globalData.gotData) {
+            this.setData({
+                userInfo: globalData.userInfo
+            })
+          }
+      }
+  },
+
   ready: function() {
     // const that = this
     // db.collection('zy_users').where({
@@ -79,18 +92,13 @@ Component({
       })
     },
     gotoProfile(){
-      let basic_info = JSON.stringify(this.data.userInfo.basic_info)
-      let photos = JSON.stringify({
-        data: this.data.userInfo.photos
-      })
       wx.navigateTo({
-        url: `/pages/mine/profile/profile?basic_info=${basic_info}&photos=${photos}`,
+        url: '/pages/mine/profile/profile',
       })
     },
     gotoExpect() {
-      let expect_info = JSON.stringify(this.data.userInfo.expect_info)
       wx.navigateTo({
-        url: `/pages/mine/expect/expect?expect_info=${expect_info}`,
+        url: '/pages/mine/expect/expect',
       })
 
     },

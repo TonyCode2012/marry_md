@@ -1,0 +1,101 @@
+{
+  "_id": "%ID%",
+  "wechat_info": {
+    "avatarUrl": "",
+    "nickName": ""
+  },
+  "basic_info": {
+    "height": 171,
+    "weight": 46,
+    "income": "15-30W",
+    "location": [
+      "广东省",
+      "深圳市",
+      "南山区"
+    ],
+    "hometown": [
+      "广东省",
+      "广州市",
+      "珠海区"
+    ],
+    "birthday": "1991-01-01",
+    "profession": "教师",
+    "college": "深大",
+    "gender": "%GENDER%",
+    "marryStatus": "unmarried",
+    "nickName": "%NAME%",
+    "company": "%COMPANY%",
+    "phone": "",
+    "wechat": "",
+    "education": "本科"
+  },
+  "love_info": {
+    "aboutLove": {
+      "photos": [
+        "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/aboutLove_1567267200000.jpeg"
+      ],
+      "content": "我的东西"
+    },
+    "idealLover": {
+      "content": "希望他具有有趣的灵魂，可以在一起吧生活活得平凡又好玩，最好是有梗，可以跟我一起哈哈大笑，能积极进取，有事业心的男人比较有魅力，不喜欢一潭死水整天沉迷游戏，希望他偶尔能跟我多出去走走，享受阳光雨露，同时也有点兴趣爱好，打球什么的都可以。",
+      "photos": []
+    },
+    "singleReason": {
+      "content": "工作环境单纯，每天都是接触小孩子，比较少接触外面的人，宁缺毋滥，不想将就",
+      "photos": []
+    },
+    "homeBg": {
+      "content": "从小和妈妈一起长大，妈妈很开明开朗独立，对我影响很深，同时某方面还是会传统保守些，本人很看重家庭观念，自以为是比较孝顺妈妈的，希望遇到的他也能珍惜家人",
+      "photos": []
+    },
+    "selfIntro": {
+      "content": "性格比较直爽，基本就是会哈哈大笑的那种，晚上很爱说，但还是期待别人能主动哈哈哈，不爱说服别人，比较随缘，信佛。一个内心比较细腻的水瓶座，期待一个可以让我撒娇的人",
+      "photos": []
+    },
+    "idealLife": {
+      "content": "共同扶持，一起进步，一起相信未来可期吧吧吧吧，如果可以遇到对的人，希望他能不轻易就放弃，因为我愿意认真对待。真心寻找那个对的人。",
+      "photos": []
+    },
+    "hobby": {
+      "content": "喜欢尝试新东西，喜欢练街舞，爱狗狗，寒暑假会想出去走走，偶尔爱在家宅一天。会英语法语和交传。",
+      "photos": [
+        "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG10.jpeg",
+        "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG11.jpeg",
+        "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG12.jpeg"
+      ]
+    }
+  },
+  "_openid": "%OPENID%",
+  "photos": [
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG2.jpeg",
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG3.jpeg",
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG4.jpeg",
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG5.jpeg",
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG6.jpeg",
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG7.jpeg",
+    "cloud://dev-2019-xe6cj.6465-dev-2019-xe6cj/WechatIMG9.jpeg"
+  ],
+  "auth_info": {
+    "personal_auth": false,
+    "company_auth": {
+      "authed": false,
+      "company_name": ""
+    }
+  },
+  "expect_info": {
+    "education": "本科",
+    "weight": "",
+    "marryStatus": "未婚",
+    "endAge": 30,
+    "startAge": 26,
+    "endHeight": 173,
+    "startHeight": 163,
+    "hometown": "都可以",
+    "location": "同城优先"
+  },
+  "match_info": {
+    "ilike": [],
+    "likeme": [],
+    "deletes": []
+  }
+}

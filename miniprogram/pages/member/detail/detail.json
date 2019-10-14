@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "zy-selector": "/myComponent/zy-selector/zySelector"
+    "zy-selector": "/myComponent/zy-selector/zySelector",
+    "loading": "/pages/index/loading/loading"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "_id": "%ID%",
+  "gender": "%GENDER%",
+  "company": "%COMPANY%",
+  "_openid": "%OPENID%",
+  "name": "%NAME%",
+  "adjCompanies": {},
+  "friends": {},
+  "completed": true
+}

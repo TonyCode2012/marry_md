@@ -105,12 +105,8 @@ Page({
         },
         success: function (res) {
           // update parent page data
-          var pages = getCurrentPages()
-          var prePage = pages[pages.length - 2]
           var type = that.type
-          prePage.setData({
-            ["userInfo.love_info." + type]: that.loveDetail
-          })
+          globalData.userInfo.love_info[type] = that.loveDetail
           wx.hideLoading()
           wx.showToast({
             title: '成功',
@@ -135,7 +131,7 @@ Page({
     wx.chooseImage({
       count: 4, //默认9
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['photos'], //从相册选择
+      sourceType: ['album','camera'], //从相册选择
       success: (res) => {
         this.setData({
           imgList: this.data.imgList.concat(res.tempFilePaths),
@@ -209,7 +205,8 @@ Page({
   onLoad: function (options) {
     const type = this.options.type;
     const curItem = listItem.find((item) => item.type == type);
-    var loveDetail = JSON.parse(options.loveDetail)
+    var loveDetail = globalData.userInfo.love_info[type]
+    //var loveDetail = JSON.parse(options.loveDetail)
     this.setData({
       item: curItem,
       loveDetail: loveDetail,

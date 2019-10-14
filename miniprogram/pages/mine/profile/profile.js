@@ -14,7 +14,7 @@ const {
   globalData
 } = app
 const db = wx.cloud.database({
-  env: 'test-t2od1'
+  env: 'dev-2019'
 })
 Page({
 
@@ -97,11 +97,7 @@ Page({
       },
       success: function (res) {
         // update parent page data
-        var pages = getCurrentPages()
-        var prePage = pages[pages.length - 2]
-        prePage.setData({
-          "userInfo.basic_info": that.data.basic_info
-        })
+        globalData.userInfo.basic_info = that.data.basic_info
         wx.hideLoading()
         wx.showToast({
           title: '成功',
@@ -123,7 +119,7 @@ Page({
     wx.chooseImage({
       count: 4, //默认9
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['photos'], //从相册选择
+      sourceType: ['album','camera'], //从相册选择
       success: (res) => {
         if (this.data.photos.length != 0) {
           this.setData({
@@ -165,8 +161,10 @@ Page({
    */
   onLoad: function(options) {
     // get basic info
-    let basic_info = JSON.parse(options.basic_info)
-    let photos = JSON.parse(options.photos).data
+    //let basic_info = JSON.parse(options.basic_info)
+    //let photos = JSON.parse(options.photos).data
+    let basic_info = globalData.userInfo.basic_info
+    let photos = globalData.userInfo.photos
     this.setData({
       basic_info: basic_info,
       photos: photos

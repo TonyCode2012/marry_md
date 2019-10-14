@@ -5,7 +5,7 @@ cloud.init()
 
 
 const db = cloud.database({
-  env: 'test-t2od1'
+  env: 'dev-2019-xe6cj'
 });
 const _ = db.command;
 

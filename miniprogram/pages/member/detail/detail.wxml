@@ -9,6 +9,7 @@
   }
 </wxs>
 
+<view wx:if="{{isLogin}}">
 <view class="section">
   <view class="section__title"></view>
   <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" disabled="{{ship}}">
@@ -179,3 +180,5 @@
     </view>
   </picker>
 </view>
+</view>
+<loading wx:else> </loading>

@@ -4,7 +4,7 @@ const cloud = require('wx-server-sdk')
 cloud.init()
 
 const db = cloud.database({
-  env: 'test-t2od1'
+  env: 'dev-2019-xe6cj'
 })
 const _ = db.command
 
@@ -97,9 +97,6 @@ var getColleague = function(openid) {
   for(var user of company2user.get(cuser.basic_info.company)) {
     if (user._openid != openid) {
       colleagues[user._openid] = null
-      // colleagues.push({
-      //   _openid: user._openid
-      // })
     }
   }
 }
@@ -110,9 +107,6 @@ var getEmployee = function(openid) {
     if(cuser._openid != _openid && cuser.basic_info.company != user.basic_info.company
     && cuser.basic_info.gender != user.basic_info.gender) {
       employees[user._openid] = null
-      // employees.push({
-      //   _openid: user._openid
-      // })
     }
   }
 }
@@ -131,7 +125,7 @@ var seleteCandidates = function(openid) {
         candidateBasic: users.get(candidateID).basic_info
       }
       if (matchExpect(expectBInfo)) {
-        // console.log(candidate)
+        //console.log(candidate)
         rCategory[i][candidateID] = candidate
         // console.log(rCategory[i])
         // (rCategory[i]).push(candidate)
@@ -177,8 +171,8 @@ exports.main = async (event, context) => {
         _openid: seeker._openid
       })
     }
-    users = new Map()
-    company2user = new Map()
+    //users = new Map()
+    //company2user = new Map()
     await db.collection('zy_users').where(_.or(cuserids))
     .get().then(
       function(res) {
@@ -225,7 +219,14 @@ exports.main = async (event, context) => {
                 nt_colleague: rColleagues,
                 nt_relative: rCandidates
               }
-            })
+            }).then(
+              function(res) {
+                console.log('add relative successfully! Info:'+JSON.stringify(res))
+              },
+              function(err) {
+                console.log('add relative failed! Error:'+JSON.stringify(err))
+              }
+            )
           } else {
             // if find, exclude deletes and recommended
             const networkInfo = res.data[0]

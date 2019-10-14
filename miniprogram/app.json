@@ -7,6 +7,7 @@
     "pages/group/home/home",
     "pages/mine/profile/profile",
     "pages/group/detail/detail",
+    "pages/member/detail/detail",
     "pages/mine/expect/expect",
     "pages/mine/aboutme/edit/edit",
     "pages/authcorp/authcorp",

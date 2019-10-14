@@ -4,7 +4,8 @@ App({
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
-      let env = 'test-t2od1'
+      let env ='dev-2019-xe6cj'
+      //let env = 'test-t2od1'
       // let env = 'dev-od3w5'
       wx.cloud.init({
         env: {
@@ -27,6 +28,22 @@ App({
       openid: null,
       isLogin: false
     };
+
+    //wx.login({
+    //  success (res) {
+    //    if (res.code) {
+    //      //发起网络请求
+    //      wx.request({
+    //          url: 'https://tcb-api.tencentcloudapi.com',
+    //        data: {
+    //          code: res.code
+    //        }
+    //      })
+    //    } else {
+    //      console.log('登录失败！' + res.errMsg)
+    //    }
+    //  }
+    //})
 
     wx.getSystemInfo({
       success: e => {
