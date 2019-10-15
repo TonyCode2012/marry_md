@@ -30,6 +30,7 @@ Component({
     Custom: app.globalData.Custom,
     isExpand: false,
     userInfo: null,
+    portraitURL: "",
     
     // check data change by hashcode
     hashCode: {
@@ -40,6 +41,7 @@ Component({
 
   observers: {
     'userInfo': function(data) {
+      const that = this
       if(data.love_info == undefined || data.love_info == '') return
       let hashCode = stringHash(JSON.stringify(data.love_info))
       // if hashcode is not changed, return
@@ -56,6 +58,34 @@ Component({
       this.setData({
         completePercent: completePercent,
         "hashCode.love_info": hashCode,
+      })
+      // add user head portrait
+      const userInfo = this.data.userInfo
+      var portraitURL = ""
+      if(userInfo.photos.length != 0 ) {
+          portraitURL = userInfo.photos[0]
+      } else if(userInfo.wechat_info.avatarUrl != undefined) {
+          portraitURL = userInfo.wechat_info.avatarUrl
+      } else {
+          console.log("Set portrait failed!")
+          return
+      }
+      wx.cloud.getTempFileURL({
+        fileList: [portraitURL],
+        success: res => {
+          // fileList 是一个有如下结构的对象数组
+          // [{
+          //    fileID: 'cloud://xxx.png', // 文件 ID
+          //    tempFileURL: '', // 临时文件网络链接
+          //    maxAge: 120 * 60 * 1000, // 有效期
+          // }]
+          portraitURL = res.fileList[0].tempFileURL
+          that.setData({
+              portraitURL: portraitURL
+          })
+          console.log(res.fileList)
+        },
+        fail: console.error
       })
     }
   },

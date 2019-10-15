@@ -53,7 +53,7 @@
   <view class="cu-list menu-avatar">
     <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
-      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});"></view>
       <view class="content">
         <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
         <view class="text-gray text-sm text-cut">
@@ -81,7 +81,7 @@
   <view class="cu-list menu-avatar">
     <view wx:for="{{toMe}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
-      <view bindtap="gotoUserDetail" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view bindtap="gotoUserDetail" class="cu-avatar round lg" style="background-image:url();"></view>
       <view class="content">
         <view  bindtap="gotoUserDetail" class="text-grey">{{item.name}}</view>
         <view class="text-gray text-sm text-cut">
@@ -115,7 +115,7 @@
   <view class="cu-list menu-avatar">
     <view wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
-      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});"></view>
       <view class="content">
         <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
         <view class="text-gray text-sm text-cut">

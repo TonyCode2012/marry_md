@@ -175,9 +175,13 @@ Component({
     onLoad: function (options) {
       const that = this
       if(!globalData.isLogin) {
-          this.setData({
-              redirectPath: that.data.redirectPath+'?sopenid='+options.sopenid+'&topenid='+options.topenid
-          })
+          if(options.sopenid == undefined || options.topenid == undefined) {
+              console.log("shared parameter error!")
+          } else {
+            this.setData({
+                redirectPath: that.data.redirectPath+'?sopenid='+options.sopenid+'&topenid='+options.topenid
+            })
+          }
           return
       }
       const {source} = options;
@@ -270,11 +274,18 @@ Component({
       for(var item of this.data.basic_item) {
           basic_info_t[item] = this.data.userInfo.basic_info[item]
       }
+      var portraitURL = ""
+      if(this.data.userInfo.photos.length != 0) {
+          portraitURL = this.data.userInfo.photos[0]
+      } else {
+          portraitURL = this.data.userInfo.wechat_info.avatarUrl
+      }
       let likeInfo = {
         _openid: this.data.userInfo._openid,
         decision: 'pending',
         time: now,
         basic_info: basic_info_t,
+        portraitURL: portraitURL
       }
       // update ilike info to db
       var ilikeInfo = app.globalData.userInfo.match_info.ilike
@@ -283,11 +294,18 @@ Component({
       for(var item of this.data.basic_item) {
           basic_info_g[item] = app.globalData.userInfo.basic_info[item]
       }
+      portraitURL = ""
+      if(app.globalData.userInfo.photos.length != 0) {
+          portraitURL = app.globalData.userInfo.photos[0]
+      } else {
+          portraitURL = app.globalData.userInfo.wechat_info.avatarUrl
+      }
       let likemeInfo = {
         _openid: app.globalData.userInfo._openid,
         decision: 'pending',
         time: now,
         basic_info: basic_info_g,
+        portraitURL: portraitURL
       }
       wx.cloud.callFunction({
         name: 'likeAction',
