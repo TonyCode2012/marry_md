@@ -4,122 +4,136 @@
 </cu-custom>
 
 
-<scroll-view scroll-x class="bg-white nav text-center">
-  <view class="cu-item {{0==TabCur?'text-green cur':''}}" bindtap="tabSelect" data-id="0">
-    通过企业邮箱
-  </view>
-  <view class="cu-item {{1==TabCur?'text-green cur':''}}" bindtap="tabSelect" data-id="1">
-    通过工作证件
-  </view>
-</scroll-view>
-
-<view wx:if="{{TabCur==0}}">
-
-  <view class="cu-bar  margin-top">
-    <view class="action">
-      <text class="cuIcon-titles text-green"></text> 通过企业邮箱认证
-    </view>
-  </view>
-
-  <view class='email-tips padding-lr text-sm text-grey'>
-    * 以企业域名为后缀的邮箱，不包含qq、163等个人邮箱。
-  </view>
-
-  <view class='padding-lr'>
-    <view class='bg-white radius'>
-      <view class="cu-form-group b">
-        <input placeholder="填写企业邮箱"></input>
-        <button class="cu-btn bg-green sm shadow">获取校验码</button>
-      </view>
-      <view class="cu-form-group">
-        <input placeholder="输入校验码"></input>
+<view wx:if="{{authed}}">
+  <view class="bg-white margin-top cu-card case">
+    <view class="grid col-1 text-center ">
+      <view class="padding" bindtap='gotoAuthorized'>
+        <text class='text-black text-bold text-df'>您已认证成功</text>
       </view>
     </view>
   </view>
-
-
-  <view class='padding text-sm text-grey'>
-    你将收到的邮件，不会对你的工作造成干扰，内容是“您的校验码是xxxx，工作人员不会索取，请勿泄漏...”
-  </view>
-  <view class='padding-lr'>
-    <view class='bg-white radius'>
-      <view class="cu-form-group ">
-        <view class="title">单位</view>
-        <picker bindchange="PickerChange" value="{{index_corp}}" range="{{corp}}">
-          <view class="picker">
-            {{index_corp !==null ? corp[index_corp]:''}}
-          </view>
-        </picker>
-      </view>
-      <view class="cu-form-group">
-        <view class="title">职位</view>
-        <input class='text-right ' placeholder="产品经理"></input>
-      </view>
-    </view>
-  </view>
-
-
-  <view class='padding'>
-    <button class='cu-btn block bg-green lg'>提交认证</button>
-  </view>
-
+  
 </view>
 
-<view wx:if="{{TabCur==1}}">
-
-  <view class="cu-bar  margin-top">
-    <view class="action">
-      <text class="cuIcon-titles text-green"></text> 通过企业邮箱认证
+<view wx:if="{{!authed}}">
+  <scroll-view scroll-x class="bg-white nav text-center">
+    <view class="cu-item {{0==TabCur?'text-green cur':''}}" bindtap="tabSelect" data-id="0">
+      通过企业邮箱
     </view>
-  </view>
+    <view class="cu-item {{1==TabCur?'text-green cur':''}}" bindtap="tabSelect" data-id="1">
+      通过工作证件
+    </view>
+  </scroll-view>
 
-  <view class='padding-lr'>
-    <view class="padding-lr bg-white radius">
-      <view class="cu-bar bg-white solid-bottom">
-        <view class="">
-          上传工作证件照片
+  <view wx:if="{{TabCur==0}}">
+
+    <view class="cu-bar  margin-top">
+      <view class="action">
+        <text class="cuIcon-titles text-green"></text> 通过企业邮箱认证
+      </view>
+    </view>
+
+    <view class='email-tips padding-lr text-sm text-grey'>
+      * 以企业域名为后缀的邮箱，不包含qq、163等个人邮箱。
+    </view>
+
+    <view class='padding-lr'>
+      <view class='bg-white radius'>
+        <view class="cu-form-group b">
+          <input placeholder="填写企业邮箱" bindinput="inputEmail" value="{{email}}"></input>
+          <button class="cu-btn bg-green sm shadow" bindtap="getAuthCode">获取校验码</button>
         </view>
-        <view class="action">
-          {{imgList.length}}/4
+        <view class="cu-form-group">
+          <input placeholder="输入校验码" bindinput="inputCode"></input>
         </view>
       </view>
-      <view class="grid col-4 grid-square flex-sub margin-top-sm">
-        <view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}">
-          <image src='{{imgList[index]}}' mode='aspectFill'></image>
-          <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
-            <text class="cuIcon-close"></text>
+    </view>
+
+
+    <view class='padding text-sm text-grey'>
+      你将收到的邮件，不会对你的工作造成干扰，内容是“您的校验码是xxxx，工作人员不会索取，请勿泄漏...”
+    </view>
+    <view class='padding-lr'>
+      <view class='bg-white radius'>
+        <view class="cu-form-group ">
+          <view class="title">单位</view>
+          <picker bindchange="PickerChange" value="{{index_corp}}" range="{{corp}}">
+            <view class="picker">
+              {{index_corp !==null ? corp[index_corp]:''}}
+            </view>
+          </picker>
+        </view>
+        <view class="cu-form-group">
+          <view class="title">职位</view>
+          <input class='text-right ' bindinput="inputJobTitle" value="{{jobTitle}}" placeholder=""></input>
+        </view>
+      </view>
+    </view>
+
+
+    <view class='padding'>
+      <button class='cu-btn block bg-green lg' bindtap="submitAuthCorp">提交认证</button>
+    </view>
+
+  </view>
+
+  <view wx:if="{{TabCur==1}}">
+
+    <view class="cu-bar  margin-top">
+      <view class="action">
+        <text class="cuIcon-titles text-green"></text> 通过企业邮箱认证
+      </view>
+    </view>
+
+    <view class='padding-lr'>
+      <view class="padding-lr bg-white radius">
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="">
+            上传工作证件照片
+          </view>
+          <view class="action">
+            {{imgList.length}}/4
           </view>
         </view>
-        <view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length<4}}">
-          <text class="cuIcon-cameraadd"></text>
+        <view class="grid col-4 grid-square flex-sub margin-top-sm">
+          <view class="bg-img" wx:for="{{imgList}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{imgList[index]}}">
+            <image src='{{imgList[index]}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+              <text class="cuIcon-close"></text>
+            </view>
+          </view>
+          <view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length<4}}">
+            <text class="cuIcon-cameraadd"></text>
+          </view>
         </view>
       </view>
     </view>
-  </view>
 
-  <view class='padding text-sm text-grey'>
-    需要能体现单位名称和姓名，例如公牌、劳动合同签字页、社保记录截图（展示工作单位名称）、钉钉的个人信息页面（企业已认证）等。上传越多，越容易通过审核。
-  </view>
+    <view class='padding text-sm text-grey'>
+      需要能体现单位名称和姓名，例如公牌、劳动合同签字页、社保记录截图（展示工作单位名称）、钉钉的个人信息页面（企业已认证）等。上传越多，越容易通过审核。
+    </view>
 
-  <view class='padding-lr'>
-    <view class='bg-white radius'>
-      <view class="cu-form-group ">
-        <view class="title">单位</view>
-        <picker bindchange="PickerChange" value="{{index_corp}}" range="{{corp}}">
-          <view class="picker">
-            {{index_corp !==null ? corp[index_corp]:''}}
-          </view>
-        </picker>
+    <view class='padding-lr'>
+      <view class='bg-white radius'>
+        <view class="cu-form-group ">
+          <view class="title">单位</view>
+          <picker bindchange="PickerChange" value="{{index_corp}}" range="{{corp}}">
+            <view class="picker">
+              {{index_corp !==null ? corp[index_corp]:''}}
+            </view>
+          </picker>
+        </view>
+        <view class="cu-form-group">
+          <view class="title">职位</view>
+          <input class='text-right ' placeholder="产品经理"></input>
+        </view>
       </view>
-      <view class="cu-form-group">
-        <view class="title">职位</view>
-        <input class='text-right ' placeholder="产品经理"></input>
-      </view>
+    </view>
+
+
+    <view class='padding'>
+      <button class='cu-btn block bg-green lg'>提交认证</button>
     </view>
   </view>
 
-
-  <view class='padding'>
-    <button class='cu-btn block bg-green lg'>提交认证</button>
-  </view>
 </view>

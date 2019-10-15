@@ -34,59 +34,12 @@ Component({
     ListTouchDirection: '',
     match_info: {},
 
-    methods: {
-      _deleteLike: function(data) {
-        const that = data.that
-        wx.showLoading({
-          title: '正在删除',
-        })
-        wx.cloud.callFunction({
-          name: 'likeAction_delete',
-          data: {
-            table: 'zy_users',
-            delItem: data.delItem,
-            ilike: {
-              myOpenid: data.ilike.fromOpenid,
-              hhOpenid: data.ilike.toOpenid
-            },
-            likeme: {
-              myOpenid: data.likeme.fromOpenid,
-              hhOpenid: data.likeme.toOpenid
-            }
-          },
-          success: res => {
-            wx.hideLoading()
-            wx.showToast({
-              title: '删除成功',
-              icon: 'success',
-              duration: 2000
-            })
-            console.log("delete "+data.delItem+" item successfully!" + JSON.stringify(res))
-            that.setData({
-              userInfo: data.userInfo
-            })
-            app.globalData.userInfo = data.userInfo
-            // update father page data
-            var param = {userInfo: app.globalData.userInfo}
-            that.triggerEvent('userInfoChange',param)
-          },
-          fail: res => {
-            wx.hideLoading()
-            wx.showToast({
-              title: '删除失败',
-              icon: 'none',
-              duration: 2000
-            })
-            console.log(res)
-          }
-        })
-      }
-    }
   },
 
   pageLifetimes: {
     show: function() {
-      if(globalData.gotData) {
+      //if(globalData.gotData) {
+      if(globalData.isLogin) {
         this.setData({
           'userInfo.match_info': globalData.userInfo.match_info
         })
@@ -109,7 +62,7 @@ Component({
       })
     },
     gotoUserDetail(e) {
-      const user = e.currentTarget.dataset.user
+      //const user = e.currentTarget.dataset.user
       const openid = e.currentTarget.dataset.openid
       wx.navigateTo({
         url: `/pages/member/detail/detail?openid=${openid}`,
@@ -138,6 +91,7 @@ Component({
         }
       })
     },
+
     decide(e) {
       const that = this
       let index = e.currentTarget.dataset.index
@@ -165,9 +119,55 @@ Component({
         }
       })
     },
+    _deleteLike: function(para) {
+      const that = this
+      wx.showLoading({
+        title: '正在删除',
+      })
+      wx.cloud.callFunction({
+        name: 'likeAction_delete',
+        data: {
+          table: 'zy_users',
+          delItem: para.delItem,
+          ilike: {
+            myOpenid: para.ilike.fromOpenid,
+            hhOpenid: para.ilike.toOpenid
+          },
+          likeme: {
+            myOpenid: para.likeme.fromOpenid,
+            hhOpenid: para.likeme.toOpenid
+          }
+        },
+        success: res => {
+          wx.hideLoading()
+          wx.showToast({
+            title: '删除成功',
+            icon: 'success',
+            duration: 2000
+          })
+          console.log("delete "+para.delItem+" item successfully!" + JSON.stringify(res))
+          that.setData({
+            userInfo: para.userInfo
+          })
+          app.globalData.userInfo = para.userInfo
+          // update father page data
+          var param = {userInfo: app.globalData.userInfo}
+          that.triggerEvent('userInfoChange',param)
+        },
+        fail: res => {
+          wx.hideLoading()
+          wx.showToast({
+            title: '删除失败',
+            icon: 'none',
+            duration: 2000
+          })
+          console.log(res)
+        }
+      })
+    },
     deleteILike(e) {
       let ilikeItem = (this.data.userInfo.match_info.ilike.splice(e.currentTarget.dataset.index, 1))[0]
-      let data = {
+      let para = {
         delItem: 'ilike',
         ilike: {
           fromOpenid: this.data.userInfo._openid,
@@ -180,11 +180,12 @@ Component({
         userInfo: this.data.userInfo,
         that: this
       }
-      this.data.methods._deleteLike(data)
+      //this.data.methods._deleteLike(data)
+      this._deleteLike(para)
     },
     deleteLikeMe(e) {
       let likemeItem = (this.data.userInfo.match_info.likeme.splice(e.currentTarget.dataset.index, 1))[0]
-      let data = {
+      let para = {
         delItem: 'likeme',
         ilike: {
           fromOpenid: likemeItem._openid,
@@ -197,8 +198,10 @@ Component({
         userInfo: this.data.userInfo,
         that: this
       }
-      this.data.methods._deleteLike(data)
+      //this.data.methods._deleteLike(data)
+      this._deleteLike(para)
     },
+
     // ListTouch触摸开始
     ListTouchStart(e) {
       this.setData({
@@ -212,7 +215,6 @@ Component({
         ListTouchDirection: e.touches[0].pageX - this.data.ListTouchStartPos > -100 ? 'right' : 'left'
       })
     },
-
     // ListTouch计算滚动
     ListTouchEnd(e) {
       if (this.data.ListTouchDirection == 'left') {

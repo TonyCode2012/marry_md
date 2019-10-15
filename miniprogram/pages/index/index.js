@@ -22,92 +22,92 @@ Page({
       schoolmate: '同学',
       colleague: '同事'
     },
+  },
 
-    methods: {
-      getRelativeCandidates: function (that) {
-        console.log(globalData)
-        if (globalData.userInfo._openid == undefined) return
-        db.collection('zy_network').where({
-          _openid: globalData.userInfo._openid
-        }).get({
-          success: res => {
-            if(res.data.length == 0) {
-              wx.hideLoading()
-              return
-            }
-            var paths = res.data[0]
-            var nt_relative = paths.nt_relative
-            var nt_colleague = paths.nt_colleague
-            var nt_company = paths.nt_company
-            var candidate2DArry = [nt_relative,nt_colleague,nt_company]
-            var ids = []
-            // generate request ids
-            for(var i in candidate2DArry) {
-              for(var openid of Object.keys(candidate2DArry[i])) {
-                ids.push({
-                  _openid: openid
-                })
-              }
-            }
-            // deal with relations
-            for (var openid of Object.keys(nt_relative)) {
-              var relative = nt_relative[openid]
-              relative.relation.reverse()
-              // relative.relation.reverse()
-              for (var relation of relative.relation) {
-                relation.relation = that.data.relationMap[relation.relation]
-              }
-            }
-            // get users from database
-            wx.cloud.callFunction({
-              name: 'getUserLInfo',
-              data: {
-                ids: ids
-              },
-              success: res => {
-                var users = res.result.data
-                var relativeCandidates = []
-                var colleagueCandidates = []
-                var companyCandidates = []
-                var userMap = new Map()
-                for (var user of users) {
-                  if (nt_relative.hasOwnProperty(user._openid)) {
-                    user.relativeInfo = nt_relative[user._openid]
-                    relativeCandidates.push(user)
-                  }
-                  if(nt_colleague.hasOwnProperty(user._openid)) {
-                    colleagueCandidates.push(user)
-                  }
-                  if(nt_company.hasOwnProperty(user._openid)) {
-                    companyCandidates.push(user)
-                  }
-                  userMap.set(user._openid,user)
-                }
-                var data = {
-                  relativeCandidates: relativeCandidates,
-                  colleagueCandidates: colleagueCandidates,
-                  companyCandidates: companyCandidates
-                }
-                that.setData({
-                  seekers: data
-                })
-                globalData.seekers = data
-                globalData.userMap = userMap
-              },
-              fail: err => {
-                console.log(err)
-              }
+  getRelativeCandidates: function () {
+    const that = this
+    console.log(globalData)
+    if (globalData.userInfo._openid == undefined) return
+    db.collection('zy_network').where({
+      _openid: globalData.userInfo._openid
+    }).get({
+      success: res => {
+        if(res.data.length == 0) {
+          wx.hideLoading()
+          return
+        }
+        var paths = res.data[0]
+        var nt_relative = paths.nt_relative
+        var nt_colleague = paths.nt_colleague
+        var nt_company = paths.nt_company
+        var candidate2DArry = [nt_relative,nt_colleague,nt_company]
+        var ids = []
+        // generate request ids
+        for(var i in candidate2DArry) {
+          for(var openid of Object.keys(candidate2DArry[i])) {
+            ids.push({
+              _openid: openid
             })
-            wx.hideLoading()
+          }
+        }
+        // deal with relations
+        for (var openid of Object.keys(nt_relative)) {
+          var relative = nt_relative[openid]
+          relative.relation.reverse()
+          // relative.relation.reverse()
+          for (var relation of relative.relation) {
+            relation.relation = that.data.relationMap[relation.relation]
+          }
+        }
+        // get users from database
+        wx.cloud.callFunction({
+          name: 'getUserLInfo',
+          data: {
+            ids: ids
+          },
+          success: res => {
+            var users = res.result.data
+            var relativeCandidates = []
+            var colleagueCandidates = []
+            var companyCandidates = []
+            var userMap = new Map()
+            for (var user of users) {
+              if (nt_relative.hasOwnProperty(user._openid)) {
+                user.relativeInfo = nt_relative[user._openid]
+                relativeCandidates.push(user)
+              }
+              if(nt_colleague.hasOwnProperty(user._openid)) {
+                colleagueCandidates.push(user)
+              }
+              if(nt_company.hasOwnProperty(user._openid)) {
+                companyCandidates.push(user)
+              }
+              userMap.set(user._openid,user)
+            }
+            var data = {
+              relativeCandidates: relativeCandidates,
+              colleagueCandidates: colleagueCandidates,
+              companyCandidates: companyCandidates
+            }
+            that.setData({
+              seekers: data
+            })
+            globalData.seekers = data
+            globalData.userMap = userMap
           },
           fail: err => {
-            wx.hideLoading()
             console.log(err)
           }
         })
+        wx.hideLoading()
       },
-    }
+      fail: err => {
+        wx.hideLoading()
+        console.log(err)
+      }
+    })
   },
+
   NavChange(e) {
     this.setData({
       PageCur: e.currentTarget.dataset.cur
@@ -133,6 +133,7 @@ Page({
       wx.showLoading({
         title: '加载中...',
       })
+      console.log(e.detail.openid)
       db.collection('zy_users').where({
         _openid: e.detail.openid
       }).get({
@@ -143,7 +144,8 @@ Page({
             userInfo: userInfo,
           })
           // get network resource
-          that.data.methods.getRelativeCandidates(that)
+          //that.data.methods.getRelativeCandidates(that)
+          that.getRelativeCandidates()
           globalData.gotData = true
         },
         fail: function (res) {

@@ -1,6 +1,9 @@
 // miniprogram/pages/mine/expect/expect.js
 
 const app = getApp()
+const {
+    globalData
+} = app
 
 Page({
 
@@ -94,11 +97,7 @@ Page({
       },
       success: function (res) {
         // update parent page data
-        var pages = getCurrentPages()
-        var prePage = pages[pages.length - 2]
-        prePage.setData({
-          "userInfo.expect_info": that.data.expect_info
-        })
+        globalData.userInfo.expect_info = that.data.expect_info
         wx.hideLoading()
         wx.showToast({
           title: '成功',
@@ -122,7 +121,7 @@ Page({
    */
   onLoad: function (options) {
     // set expect_info
-    let expect_info = JSON.parse(options.expect_info)
+    let expect_info = globalData.userInfo.expect_info
     this.setData({
       expect_info: expect_info,
     })

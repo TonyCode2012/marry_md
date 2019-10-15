@@ -25,6 +25,8 @@ Component({
    * 组件的初始数据
    */
   data: {
+    redirectPath: '/pages/member/detail/detail',
+    isLogin: globalData.isLogin,
     relationship: "",
     relations: false,
     relationArry: ['请选择你和介绍人的关系', '亲戚', '同事', '朋友', '同学', '其他'],
@@ -37,6 +39,19 @@ Component({
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
     source: '',
+    basic_item: [
+        "birthday",
+        "college",
+        "company",
+        "education",
+        "gender",
+        "height",
+        "weight",
+        "hometown",
+        "location",
+        "nickName",
+        "profession",
+    ],
 
     userInfo: {},
     likeTag: "感兴趣",
@@ -51,83 +66,7 @@ Component({
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg',
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg'
     ],
-
     
-    methods: {
-      chooseRelations: function (data) {
-        var { openid, that } = data
-        wx.showActionSheet({
-          itemList: that.data.relationArry,
-          complete(res) {
-            if (res.tapIndex != undefined && res.tapIndex != 0) {
-              that.data.relationIndex = res.tapIndex
-              console.log("relationship is:" + that.data.relationArry[that.data.relationIndex])
-              // generate relation data and insert into db
-              // var newRelation = JSON.parse(JSON.stringify(relationData))
-              // delete newRelation._id
-              // newRelation.rear = "zhaoyao2"
-              // newRelation.path.push("zhaoyao2")
-              // newRelation.relationship.push(that.data.relationArry[that.data.relationIndex])
-              // db.collection('transmition').add({
-              //   data: newRelation,
-              //   success: function (res) {
-              //     console.log(res)
-              //   },
-              //   fail: console.error
-              // })
-              wx.showLoading({
-                title: '正在分享',
-              })
-              wx.cloud.callFunction({
-                name: 'updateRelation',
-                data: {
-                  to_openid: openid,
-                  from_openid: globalData.userInfo._openid,
-                  relationship: that.data.relationRArry[that.data.relationIndex],
-                },
-                success: res => {
-                  console.log(res)
-                  wx.hideLoading()
-                  wx.showToast({
-                    title: '分享成功',
-                    icon: 'success',
-                    duration: 1500
-                  })
-                },
-                fail: err => {
-                  console.log(err)
-                  wx.hideLoading()
-                  wx.showToast({
-                    title: '分享失败',
-                    icon: 'none',
-                    duration: 1500
-                  })
-                }
-              })
-            } else if (res.tapIndex == undefined || res.tapIndex == 0 ||
-              (res.errMsg != undefined && res.errMsg.indexOf("cancel") != -1)) {
-              wx.showModal({
-                title: '提示',
-                content: '不选择与介绍人的关系将无法查看该简历',
-                confirmText: '返回首页',
-                cancelText: '选择关系',
-                success(res) {
-                  if (res.confirm) {
-                    console.log('返回首页')
-                    wx.redirectTo({
-                      url: '/pages/index/index',
-                    })
-                  } else if (res.cancel) {
-                    console.log('选择关系')
-                    that.data.methods.chooseRelations(data)
-                  }
-                }
-              })
-            }
-          }
-        })
-      }
-    }
   },
 
 
@@ -135,15 +74,72 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    chooseRelations: function (openid) {
+      const that = this
+      wx.showActionSheet({
+        itemList: that.data.relationArry,
+        complete(res) {
+          if (res.tapIndex != undefined && res.tapIndex != 0) {
+            that.data.relationIndex = res.tapIndex
+            console.log("relationship is:" + that.data.relationArry[that.data.relationIndex])
+            wx.showLoading({
+              title: '正在分享',
+            })
+            wx.cloud.callFunction({
+              name: 'updateRelation',
+              data: {
+                to_openid: openid,
+                from_openid: globalData.userInfo._openid,
+                relationship: that.data.relationRArry[that.data.relationIndex],
+              },
+              success: res => {
+                console.log(res)
+                wx.hideLoading()
+                wx.showToast({
+                  title: '分享成功',
+                  icon: 'success',
+                  duration: 1500
+                })
+              },
+              fail: err => {
+                console.log(err)
+                wx.hideLoading()
+                wx.showToast({
+                  title: '分享失败',
+                  icon: 'none',
+                  duration: 1500
+                })
+              }
+            })
+          } else if (res.tapIndex == undefined || res.tapIndex == 0 ||
+            (res.errMsg != undefined && res.errMsg.indexOf("cancel") != -1)) {
+            wx.showModal({
+              title: '提示',
+              content: '不选择与介绍人的关系将无法查看该简历',
+              confirmText: '返回首页',
+              cancelText: '选择关系',
+              success(res) {
+                if (res.confirm) {
+                  console.log('返回首页')
+                  wx.redirectTo({
+                    url: '/pages/index/index',
+                  })
+                } else if (res.cancel) {
+                  console.log('选择关系')
+                  that.chooseRelations(openid)
+                }
+              }
+            })
+          }
+        }
+      })
+    },
     share2Friend: function(e) {
       const that = this
       var openid = e.detail.index
       openid = this.data.userIDs[openid]
       openid = openid.substring(0,openid.indexOf(':'))
-      this.data.methods.chooseRelations({
-        openid: openid,
-        that: that
-      })
+      this.chooseRelations(openid)
       // wx.showLoading({
       //   title: '正在分享',
       // })
@@ -178,62 +174,51 @@ Component({
 
     onLoad: function (options) {
       const that = this
+      if(!globalData.isLogin) {
+          this.setData({
+              redirectPath: that.data.redirectPath+'?sopenid='+options.sopenid+'&topenid='+options.topenid
+          })
+          return
+      }
       const {source} = options;
       const _ = db.command
       // get transmition
-      if(options.starter != undefined) {
+      if(options.sopenid != undefined) {
+        console.log("enter from mini card")
         // show user info by clicking mini card
-        db.collection('zy_users').where({
-          _openid: 'testuser1'
+        db.collection('zy_nexus').where({
+          _openid: options.sopenid
         }).get({
           success:function(res) {
-            that.setData({
-              userInfo: res.data[0]
-            })
-            // get relation between sharer and partner
-            db.collection('transmition').where({
-              starter: options.starter,
-              rear: _.eq(options.rear).or(_.eq("zhaoyao2"))
+            db.collection('zy_users').where({
+                _openid: options.topenid
             }).get({
-              success:function(res) {
-                if(res.data.length > 1) {
-                  that.setData({
-                    relationship: true
-                  })
-                } else {
-                  that.data.methods.chooseRelations({
-                    openid: '',
-                    that: that
-                  })
-                  relationData = res.data[0]
+                success: function(res2) {
+                    that.setData({
+                        userInfo: res2.data[0]
+                    })
+                },
+                fail: function(err) {
+                    console.log("Get user info failed!"+err)
                 }
-              },
-              fail:function(res) {
-                console.log(res)
-              }
             })
+            var friends = res.data[0].friends
+            var loginID = globalData.userInfo._openid
+            if(loginID != undefined && friends.hasOwnProperty(loginID)) {
+                that.setData({
+                  relationship: true
+                })
+            } else {
+                that.chooseRelations(options.sopenid)
+            }
           },
           fail:function(res) {
             console.log(res)
           }
         })
-      } 
-      // else if(options.openid != undefined) {
-      //   // show user info from other page
-      //   db.collection('zy_users').where({
-      //     _openid: options.openid
-      //   }).get({
-      //     success:function(res) {
-      //       that.setData({
-      //         userInfo: res.data[0]
-      //       })
-      //     },
-      //     fail:function(res) {
-      //       console.log(res)
-      //     }
-      //   })
-      // } 
-      else {
+      } else {
+        console.log("enter from main port")
+        // show user info by clicking mini card
         var userInfo = globalData.userMap.get(options.openid)
         // set show like tag
         if(userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
@@ -269,7 +254,8 @@ Component({
       
       console.log('user detail', options, this.properties);
       this.setData({
-        source: source
+        source: source,
+        isLogin: globalData.isLogin
       })
     },
     bindLike: function() {
@@ -280,44 +266,28 @@ Component({
         title: '正在处理',
       })
       let now = new Date()
+      var basic_info_t = {}
+      for(var item of this.data.basic_item) {
+          basic_info_t[item] = this.data.userInfo.basic_info[item]
+      }
       let likeInfo = {
         _openid: this.data.userInfo._openid,
         decision: 'pending',
         time: now,
-        basic_info: {
-          birthday: this.data.userInfo.basic_info.birthday,
-          college: this.data.userInfo.basic_info.college,
-          company: this.data.userInfo.basic_info.company,
-          education: this.data.userInfo.basic_info.education,
-          gender: this.data.userInfo.basic_info.gender,
-          height: this.data.userInfo.basic_info.height,
-          weight: this.data.userInfo.basic_info.weight,
-          hometown: this.data.userInfo.basic_info.hometown,
-          location: this.data.userInfo.basic_info.location,
-          nickName: this.data.userInfo.basic_info.nickName,
-          profession: this.data.userInfo.basic_info.profession,
-        }
+        basic_info: basic_info_t,
       }
       // update ilike info to db
       var ilikeInfo = app.globalData.userInfo.match_info.ilike
       ilikeInfo.push(likeInfo)
+      var basic_info_g = {}
+      for(var item of this.data.basic_item) {
+          basic_info_g[item] = app.globalData.userInfo.basic_info[item]
+      }
       let likemeInfo = {
         _openid: app.globalData.userInfo._openid,
         decision: 'pending',
         time: now,
-        basic_info: {
-          birthday: app.globalData.userInfo.basic_info.birthday,
-          college: app.globalData.userInfo.basic_info.college,
-          company: app.globalData.userInfo.basic_info.company,
-          education: app.globalData.userInfo.basic_info.education,
-          gender: app.globalData.userInfo.basic_info.gender,
-          height: app.globalData.userInfo.basic_info.height,
-          weight: app.globalData.userInfo.basic_info.weight,
-          hometown: app.globalData.userInfo.basic_info.hometown,
-          location: app.globalData.userInfo.basic_info.location,
-          nickName: app.globalData.userInfo.basic_info.nickName,
-          profession: app.globalData.userInfo.basic_info.profession,
-        }
+        basic_info: basic_info_g,
       }
       wx.cloud.callFunction({
         name: 'likeAction',
@@ -390,7 +360,18 @@ Component({
         current: e.currentTarget.dataset.url
       });
     },
-  }
+    onShareAppMessage: function (res) {
+       if (res.from === 'button') {
+         // 来自页面内转发按钮
+         console.log(res.target)
+       }
+       return {
+         title: this.data.userInfo._openid,
+         //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
+         path: '/pages/member/detail/detail?sopenid='+globalData.userInfo._openid+'&topenid='+this.data.userInfo._openid
+       }
+     }
+    }
 })
 
 // Page({

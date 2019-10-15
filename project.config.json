@@ -17,8 +17,8 @@
 			"outputPath": ""
 		}
 	},
-	"appid": "wxbec5ea22913b5173",
-	"projectname": "weapp_match_a",
+	"appid": "wxceab784da102d1d8",
+	"projectname": "weapp_zy",
 	"libVersion": "2.8.1",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
@@ -41,7 +41,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 15,
+			"current": 12,
 			"list": [
 				{
 					"id": -1,
@@ -131,7 +131,7 @@
 					"id": 12,
 					"name": "enter_mini_card",
 					"pathName": "pages/member/detail/detail",
-					"query": "starter=yaoz&rear=yudayan",
+					"query": "sopenid=alibaba0&topenid=alibaba9",
 					"scene": 1007
 				},
 				{
