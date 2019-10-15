@@ -177,6 +177,6 @@
 </view>
 
 
-  <button bindtap="getRelation" class='cu-btn block bg-red lg'>保 存</button>
+  <button bindtap="getRelation" class='cu-btn block bg-red lg'>更新关系网</button>
 
 <view class="cu-tabbar-height"></view>
