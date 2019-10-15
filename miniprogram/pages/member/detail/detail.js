@@ -138,7 +138,7 @@ Component({
       const that = this
       var openid = e.detail.index
       openid = this.data.userIDs[openid]
-      openid = openid.substring(0,openid.indexOf(':'))
+      openid = openid.substring(openid.indexOf(':')+1,openid.length)
       this.chooseRelations(openid)
       // wx.showLoading({
       //   title: '正在分享',

@@ -47,7 +47,8 @@ Component({
       let love_info = data.love_info
       let completePercent = 0
       for(let i=0;i<aboutme.listItem.length;i++) {
-        if(love_info[aboutme.listItem[i].type].content != '') {
+        var loveInfo_item = love_info[aboutme.listItem[i].type]
+        if (loveInfo_item != undefined && loveInfo_item.content != '') {
           completePercent++
         }
       }

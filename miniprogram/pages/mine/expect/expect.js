@@ -25,8 +25,6 @@ Page({
     // set age slider
     minAge: 21,
     maxAge: 50,
-    tsminAge: 21,
-    tsmaxAge: 50,
 
     rangeArry: ['marryStatus','education'],
     rangeIndexObj: {
@@ -92,8 +90,9 @@ Page({
       data: {
         table: 'zy_users',
         _openid: app.globalData.userInfo._openid,
-        field: 'expect_info',
-        data: that.data.expect_info
+        data: {
+          expect_info: that.data.expect_info
+        }
       },
       success: function (res) {
         // update parent page data
@@ -122,6 +121,19 @@ Page({
   onLoad: function (options) {
     // set expect_info
     let expect_info = globalData.userInfo.expect_info
+    // check initial value validation
+    if(expect_info.startAge == undefined) {
+      expect_info.startAge = this.data.minAge
+    }
+    if(expect_info.endAge == undefined) {
+      expect_info.endAge = this.data.minAge
+    }
+    if(expect_info.startHeight == undefined) {
+      expect_info.startHeight = this.data.minHeight
+    }
+    if(expect_info.endHeight == undefined) {
+      expect_info.endHeight = this.data.minHeight
+    }
     this.setData({
       expect_info: expect_info,
     })

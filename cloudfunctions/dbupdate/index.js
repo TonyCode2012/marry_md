@@ -15,9 +15,7 @@ exports.main = async (event, context) => {
     return await db.collection(event.table).where({
       _openid: event._openid
     }).update({
-      data: {
-        [event.field]: event.data
-      }
+      data: event.data
     })
   } catch (e) {
     console.error(e);

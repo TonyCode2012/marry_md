@@ -1,4 +1,6 @@
 // miniprogram/pages/meet/authorize/authorize.js
+const { aboutme } = require("../../../utils/data.js");
+const listItem = aboutme.listItem;
 
 const app = getApp()
 let {
@@ -81,6 +83,13 @@ Page({
     var userInfo = e.detail.userInfo
     var gender = userInfo.gender==1 ? "male" : "female"
     var nickName = userInfo.nickName
+    var love_info = {}
+    for(var el of listItem) {
+      love_info[el.type] = {
+        content: "",
+        photos: []
+      }
+    }
     var userInfo = {
         _openid: that.data.openid,
         auth_info: {},
@@ -92,8 +101,12 @@ Page({
             birthday: "2000-01-01"
         },
         expect_info: {},
-        love_info: {},
-        match_info: {},
+        love_info: love_info,
+        match_info: {
+          ilike: [],
+          likeme: [],
+          deletes: []
+        },
         photos: [],
         wechat_info: userInfo
     }
@@ -106,6 +119,9 @@ Page({
         gender: gender,
         name: nickName
     }
+    wx.showLoading({
+      title: '请稍等',
+    })
     wx.cloud.callFunction({
         name: 'addUser',
         data: {
@@ -120,9 +136,11 @@ Page({
             wx.reLaunch({
                 url: that.data.redirectPath
             })
+            wx.hideLoading()
         },
         fail: function(err) {
-            console.log("Create user info failed,Please check!")
+          console.log("Create user info failed,Please check!")
+          wx.hideLoading()
         }
     })
         /*

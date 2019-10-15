@@ -26,11 +26,12 @@ Page({
     now: formatDate(new Date()),
 
     basic_info: {},
-
     photos: [],
+    imgList: [],
     orgImgList: [],
     addImgList: [],
     delImgList: [],
+    type: "profile",
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -83,7 +84,14 @@ Page({
     })
   },
 
-  Save: function(data) {
+  Save: function(e) {
+    const that = this
+    this.dealSave({
+      delPics: this.data.delImgList,
+      addPics: this.data.addImgList
+    })
+  },
+  dealSave: function(data) {
     let {
       delPics,
       addPics
@@ -103,20 +111,20 @@ Page({
     let now = new Date()
     now = Date.parse(now.toUTCString())
     wx.cloud.uploadFile({
-      cloudPath: that.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
+      cloudPath: that.data.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
       filePath: photos[0],
       complete(res) {
         if (res.fileID != undefined) {
-          that.photos.push(res.fileID)
+          that.data.photos.push(res.fileID)
         }
         photos.splice(0,1)
         if (photos.length != 0) {
           console.log("continue upload,length:" + photos.length)
-          that.uploadPic(photos)
+          that.data.uploadPic(photos)
         } else {
           console.log("start update loveinfo")
-          if(that.delImgList.length != 0) {
-            that.deletePic(that.delImgList)
+          if(that.data.delImgList.length != 0) {
+            that.data.deletePic(that.data.delImgList)
           } else {
             that.updateBasicInfo()
           }
@@ -134,16 +142,16 @@ Page({
         // handle success
         console.log(res.fileList)
         for(let pic in res.fileList) {
-          for(let i=0;i<that.photos.length;i++) {
-            if(pic == that.photos[i]) {
-              that.photos.splice(i,1)
+          for(let i=0;i<that.data.imgList.length;i++) {
+            if(pic == that.data.imgList[i]) {
+              that.data.imgList.splice(i,1)
               break
             }
           }
         }
         data.splice(0,1)
         if(data.length != 0) {
-          that.deletePic(data)
+          that.data.deletePic(data)
         } else {
           that.updateBasicInfo()
         }
@@ -155,7 +163,7 @@ Page({
       }
     })
   },
-  updateBasicInfo: function(e) {
+  updateBasicInfo: function() {
     const that = this
     console.log(that.data.basic_info)
     wx.showLoading({
@@ -169,8 +177,12 @@ Page({
       data: {
         table: 'zy_users',
         _openid: globalData.userInfo._openid,
-        field: 'basic_info',
-        data: that.data.basic_info,
+        data: {
+          basic_info: that.data.basic_info,
+          photos: that.data.photos
+        }
+        // field: 'basic_info',
+        // data: that.data.basic_info,
       },
       success: function (res) {
         // update parent page data
@@ -196,37 +208,47 @@ Page({
     wx.chooseImage({
       count: 4, //默认9
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album','camera'], //从相册选择
+      sourceType: ['album', 'camera'], //从相册选择
       success: (res) => {
-        if (this.data.photos.length != 0) {
-          this.setData({
-            photos: this.data.photos.concat(res.tempFilePaths)
-          })
-        } else {
-          this.setData({
-            photos: res.tempFilePaths
-          })
-        }
+        this.setData({
+          imgList: this.data.imgList.concat(res.tempFilePaths),
+          addImgList: this.data.addImgList.concat(res.tempFilePaths)
+        })
       }
     });
   },
   ViewImage(e) {
     wx.previewImage({
-      urls: this.data.photos,
+      urls: this.data.imgList,
       current: e.currentTarget.dataset.url
     });
   },
   DelImg(e) {
     wx.showModal({
-      title: '',
-      content: '确定要删除吗？',
-      cancelText: '取消',
-      confirmText: '确定',
+      title: '召唤师',
+      content: '确定要删除这段回忆吗？',
+      cancelText: '再看看',
+      confirmText: '再见',
       success: res => {
         if (res.confirm) {
-          this.data.photos.splice(e.currentTarget.dataset.index, 1);
+          let delPic = this.data.imgList.splice(e.currentTarget.dataset.index, 1)
+          // check if the delted pic exists in original pics
+          for (let i = 0; i < this.data.orgImgList.length; i++) {
+            if (delPic == this.data.orgImgList[i]) {
+              this.data.delImgList.push(delPic)
+              break
+            }
+          }
+          for (let i = 0; i < this.data.addImgList.length; i++) {
+            if (this.data.addImgList[i] == delPic) {
+              this.data.addImgList.splice(i, 1)
+              break
+            }
+          }
           this.setData({
-            photos: this.data.photos
+            imgList: this.data.imgList,
+            delImgList: this.data.delImgList,
+            addImgList: this.data.addImgList,
           })
         }
       }
@@ -238,13 +260,12 @@ Page({
    */
   onLoad: function(options) {
     // get basic info
-    //let basic_info = JSON.parse(options.basic_info)
-    //let photos = JSON.parse(options.photos).data
     let basic_info = globalData.userInfo.basic_info
-    let photos = globalData.userInfo.photos
+    let imgList = globalData.userInfo.photos
     this.setData({
       basic_info: basic_info,
-      photos: photos
+      imgList: imgList,
+      orgImgList: [].concat(imgList)
     })
     let rangeIndexObj = {
       weightIndex: 0,

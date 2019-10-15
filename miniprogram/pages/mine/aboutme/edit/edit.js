@@ -21,111 +21,112 @@ Page({
     delImgList: [],
     loveDetail: {},
     type: '',
-    dealSave: function(data) {
-      let {
-        delPics,
-        addPics
-      } = data
-      if(delPics.length == 0 && addPics.length == 0) {
-        this.updateLoveInfo()
-      } else if(addPics.length == 0) {
-        this.deletePic(delPics)
-      } else {
-        this.uploadPic(addPics)
-      }
-    },
-    uploadPic: function (data) {
-      let photos = data
-      if(photos.lenght == 0) return
-      const that = this
-      let now = new Date()
-      now = Date.parse(now.toUTCString())
-      wx.cloud.uploadFile({
-        cloudPath: that.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
-        filePath: photos[0],
-        complete(res) {
-          if (res.fileID != undefined) {
-            that.loveDetail.photos.push(res.fileID)
-          }
-          photos.splice(0,1)
-          if (photos.length != 0) {
-            console.log("continue upload,length:" + photos.length)
-            that.uploadPic(photos)
-          } else {
-            console.log("start update loveinfo")
-            if(that.delImgList.length != 0) {
-              that.deletePic(that.delImgList)
-            } else {
-              that.updateLoveInfo()
-            }
-            
-          }
+  },
+  
+  dealSave: function (data) {
+    let {
+      delPics,
+      addPics
+    } = data
+    if (delPics.length == 0 && addPics.length == 0) {
+      this.updateLoveInfo()
+    } else if (addPics.length == 0) {
+      this.deletePic(delPics)
+    } else {
+      this.uploadPic(addPics)
+    }
+  },
+  uploadPic: function (data) {
+    let photos = data
+    if (photos.lenght == 0) return
+    const that = this
+    let now = new Date()
+    now = Date.parse(now.toUTCString())
+    wx.cloud.uploadFile({
+      cloudPath: that.data.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
+      filePath: photos[0],
+      complete(res) {
+        if (res.fileID != undefined) {
+          that.data.loveDetail.photos.push(res.fileID)
         }
-      })
-    },
-    deletePic: function(data) {
-      if(data.length == 0) return
-      const that = this
-      wx.cloud.deleteFile({
-        fileList: data[0],
-        success: res => {
-          // handle success
-          console.log(res.fileList)
-          for(let pic in res.fileList) {
-            for(let i=0;i<that.loveDetail.photos.length;i++) {
-              if(pic == that.loveDetail.photos[i]) {
-                that.loveDetail.photos.splice(i,1)
-                break
-              }
-            }
-          }
-          data.splice(0,1)
-          if(data.length != 0) {
-            that.deletePic(data)
+        photos.splice(0, 1)
+        if (photos.length != 0) {
+          console.log("continue upload,length:" + photos.length)
+          that.data.uploadPic(photos)
+        } else {
+          console.log("start update loveinfo")
+          if (that.data.delImgList.length != 0) {
+            that.deletePic(that.data.delImgList)
           } else {
             that.updateLoveInfo()
           }
-          
-        },
-        fail: err => {
-          // handle error
-          console.log("delete picture failed!" + err)
+
         }
-      })
-    },
-    updateLoveInfo: function () {
-      const that = this
-      wx.cloud.callFunction({
-        name: 'dbupdate',
-        data: {
-          table: 'zy_users',
-          _openid: globalData.userInfo._openid,
-          field: 'love_info.' + that.type,
-          data: that.loveDetail
-        },
-        success: function (res) {
-          // update parent page data
-          var type = that.type
-          globalData.userInfo.love_info[type] = that.loveDetail
-          wx.hideLoading()
-          wx.showToast({
-            title: '成功',
-            icon: 'success',
-            duration: 2000
-          })
-        },
-        fail: function (res) {
-          wx.hideLoading()
-          wx.showToast({
-            title: '失败',
-            icon: 'fail',
-            duration: 2000
-          })
-        }
-      })
-    },
+      }
+    })
   },
-  
+  deletePic: function (data) {
+    if (data.length == 0) return
+    const that = this
+    wx.cloud.deleteFile({
+      fileList: data[0],
+      success: res => {
+        // handle success
+        console.log(res.fileList)
+        for (let pic in res.fileList) {
+          for (let i = 0; i < that.data.loveDetail.photos.length; i++) {
+            if (pic == that.data.loveDetail.photos[i]) {
+              that.data.loveDetail.photos.splice(i, 1)
+              break
+            }
+          }
+        }
+        data.splice(0, 1)
+        if (data.length != 0) {
+          that.deletePic(data)
+        } else {
+          that.updateLoveInfo()
+        }
+
+      },
+      fail: err => {
+        // handle error
+        console.log("delete picture failed!" + err)
+      }
+    })
+  },
+  updateLoveInfo: function () {
+    const that = this
+    wx.cloud.callFunction({
+      name: 'dbupdate',
+      data: {
+        table: 'zy_users',
+        _openid: globalData.userInfo._openid,
+        data: {
+          ['love_info.'+that.data.type]: that.data.loveDetail
+        }
+      },
+      success: function (res) {
+        // update parent page data
+        var type = that.data.type
+        globalData.userInfo.love_info[type] = that.data.loveDetail
+        wx.hideLoading()
+        wx.showToast({
+          title: '成功',
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail: function (res) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '失败',
+          icon: 'fail',
+          duration: 2000
+        })
+      }
+    })
+  },
 
   ChooseImage() {
     wx.chooseImage({
@@ -192,7 +193,7 @@ Page({
       title: '正在保存',
     })
     // upload picture
-    this.data.dealSave({
+    this.dealSave({
       delPics: this.data.delImgList,
       addPics: this.data.addImgList
     })

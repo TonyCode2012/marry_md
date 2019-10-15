@@ -52,7 +52,7 @@ Component({
         userIdx: index
       })
       var openid = this.properties.userIDs[index]
-      openid = openid.substring(0,openid.indexOf(':'))
+      openid = openid.substring(openid.indexOf(':')+1,openid.length)
       this.triggerEvent('selectUser', {openid:openid})
     },
   }

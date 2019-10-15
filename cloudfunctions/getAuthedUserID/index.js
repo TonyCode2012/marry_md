@@ -16,7 +16,7 @@ exports.main = async (event, context) => {
         .get().then(
     function(res) {
       for(var user of res.data) {
-        userIDs.push(user._openid+":"+user.name)
+        userIDs.push(user.name+":"+user._openid)
       }
     }
   )
