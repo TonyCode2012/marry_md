@@ -38,7 +38,8 @@ Component({
 
   pageLifetimes: {
     show: function() {
-      if(globalData.gotData) {
+      //if(globalData.gotData) {
+      if(globalData.isLogin) {
         this.setData({
           'userInfo.match_info': globalData.userInfo.match_info
         })

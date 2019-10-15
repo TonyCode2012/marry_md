@@ -131,7 +131,7 @@
 					"id": 12,
 					"name": "enter_mini_card",
 					"pathName": "pages/member/detail/detail",
-					"query": "sopenid=alibaba0",
+					"query": "sopenid=alibaba0&topenid=alibaba9",
 					"scene": 1007
 				},
 				{

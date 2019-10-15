@@ -9,7 +9,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    redirectPath: {
+        type: String,
+        value: '/pages/index/index'
+    }
   },
 
   /**
@@ -29,20 +32,24 @@ Component({
    */
   methods: {
     checkAuthorize() {
+      const that = this
+      var redirectPath = that.data.redirectPath
       this.getOpenId().then(openid => {
-        db.collection('users').where({
+        db.collection('zy_users').where({
           _openid: globalData.openid
         }).get().then(res => {
           if (res.data.length === 0) {
+            redirectPath = escape(redirectPath)
             wx.reLaunch({
-              url: '/pages/index/authorize/authorize',
+              url: `/pages/index/authorize/authorize?openid=${globalData.openid}&path=${redirectPath}`,
             })
           } else {
             app.globalData.wechat_info = res.data[0];
-            console.log('user profile from loading: ', app.globalData.wechat_info);
+            app.globalData.userInfo = res.data[0]
             app.globalData.isLogin = true;
+            console.log('user profile from loading: ', app.globalData.wechat_info);
             wx.reLaunch({
-              url: '/pages/index/index',
+              url: redirectPath,
             })
           }
         })

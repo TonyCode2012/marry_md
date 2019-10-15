@@ -171,7 +171,7 @@
 
       <view wx:if="{{source == 'meet'}}" class="btn-group cu-bar tabbar foot">
         <button style="display:{{showLike?'block':'none'}}" bindtap="bindLike" class="cu-btn bg-red round">{{likeTag}}</button>
-        <button open-type="bindShare" class="cu-btn bg-green round">推荐给好友</button>
+        <button open-type="share" class="cu-btn bg-green round">推荐给好友</button>
       </view>
 
       <view class="cu-tabbar-height"></view>
@@ -181,4 +181,4 @@
   </picker>
 </view>
 </view>
-<loading wx:else> </loading>
+<loading wx:else redirectPath="{{redirectPath}}"> </loading>

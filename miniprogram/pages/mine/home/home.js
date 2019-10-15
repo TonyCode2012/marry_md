@@ -61,7 +61,8 @@ Component({
 
   pageLifetimes: {
       show: function() {
-          if(globalData.gotData) {
+          //if(globalData.gotData) {
+          if(globalData.isLogin) {
             this.setData({
                 userInfo: globalData.userInfo
             })

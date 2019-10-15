@@ -11,14 +11,20 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    redirectPath: "",
+    openid: ""
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-
+    if(options.path != undefined) {
+        this.setData({
+            redirectPath: unescape(options.path),
+            openid: options.openid
+        })
+    }
   },
 
   /**
@@ -71,7 +77,56 @@ Page({
   },
 
   bindGetUserInfo (e) {
-    db.collection('users').where({
+    const that = this
+    var userInfo = e.detail.userInfo
+    var gender = userInfo.gender==1 ? "male" : "female"
+    var nickName = userInfo.nickName
+    var userInfo = {
+        _openid: that.data.openid,
+        auth_info: {},
+        basic_info: {
+            gender: gender,
+            nickName: nickName,
+            hometown: ['上海市','上海市','浦东新区'],
+            location: ['上海市','上海市','浦东新区'],
+            birthday: "2000-01-01"
+        },
+        expect_info: {},
+        love_info: {},
+        match_info: {},
+        photos: [],
+        wechat_info: userInfo
+    }
+    var nexusInfo = {
+        _openid: that.data.openid,
+        adjCompanies: {},
+        company: "",
+        completed: false,
+        friends: {},
+        gender: gender,
+        name: nickName
+    }
+    wx.cloud.callFunction({
+        name: 'addUser',
+        data: {
+            userTable: 'zy_users',
+            userInfo: userInfo,
+            nexusTable: 'zy_nexus',
+            nexusInfo: nexusInfo
+        },
+        success: function(res) {
+            globalData.isLogin = true
+            globalData.userInfo = userInfo;
+            wx.reLaunch({
+                url: that.data.redirectPath
+            })
+        },
+        fail: function(err) {
+            console.log("Create user info failed,Please check!")
+        }
+    })
+        /*
+    db.collection('zy_users').where({
       _openid: globalData.openid
     }).get().then(res => {
       if (res.data.length > 0) {
@@ -85,9 +140,16 @@ Page({
           console.log('users add', res)
         }
       })    
-      wx.reLaunch({
-        url: '/pages/index/index',
-      })
+      if(this.data.redirectPath == "") {
+        wx.reLaunch({
+          url: '/pages/index/index',
+        })
+      } else {
+        wx.reLaunch({
+          url: this.data.redirectPath,
+        })
+      }
     });
+    */
   }
 })

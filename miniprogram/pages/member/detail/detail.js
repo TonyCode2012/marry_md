@@ -25,6 +25,7 @@ Component({
    * 组件的初始数据
    */
   data: {
+    redirectPath: '/pages/member/detail/detail',
     isLogin: globalData.isLogin,
     relationship: "",
     relations: false,
@@ -173,17 +174,37 @@ Component({
 
     onLoad: function (options) {
       const that = this
+      if(!globalData.isLogin) {
+          this.setData({
+              redirectPath: that.data.redirectPath+'?sopenid='+options.sopenid+'&topenid='+options.topenid
+          })
+          return
+      }
       const {source} = options;
       const _ = db.command
       // get transmition
       if(options.sopenid != undefined) {
+        console.log("enter from mini card")
         // show user info by clicking mini card
         db.collection('zy_nexus').where({
           _openid: options.sopenid
         }).get({
           success:function(res) {
+            db.collection('zy_users').where({
+                _openid: options.topenid
+            }).get({
+                success: function(res2) {
+                    that.setData({
+                        userInfo: res2.data[0]
+                    })
+                },
+                fail: function(err) {
+                    console.log("Get user info failed!"+err)
+                }
+            })
             var friends = res.data[0].friends
-            if(friends.hasOwnProperty(globalData.userInfo._openid)) {
+            var loginID = globalData.userInfo._openid
+            if(loginID != undefined && friends.hasOwnProperty(loginID)) {
                 that.setData({
                   relationship: true
                 })
@@ -195,23 +216,9 @@ Component({
             console.log(res)
           }
         })
-      } 
-      // else if(options.openid != undefined) {
-      //   // show user info from other page
-      //   db.collection('zy_users').where({
-      //     _openid: options.openid
-      //   }).get({
-      //     success:function(res) {
-      //       that.setData({
-      //         userInfo: res.data[0]
-      //       })
-      //     },
-      //     fail:function(res) {
-      //       console.log(res)
-      //     }
-      //   })
-      // } 
-      else {
+      } else {
+        console.log("enter from main port")
+        // show user info by clicking mini card
         var userInfo = globalData.userMap.get(options.openid)
         // set show like tag
         if(userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
@@ -247,7 +254,8 @@ Component({
       
       console.log('user detail', options, this.properties);
       this.setData({
-        source: source
+        source: source,
+        isLogin: globalData.isLogin
       })
     },
     bindLike: function() {
@@ -352,7 +360,18 @@ Component({
         current: e.currentTarget.dataset.url
       });
     },
-  }
+    onShareAppMessage: function (res) {
+       if (res.from === 'button') {
+         // 来自页面内转发按钮
+         console.log(res.target)
+       }
+       return {
+         title: this.data.userInfo._openid,
+         //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
+         path: '/pages/member/detail/detail?sopenid='+globalData.userInfo._openid+'&topenid='+this.data.userInfo._openid
+       }
+     }
+    }
 })
 
 // Page({

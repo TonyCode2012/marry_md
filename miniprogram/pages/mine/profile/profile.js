@@ -28,6 +28,9 @@ Page({
     basic_info: {},
 
     photos: [],
+    orgImgList: [],
+    addImgList: [],
+    delImgList: [],
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -80,13 +83,87 @@ Page({
     })
   },
 
-  Save: function(e) {
+  Save: function(data) {
+    let {
+      delPics,
+      addPics
+    } = data
+    if(delPics.length == 0 && addPics.length == 0) {
+      this.updateBasicInfo()
+    } else if(addPics.length == 0) {
+      this.deletePic(delPics)
+    } else {
+      this.uploadPic(addPics)
+    }
+  },
+  uploadPic: function (data) {
+    let photos = data
+    if(photos.lenght == 0) return
+    const that = this
+    let now = new Date()
+    now = Date.parse(now.toUTCString())
+    wx.cloud.uploadFile({
+      cloudPath: that.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
+      filePath: photos[0],
+      complete(res) {
+        if (res.fileID != undefined) {
+          that.photos.push(res.fileID)
+        }
+        photos.splice(0,1)
+        if (photos.length != 0) {
+          console.log("continue upload,length:" + photos.length)
+          that.uploadPic(photos)
+        } else {
+          console.log("start update loveinfo")
+          if(that.delImgList.length != 0) {
+            that.deletePic(that.delImgList)
+          } else {
+            that.updateBasicInfo()
+          }
+          
+        }
+      }
+    })
+  },
+  deletePic: function(data) {
+    if(data.length == 0) return
+    const that = this
+    wx.cloud.deleteFile({
+      fileList: data[0],
+      success: res => {
+        // handle success
+        console.log(res.fileList)
+        for(let pic in res.fileList) {
+          for(let i=0;i<that.photos.length;i++) {
+            if(pic == that.photos[i]) {
+              that.photos.splice(i,1)
+              break
+            }
+          }
+        }
+        data.splice(0,1)
+        if(data.length != 0) {
+          that.deletePic(data)
+        } else {
+          that.updateBasicInfo()
+        }
+        
+      },
+      fail: err => {
+        // handle error
+        console.log("delete picture failed!" + err)
+      }
+    })
+  },
+  updateBasicInfo: function(e) {
     const that = this
     console.log(that.data.basic_info)
     wx.showLoading({
       title: '正在保存',
     })
 
+    globalData.userInfo.basic_info = this.data.basic_info
+    globalData.userInfo.photos = this.data.photos
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
