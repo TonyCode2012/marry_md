@@ -2,7 +2,7 @@
 
 <wxs module="ageModule">
   var deal = function(data) {
-    if (typeof(data) == 'string') return data.slice(2,4)
+    if (typeof(data) == 'string') return data.slice(0,4)
     else return ""
   }
   module.exports = {

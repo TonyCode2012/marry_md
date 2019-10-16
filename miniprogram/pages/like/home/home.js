@@ -45,7 +45,7 @@ Component({
             var likeInfo = this.data.userInfo.match_info[type]
             for(var item of likeInfo) {
                 var portraitURL = item.portraitURL
-                if(portraitURL.indexOf("http") != -1) continue
+                if(portraitURL==undefined || portraitURL.indexOf("http") != -1) continue
                 wx.cloud.getTempFileURL({
                   fileList: [portraitURL],
                   success: res => {

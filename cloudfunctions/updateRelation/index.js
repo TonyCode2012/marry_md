@@ -16,10 +16,18 @@ exports.main = async (event, context) => {
   var relationship = event.relationship
   var resObj = {}
   var ids = [{_openid: to_openid},{_openid: from_openid}]
+  console.log("ids:"+JSON.stringify(ids))
   await db.collection('zy_nexus').where(_.or(ids)).
   get().then(
     async function(res) {
       var nexusArry = res.data
+      if(nexusArry.length != 2) {
+        console.log("Get related nexus failed!")
+        resObj = {
+          statusCode: 500,
+        }
+        return
+      }
       var fromNexus = null
       var toNexus = null
       if(nexusArry[0]._openid == to_openid) {

@@ -130,6 +130,10 @@ Page({
     //     seekers: app.globalData.seekers
     //   })
     // } else {
+      // clear previous seekers
+      that.setData({
+        seekers: {}
+      })
       wx.showLoading({
         title: '加载中...',
       })
@@ -144,7 +148,6 @@ Page({
             userInfo: userInfo,
           })
           // get network resource
-          //that.data.methods.getRelativeCandidates(that)
           that.getRelativeCandidates()
           globalData.gotData = true
         },
@@ -167,18 +170,15 @@ Page({
     if (!app.globalData.isLogin){
       return false
     }
+    // get network resource
+    this.getRelativeCandidates()
+
     this.setData({
       query: query
     })
     this.setData({
       isLogin: app.globalData.isLogin
     })
-
-    // get parameter
-    let openid = 'cisco0'
-    if(query.openid != undefined) {
-      openid = query.openid
-    }
     
 
     // get seekers info from db

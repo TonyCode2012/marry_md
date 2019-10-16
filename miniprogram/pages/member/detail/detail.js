@@ -26,6 +26,8 @@ Component({
    */
   data: {
     redirectPath: '/pages/member/detail/detail',
+    source: 'meet',
+    getFromGroup: globalData.scene == 1008 ? true: false,
     isLogin: globalData.isLogin,
     relationship: "",
     relations: false,
@@ -38,7 +40,6 @@ Component({
     StatusBar: app.globalData.StatusBar,
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
-    source: '',
     basic_item: [
         "birthday",
         "college",
@@ -262,6 +263,11 @@ Component({
         isLogin: globalData.isLogin
       })
     },
+    bindBack: function() {
+      wx.navigateTo({
+        url: '/pages/index/index?PageCur=meet',
+      })
+    },
     bindLike: function() {
       const that = this
       if(this.data.likeTag != "感兴趣") return
@@ -384,12 +390,12 @@ Component({
          console.log(res.target)
        }
        return {
-         title: this.data.userInfo._openid,
+         title: "from:"+globalData.userInfo._openid+",user:"+this.data.userInfo._openid,
          //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
          path: '/pages/member/detail/detail?sopenid='+globalData.userInfo._openid+'&topenid='+this.data.userInfo._openid
        }
      }
-    }
+    },
 })
 
 // Page({

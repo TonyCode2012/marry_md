@@ -1,5 +1,5 @@
 App({
-  onLaunch: function () {
+  onLaunch: function (opt) {
 
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -26,7 +26,8 @@ App({
       userIDs: [],
       userMap: null,
       openid: null,
-      isLogin: false
+      isLogin: false,
+      scene: opt.scene
     };
 
     //wx.login({

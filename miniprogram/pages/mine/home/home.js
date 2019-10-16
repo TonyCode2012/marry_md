@@ -64,29 +64,31 @@ Component({
       var portraitURL = ""
       if(userInfo.photos.length != 0 ) {
           portraitURL = userInfo.photos[0]
+          wx.cloud.getTempFileURL({
+            fileList: [portraitURL],
+            success: res => {
+              // fileList 是一个有如下结构的对象数组
+              // [{
+              //    fileID: 'cloud://xxx.png', // 文件 ID
+              //    tempFileURL: '', // 临时文件网络链接
+              //    maxAge: 120 * 60 * 1000, // 有效期
+              // }]
+              portraitURL = res.fileList[0].tempFileURL
+              that.setData({
+                portraitURL: portraitURL
+              })
+              console.log(res.fileList)
+            },
+            fail: console.error
+          })
       } else if(userInfo.wechat_info.avatarUrl != undefined) {
           portraitURL = userInfo.wechat_info.avatarUrl
-      } else {
-          console.log("Set portrait failed!")
-          return
-      }
-      wx.cloud.getTempFileURL({
-        fileList: [portraitURL],
-        success: res => {
-          // fileList 是一个有如下结构的对象数组
-          // [{
-          //    fileID: 'cloud://xxx.png', // 文件 ID
-          //    tempFileURL: '', // 临时文件网络链接
-          //    maxAge: 120 * 60 * 1000, // 有效期
-          // }]
-          portraitURL = res.fileList[0].tempFileURL
           that.setData({
               portraitURL: portraitURL
           })
-          console.log(res.fileList)
-        },
-        fail: console.error
-      })
+      } else {
+          console.log("Set portrait failed!")
+      }
     }
   },
 
