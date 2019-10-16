@@ -52,7 +52,20 @@ var getRelative = async function(data) {
   for (var oid of Object.keys(curNexusInfo.friends)) {
     var friend = curNexusInfo.friends[oid]
     var relation = JSON.parse(JSON.stringify(data.relation))
+    // set last relation's relationship
     relation[relation.length-1].relation = friend.relationship
+    // get portraitURL
+    var lastOpenid = relation[relation.length-1]._openid
+    var curuser = users.get(lastOpenid)
+    if(curuser != undefined) {
+        var portraitURL = ""
+        if(curuser.photos.length != 0) {
+            portraitURL = curuser.photos[0]
+        } else {
+            portraitURL = curuser.wechat_info.avatarUrl
+        }
+        relation[relation.length-1].portraitURL = portraitURL
+    }
     relation.push({_openid:oid,name:friend.name})
     // do not include immediate friend
     if(level != 1) {
@@ -68,7 +81,19 @@ var getRelative = async function(data) {
       }
     }
     // just search in 4 levels and exclude searched friends
-    if(level >= 4 || serachFriedsSet.has(oid)) continue
+    if(level >= 4 || serachFriedsSet.has(oid)) {
+        curuser = users.get(oid)
+        if(curuser != undefined) {
+            var portraitURL = ""
+            if(curuser.photos.length != 0) {
+                portraitURL = curuser.photos[0]
+            } else {
+                portraitURL = curuser.wechat_info.avatarUrl
+            }
+            relation[relation.length-1].portraitURL = portraitURL
+        }
+        continue
+    }
     var nexusInfo = {}
     await db.collection('zy_nexus').where({
       _openid: oid

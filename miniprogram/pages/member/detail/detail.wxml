@@ -56,7 +56,8 @@
                     <text class="cu-tag round bg-green sm">{{item.relation}}</text>
                   </view>
                   <view class='source-user flex flex-direction justify-center align-center'>
-                    <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
+                    <!--<view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>-->
+                    <view class="cu-avatar round" style="background-image:url({{item.portraitURL}});"></view>
                     <view class='text-gray text-xs'>{{item.name}}</view>
                   </view>
                 </view>
