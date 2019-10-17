@@ -31,6 +31,7 @@ Page({
     })
   },
   submitAuthCorp: async function() {
+    const that = this
     let email = this.data.email
     let authCode = this.data.authCode
     let corp = this.data.corp[this.data.index_corp]
@@ -61,38 +62,75 @@ Page({
     }
     let auth = res.data[0];
 
-    db.collection('auth').doc(auth._id).update({
+    // db.collection('auth').doc(auth._id).update({
+    //   data: {
+    //     is_active: false,
+    //     status: 'success'
+    //   }
+    // })
+    wx.cloud.callFunction({
+      name: 'dbupdate',
       data: {
-        is_active: false,
-        status: 'success'
+        _openid: auth._openid,
+        table: 'auth',
+        data: {
+          is_active: false,
+          status: 'success'
+        }
+      },
+      success: function(res) {
+        console.log("update pincode status successfully"+res)
+      },
+      fail: function(err) {
+        console.log("update pincode status failed!"+err)
       }
     })
 
-    let resUsers =  await db.collection('users').where({
-      _openid: globalData.openid
-    }).get()
-
-    let user = resUsers.data[0]
-    await db.collection('users').doc(user._id).update({
+    // let resUsers =  await db.collection('zy_users').where({
+    //   _openid: globalData.openid
+    // }).get()
+    // let user = resUsers.data[0]
+    // await db.collection('zy_users').doc(user._id).update({
+    //   data: {
+    //     auth_info:{
+    //       company_auth: {
+    //         authed: true,
+    //         company_name: corp,
+    //         job_title: jobTitle
+    //       }
+    //     }
+    //   }
+    // })
+    wx.cloud.callFunction({
+      name: 'dbupdate',
       data: {
-        auth_info:{
-          company_auth: {
-            authed: true,
-            company_name: corp,
-            job_title: jobTitle
+        table: 'zy_users',
+        _openid: auth._openid,
+        data: {
+          auth_info:{
+            company_auth: {
+              authed: true,
+              company_name: corp,
+              job_title: jobTitle
+            }
           }
         }
+      },
+      success: function(res) {
+        wx.showToast({
+          title: '认证成功',
+          icon: 'success',
+          duration: 2000
+        })
+        that.setData({
+          authed: true
+        })
+      },
+      fail: function(err) {
+        console.log("认证失败,"+err)
       }
     })
 
-    wx.showToast({
-      title: '认证成功',
-      icon: 'success',
-      duration: 2000
-    })
-    this.setData({
-      authed: true
-    })
 
   },
   getAuthCode: async function() {
@@ -163,7 +201,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: async function() {
-    let res = await db.collection('users').where({
+    let res = await db.collection('zy_users').where({
       _openid: globalData.openid,
       auth_info: {
         company_auth: {

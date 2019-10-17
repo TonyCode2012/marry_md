@@ -45,6 +45,22 @@ var matchMap = {
   }
 }
 
+var _getUserInfo = async function(openid) {
+  var userInfo = users.get(openid)
+  if(userInfo != undefined) return userInfo
+  await db.collection('zy_users').where({
+    _openid: openid
+  }).get().then(
+    function (res) {
+      userInfo = res.data[0]
+    },
+    function (err) {
+      console.log("Get user failed(_openid:" + openid + ")," + err)
+    }
+  )
+  return userInfo
+}
+
 var getRelative = async function(data) {
   const curNexusInfo = data.nexusInfo
   var level = data.level
@@ -56,15 +72,15 @@ var getRelative = async function(data) {
     relation[relation.length-1].relation = friend.relationship
     // get portraitURL
     var lastOpenid = relation[relation.length-1]._openid
-    var curuser = users.get(lastOpenid)
+    var curuser = await _getUserInfo(lastOpenid)
     if(curuser != undefined) {
-        var portraitURL = ""
-        if(curuser.photos.length != 0) {
-            portraitURL = curuser.photos[0]
-        } else {
-            portraitURL = curuser.wechat_info.avatarUrl
-        }
-        relation[relation.length-1].portraitURL = portraitURL
+      var portraitURL = ""
+      if(curuser.photos.length != 0) {
+          portraitURL = curuser.photos[0]
+      } else {
+          portraitURL = curuser.wechat_info.avatarUrl
+      }
+      relation[relation.length-1].portraitURL = portraitURL
     }
     relation.push({_openid:oid,name:friend.name})
     // do not include immediate friend
@@ -72,26 +88,25 @@ var getRelative = async function(data) {
       // if person info completed and not contains this person yet 
       if(friend.completed && friend.gender != data.orgGender 
       && !candidatesIDSet.has(oid) && !serachFriedsSet.has(oid)) {
+        var portraitURL = relation[relation.length-1].portraitURL
+        if(portraitURL == undefined || portraitURL == '') {
+          curuser = await _getUserInfo(oid)
+          if(curuser != undefined) {
+              var portraitURL = ""
+              if(curuser.photos.length != 0) {
+                  portraitURL = curuser.photos[0]
+              } else {
+                  portraitURL = curuser.wechat_info.avatarUrl
+              }
+              relation[relation.length-1].portraitURL = portraitURL
+          }
+        }
         candidates[oid] = { relation: relation }
-        // candidates.push({
-        //   _openid: friend._openid,
-        //   relation: relation
-        // })
         candidatesIDSet.add(oid)
       }
     }
     // just search in 4 levels and exclude searched friends
     if(level >= 4 || serachFriedsSet.has(oid)) {
-        curuser = users.get(oid)
-        if(curuser != undefined) {
-            var portraitURL = ""
-            if(curuser.photos.length != 0) {
-                portraitURL = curuser.photos[0]
-            } else {
-                portraitURL = curuser.wechat_info.avatarUrl
-            }
-            relation[relation.length-1].portraitURL = portraitURL
-        }
         continue
     }
     var nexusInfo = {}
@@ -196,8 +211,6 @@ exports.main = async (event, context) => {
         _openid: seeker._openid
       })
     }
-    //users = new Map()
-    //company2user = new Map()
     await db.collection('zy_users').where(_.or(cuserids))
     .get().then(
       function(res) {

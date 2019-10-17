@@ -76,27 +76,41 @@ Component({
           // set relative info portraitURL
           if(this.data.userInfo.relativeInfo == undefined) return
           var relations = this.data.userInfo.relativeInfo.relation
-          for(var relation of relations) {
-              var portraitURL = relation.portraitURL
-              if(portraitURL != undefined && portraitURL != '') {
-                wx.cloud.getTempFileURL({
-                  fileList: [portraitURL],
-                  success: res => {
-                    // fileList 是一个有如下结构的对象数组
-                    // [{
-                    //    fileID: 'cloud://xxx.png', // 文件 ID
-                    //    tempFileURL: '', // 临时文件网络链接
-                    //    maxAge: 120 * 60 * 1000, // 有效期
-                    // }]
-                    relation.portraitURL = res.fileList[0].tempFileURL
-                    that.setData({
-                        'userInfo.relativeInfo.relation': relations
-                    })
-                  },
-                  fail: console.error
-                })
+          var tmpMap = new Map()
+          for(var i in relations) {
+            var relation = relations[i]
+            var portraitURL = relation.portraitURL
+            if (portraitURL != undefined && portraitURL.indexOf("http") == -1) {
+              var tmpArry = []
+              if(tmpMap.get(portraitURL) != undefined) {
+                tmpArry = tmpMap.get(portraitURL)
               }
+              tmpArry.push(i)
+              tmpMap.set(portraitURL,tmpArry)
+            }
           }
+          if(tmpMap.size == 0) return
+          wx.cloud.getTempFileURL({
+            fileList: Array.from(tmpMap.keys()),
+            success: res => {
+              // fileList 是一个有如下结构的对象数组
+              // [{
+              //    fileID: 'cloud://xxx.png', // 文件 ID
+              //    tempFileURL: '', // 临时文件网络链接
+              //    maxAge: 120 * 60 * 1000, // 有效期
+              // }]
+              res.fileList.forEach(function (el) {
+                if(tmpMap.get(el.fileID) == undefined) return
+                tmpMap.get(el.fileID).forEach(function(id){
+                  relations[id].portraitURL = el.tempFileURL
+                })
+              })
+              that.setData({
+                  'userInfo.relativeInfo.relation': relations
+              })
+            },
+            fail: console.error
+          })
       }
   },
 

@@ -40,31 +40,53 @@ Component({
       'userInfo': function(data) {
         if(this.data.userInfo.match_info == undefined) return
         const that = this
+        var matchInfo = this.data.userInfo.match_info
         var types = ['ilike','likeme']
-        for(var type of types) {
-            var likeInfo = this.data.userInfo.match_info[type]
-            for(var item of likeInfo) {
-                var portraitURL = item.portraitURL
-                if(portraitURL==undefined || portraitURL.indexOf("http") != -1) continue
-                wx.cloud.getTempFileURL({
-                  fileList: [portraitURL],
-                  success: res => {
-                    // fileList 是一个有如下结构的对象数组
-                    // [{
-                    //    fileID: 'cloud://xxx.png', // 文件 ID
-                    //    tempFileURL: '', // 临时文件网络链接
-                    //    maxAge: 120 * 60 * 1000, // 有效期
-                    // }]
-                    item.portraitURL = res.fileList[0].tempFileURL
-                    that.setData({
-                        'userInfo.match_info': that.data.userInfo.match_info
-                    })
-                    globalData.userInfo.match_info = that.data.userInfo.match_info
-                  },
-                  fail: console.error
-                })
+        var ilikeMap = new Map()
+        var likemeMap = new Map()
+        var maps = [ilikeMap,likemeMap]
+        for(var tid in types) {
+          var likeInfo = matchInfo[types[tid]]
+          var tmpMap = maps[tid]
+          for(var i in likeInfo) {
+            var item = likeInfo[i]
+            var portraitURL = item.portraitURL
+            if(portraitURL==undefined || portraitURL.indexOf("http") != -1) continue
+            var tmpArry = []
+            if (tmpMap.get(portraitURL) != undefined) {
+              tmpArry = tmpMap.get(portraitURL)
             }
+            tmpArry.push(i)
+            tmpMap.set(portraitURL, tmpArry)
+          }
         }
+        if(ilikeMap.size + likemeMap.size == 0) return
+        wx.cloud.getTempFileURL({
+          fileList: Array.from(ilikeMap.keys()).concat(Array.from(likemeMap)),
+          success: res => {
+            // fileList 是一个有如下结构的对象数组
+            // [{
+            //    fileID: 'cloud://xxx.png', // 文件 ID
+            //    tempFileURL: '', // 临时文件网络链接
+            //    maxAge: 120 * 60 * 1000, // 有效期
+            // }]
+            for(var el of res.fileList) {
+              for(var i in maps) {
+                var tmpMap = maps[i]
+                var likeInfo = matchInfo[types[i]]
+                if(tmpMap.get(el.fileID) == undefined) continue
+                tmpMap.get(el.fileID).forEach(function (id) {
+                  likeInfo[id].portraitURL = el.tempFileURL
+                })
+              }
+            }
+            that.setData({
+              'userInfo.match_info': matchInfo
+            })
+            globalData.userInfo.match_info = matchInfo
+          },
+          fail: console.error
+        })
       }
   },
 
