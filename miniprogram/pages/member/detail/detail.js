@@ -29,6 +29,7 @@ Component({
     source: 'meet',
     getFromGroup: globalData.scene == 1008 ? true: false,
     isLogin: globalData.isLogin,
+    canLike: false,
     relationship: "",
     relations: false,
     relationArry: ['请选择你和介绍人的关系', '亲戚', '同事', '朋友', '同学', '其他'],
@@ -315,6 +316,27 @@ Component({
     bindLike: function() {
       const that = this
       if(this.data.likeTag != "感兴趣") return
+      // just ahthed and completed user can like
+      if(!globalData.userInfo.authed || !globalData.userInfo.completed) {
+        wx.showModal({
+          title: '提示',
+          content: '没有认证和完善资料无法发起感兴趣',
+          confirmText: '完善认证',
+          cancelText: '取消',
+          success(res) {
+            if (res.confirm) {
+              console.log('完善认证')
+              wx.redirectTo({
+                url: '/pages/mine/home/home',
+              })
+            } else if (res.cancel) {
+              console.log('取消')
+              that.chooseRelations(openid)
+            }
+          }
+        })
+        return
+      }
       // create like info
       wx.showLoading({
         title: '正在处理',

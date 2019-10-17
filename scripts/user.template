@@ -78,8 +78,8 @@
   "auth_info": {
     "personal_auth": false,
     "company_auth": {
-      "authed": false,
-      "company_name": ""
+      "authed": true,
+      "company_name": "%COMPANY%"
     }
   },
   "expect_info": {

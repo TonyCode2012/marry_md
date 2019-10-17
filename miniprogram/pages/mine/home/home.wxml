@@ -29,7 +29,7 @@
     <view class="text-black text-xl">{{userInfo.basic_info.nickName}}</view>
     <view class="text-gray text-sm flex align-center margin-top-sm">
       <text class='cuIcon-safe lg text-gray margin-right-xs'> </text>
-      <text class='text-xs text-orange'>未认证</text>
+      <text class='text-xs text-orange'>{{authed ? '已认证' : '未认证'}}</text>
     </view>
     <view class="text-gray text-xs  margin-top-xs">
       <text>*只有通过认证且资料完整度50%以上才能被别人看到并认识其他人</text>
@@ -57,7 +57,7 @@
       <text class="text-df text-bold">工作认证</text>
     </view>
     <view class="action bg-gradual-orange round">
-      <text class="text-white text-sm padding-sm">未认证</text>
+      <text class="text-white text-sm padding-sm">{{authed ? '已认证' : '未认证'}}</text>
     </view>
   </view>
 </view>

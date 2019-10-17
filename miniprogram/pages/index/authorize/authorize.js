@@ -113,6 +113,7 @@ Page({
     var nexusInfo = {
         _openid: that.data.openid,
         adjCompanies: {},
+        authed: false,
         company: "",
         completed: false,
         friends: {},

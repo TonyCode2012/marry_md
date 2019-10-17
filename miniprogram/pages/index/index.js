@@ -147,6 +147,7 @@ Page({
           that.setData({
             userInfo: userInfo,
           })
+          that.setCompleted(userInfo)
           // get network resource
           that.getRelativeCandidates()
           globalData.gotData = true
@@ -157,6 +158,28 @@ Page({
         }
       })
     // }
+  },
+  // compute completed
+  setCompleted: async function(userInfo) {
+    // compute complete
+    if(userInfo.love_info != undefined) {
+        var completed = true
+        for(var item of Object.keys(userInfo.love_info)) {
+            if(item.content == undefined || item.content == "") {
+                completed = false
+                break
+            }
+        }
+        var res = await db.collection('zy_nexus').where({
+            _openid: userInfo._openid
+        }).get()
+        globalData.userInfo.authed = res.data[0].authed
+        globalData.userInfo.completed = completed
+        this.setData({
+            'userInfo.completed': completed,
+            'userInfo.authed': authed
+        })
+    }
   },
 
   onLoad(query) {
@@ -174,11 +197,11 @@ Page({
     this.getRelativeCandidates()
 
     this.setData({
-      query: query
-    })
-    this.setData({
+      query: query,
       isLogin: app.globalData.isLogin
     })
+    // set completed info
+    this.setCompleted(this.data.userInfo)
     
 
     // get seekers info from db

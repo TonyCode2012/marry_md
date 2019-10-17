@@ -6,5 +6,6 @@
   "name": "%NAME%",
   "adjCompanies": {},
   "friends": {},
-  "completed": true
+  "completed": true,
+  "authed": true
 }

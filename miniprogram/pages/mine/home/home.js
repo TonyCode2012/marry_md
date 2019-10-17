@@ -6,7 +6,7 @@ const {
     globalData
 } = app
 const db = wx.cloud.database({
-  env: 'dev-2019'
+    env: 'dev-2019-xe6cj'
 })
  
 Component({
@@ -25,6 +25,7 @@ Component({
    * 组件的初始数据
    */
   data: {
+    authed: false,
     StatusBar: app.globalData.StatusBar,
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
@@ -42,6 +43,7 @@ Component({
   observers: {
     'userInfo': function(data) {
       const that = this
+      const userInfo = this.data.userInfo
       if(data.love_info == undefined || data.love_info == '') return
       let hashCode = stringHash(JSON.stringify(data.love_info))
       // if hashcode is not changed, return
@@ -59,8 +61,26 @@ Component({
         completePercent: completePercent,
         "hashCode.love_info": hashCode,
       })
+      // get user auth info
+      db.collection('zy_nexus').where({
+          _openid: userInfo._openid
+      }).get().then(
+          function(res) {
+              if(res.data.length < 0) return
+              var authed = false
+              var nexusInfo = res.data[0]
+              if(nexusInfo.authed!=undefined && nexusInfo.authed) {
+                  authed = true
+              }
+              that.setData({
+                authed: authed
+              })
+          },
+          function(err) {
+              console.log("get nexus info failed!")
+          }
+      )
       // add user head portrait
-      const userInfo = this.data.userInfo
       var portraitURL = ""
       if(userInfo.photos.length != 0 ) {
           portraitURL = userInfo.photos[0]
@@ -94,10 +114,11 @@ Component({
 
   pageLifetimes: {
       show: function() {
-          //if(globalData.gotData) {
+          // monitor global userInfo change
           if(globalData.isLogin) {
             this.setData({
-                userInfo: globalData.userInfo
+                userInfo: globalData.userInfo,
+                authed: globalData.userInfo.auth_info.company_auth.authed
             })
           }
       }

@@ -192,10 +192,10 @@ var matchExpect = function(data) {
 exports.main = async (event, context) => {
   console.log(event)
   try {
-    // ========== get all completed users nexus ========== //
+    // ========== get all authed users nexus ========== //
     var seekers = []
     await db.collection('zy_nexus').where({
-      completed: true
+      authed: true
     }).get().then(
       function(res) {
         seekers = res.data

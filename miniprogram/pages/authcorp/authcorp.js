@@ -17,7 +17,12 @@ Page({
     imgList: [],
     TabCur: 0,
     scrollLeft: 0,
-    corp: ['思科', '腾讯', '百度'],
+    corp: ['思科', '腾讯', '阿里巴巴'],
+    corpMap: {
+        '思科': 'cisco',
+        '腾讯': 'tencent',
+        '阿里巴巴': 'alibaba'
+    },
     index_corp: 0,
     email: '',
     jobTitle: '',
@@ -35,6 +40,7 @@ Page({
     let email = this.data.email
     let authCode = this.data.authCode
     let corp = this.data.corp[this.data.index_corp]
+    corp = this.data.corpMap[corp]
     let jobTitle = this.data.jobTitle
     
     if (!(email && authCode && corp && jobTitle)) {
@@ -122,6 +128,11 @@ Page({
           icon: 'success',
           duration: 2000
         })
+        globalData.userInfo.auth_info.company_auth = {
+            authed: true,
+            company_name: corp,
+            job_title: jobTitle
+        }
         that.setData({
           authed: true
         })
@@ -131,8 +142,25 @@ Page({
       }
     })
 
-
+    wx.cloud.callFunction({
+      name: 'dbupdate',
+      data: {
+        table: 'zy_nexus',
+        _openid: auth._openid,
+        data: {
+            authed: true,
+            company: corp,
+        }
+      },
+      success: function(res) {
+        console.log("update nexus table successfully!"+res)
+      },
+      fail: function(err) {
+        console.log("update nexus table failed!"+err)
+      }
+    })
   },
+
   getAuthCode: async function() {
     let regx = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
     let email = this.data.email
@@ -187,7 +215,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-
   },
 
   /**
@@ -202,7 +229,7 @@ Page({
    */
   onShow: async function() {
     let res = await db.collection('zy_users').where({
-      _openid: globalData.openid,
+      _openid: globalData.userInfo._openid,
       auth_info: {
         company_auth: {
           authed: true
