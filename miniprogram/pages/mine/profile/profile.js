@@ -115,7 +115,7 @@ Page({
       filePath: photos[0],
       complete(res) {
         if (res.fileID != undefined) {
-          that.data.photos.push(res.fileID)
+          that.data.imgList.push(res.fileID)
         }
         photos.splice(0,1)
         if (photos.length != 0) {
@@ -141,9 +141,9 @@ Page({
       success: res => {
         // handle success
         console.log(res.fileList)
-        for(let pic in res.fileList) {
+        for(let pic of res.fileList) {
           for(let i=0;i<that.data.imgList.length;i++) {
-            if(pic == that.data.imgList[i]) {
+            if(pic.fileID == that.data.imgList[i]) {
               that.data.imgList.splice(i,1)
               break
             }
@@ -171,7 +171,7 @@ Page({
     })
 
     globalData.userInfo.basic_info = this.data.basic_info
-    globalData.userInfo.photos = this.data.photos
+    globalData.userInfo.photos = this.data.imgList
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
@@ -179,7 +179,7 @@ Page({
         _openid: globalData.userInfo._openid,
         data: {
           basic_info: that.data.basic_info,
-          photos: that.data.photos
+          photos: that.data.imgList
         }
         // field: 'basic_info',
         // data: that.data.basic_info,

@@ -177,7 +177,7 @@ Page({
         globalData.userInfo.completed = completed
         this.setData({
             'userInfo.completed': completed,
-            'userInfo.authed': authed
+            'userInfo.authed': globalData.userInfo.authed
         })
     }
   },

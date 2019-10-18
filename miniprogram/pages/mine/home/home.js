@@ -46,21 +46,22 @@ Component({
       const userInfo = this.data.userInfo
       if(data.love_info == undefined || data.love_info == '') return
       let hashCode = stringHash(JSON.stringify(data.love_info))
-      // if hashcode is not changed, return
-      if(hashCode == this.data.hashCode.love_info) return
-      let love_info = data.love_info
-      let completePercent = 0
-      for(let i=0;i<aboutme.listItem.length;i++) {
-        var loveInfo_item = love_info[aboutme.listItem[i].type]
-        if (loveInfo_item != undefined && loveInfo_item.content != '') {
-          completePercent++
+      // if hashcode is changed, update
+      if(hashCode != this.data.hashCode.love_info) {
+        let love_info = data.love_info
+        let completePercent = 0
+        for(let i=0;i<aboutme.listItem.length;i++) {
+          var loveInfo_item = love_info[aboutme.listItem[i].type]
+          if (loveInfo_item != undefined && loveInfo_item.content != '') {
+            completePercent++
+          }
         }
+        completePercent = parseInt(completePercent / aboutme.listItem.length * 100)
+        this.setData({
+          completePercent: completePercent,
+          "hashCode.love_info": hashCode,
+        })
       }
-      completePercent = parseInt(completePercent / aboutme.listItem.length * 100)
-      this.setData({
-        completePercent: completePercent,
-        "hashCode.love_info": hashCode,
-      })
       // get user auth info
       db.collection('zy_nexus').where({
           _openid: userInfo._openid
