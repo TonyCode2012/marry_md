@@ -25,12 +25,14 @@ Page({
 
     now: formatDate(new Date()),
 
+    canSave: true,
+
     basic_info: {},
-    photos: [],
-    imgList: [],
-    orgImgList: [],
-    addImgList: [],
-    delImgList: [],
+    photos: [],       // after save option, pic to show
+    imgList: [],      // pic to show on GUI
+    // orgImgList: [],   // can only be cloud address
+    // addImgList: [],   // can only be local address
+    delImgList: [],   // can only be cloud address
     type: "profile",
 
     weightIndex: 20,
@@ -86,76 +88,52 @@ Page({
 
   Save: function(e) {
     const that = this
-    this.dealSave({
-      delPics: this.data.delImgList,
-      addPics: this.data.addImgList
+    wx.showLoading({
+      title: '正在保存',
     })
+    // disable Save button
+    this.setData({
+      canSave: false
+    })
+    this.dealSave()
   },
-  dealSave: function(data) {
-    let {
-      delPics,
-      addPics
-    } = data
-    if(delPics.length == 0 && addPics.length == 0) {
-      this.updateBasicInfo()
-    } else if(addPics.length == 0) {
-      this.deletePic(delPics)
-    } else {
-      this.uploadPic(addPics)
-    }
+  dealSave: async function() {
+    this.uploadPic(0)
   },
-  uploadPic: function (data) {
-    let photos = data
-    if(photos.lenght == 0) return
+  uploadPic: function (i) {
     const that = this
+    var imgList = this.data.imgList
+    while(i<imgList.length && imgList[i].indexOf("cloud") != -1) i++;
+    if(i>=imgList.length) {
+      that.deletePic(this.data.delImgList)
+    }
+    var pic = imgList[i]
     let now = new Date()
     now = Date.parse(now.toUTCString())
     wx.cloud.uploadFile({
       cloudPath: that.data.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
-      filePath: photos[0],
+      filePath: pic,
       complete(res) {
         if (res.fileID != undefined) {
-          that.data.imgList.push(res.fileID)
-        }
-        photos.splice(0,1)
-        if (photos.length != 0) {
-          console.log("continue upload,length:" + photos.length)
-          that.data.uploadPic(photos)
+          imgList[i] = res.fileID
+          that.uploadPic(++i)
         } else {
-          console.log("start update loveinfo")
-          if(that.data.delImgList.length != 0) {
-            that.data.deletePic(that.data.delImgList)
-          } else {
-            that.updateBasicInfo()
-          }
-          
+          console.log("upload file failed!")
         }
       }
     })
   },
-  deletePic: function(data) {
-    if(data.length == 0) return
+  deletePic: async function(pics) {
     const that = this
+    if (pics.length == 0) {
+      that.updateBasicInfo()
+      return
+    }
     wx.cloud.deleteFile({
-      fileList: data[0],
+      fileList: pics[0],
       success: res => {
-        // handle success
-        console.log(res.fileList)
-        for(let pic of res.fileList) {
-          for(let i=0;i<that.data.imgList.length;i++) {
-            if(pic.fileID == that.data.imgList[i]) {
-              that.data.imgList.splice(i,1)
-              break
-            }
-          }
-        }
-        data.splice(0,1)
-        if(data.length != 0) {
-          that.data.deletePic(data)
-        } else {
-          that.updateBasicInfo()
-        }
-        
+        pics.splice(0,1)
+        that.deletePic(pics)
       },
       fail: err => {
         // handle error
@@ -166,12 +144,7 @@ Page({
   updateBasicInfo: function() {
     const that = this
     console.log(that.data.basic_info)
-    wx.showLoading({
-      title: '正在保存',
-    })
 
-    globalData.userInfo.basic_info = this.data.basic_info
-    globalData.userInfo.photos = this.data.imgList
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
@@ -181,12 +154,11 @@ Page({
           basic_info: that.data.basic_info,
           photos: that.data.imgList
         }
-        // field: 'basic_info',
-        // data: that.data.basic_info,
       },
       success: function (res) {
         // update parent page data
         globalData.userInfo.basic_info = that.data.basic_info
+        globalData.userInfo.photos = that.data.imgList
         wx.hideLoading()
         wx.showToast({
           title: '成功',
@@ -201,6 +173,11 @@ Page({
           icon: 'fail',
           duration: 2000
         })
+      },
+      complete: function(res) {
+        that.setData({
+          canSave: true
+        })
       }
     })
   },
@@ -212,7 +189,7 @@ Page({
       success: (res) => {
         this.setData({
           imgList: this.data.imgList.concat(res.tempFilePaths),
-          addImgList: this.data.addImgList.concat(res.tempFilePaths)
+          // addImgList: this.data.addImgList.concat(res.tempFilePaths)
         })
       }
     });
@@ -231,24 +208,27 @@ Page({
       confirmText: '再见',
       success: res => {
         if (res.confirm) {
-          let delPic = this.data.imgList.splice(e.currentTarget.dataset.index, 1)
+          var delPic = this.data.imgList.splice(e.currentTarget.dataset.index, 1)
+          if(delPic[0].indexOf("cloud") != -1) {
+            this.data.delImgList.push(delPic)
+          }
           // check if the delted pic exists in original pics
-          for (let i = 0; i < this.data.orgImgList.length; i++) {
-            if (delPic == this.data.orgImgList[i]) {
-              this.data.delImgList.push(delPic)
-              break
-            }
-          }
-          for (let i = 0; i < this.data.addImgList.length; i++) {
-            if (this.data.addImgList[i] == delPic) {
-              this.data.addImgList.splice(i, 1)
-              break
-            }
-          }
+          // for (let i = 0; i < this.data.orgImgList.length; i++) {
+          //   if (delPic == this.data.orgImgList[i]) {
+          //     this.data.delImgList.push(delPic)
+          //     break
+          //   }
+          // }
+          // for (let i = 0; i < this.data.addImgList.length; i++) {
+          //   if (this.data.addImgList[i] == delPic) {
+          //     this.data.addImgList.splice(i, 1)
+          //     break
+          //   }
+          // }
           this.setData({
             imgList: this.data.imgList,
             delImgList: this.data.delImgList,
-            addImgList: this.data.addImgList,
+            // addImgList: this.data.addImgList,
           })
         }
       }
@@ -265,7 +245,7 @@ Page({
     this.setData({
       basic_info: basic_info,
       imgList: imgList,
-      orgImgList: [].concat(imgList)
+      // orgImgList: [].concat(imgList)
     })
     let rangeIndexObj = {
       weightIndex: 0,

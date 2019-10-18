@@ -163,5 +163,5 @@
 
 <view class="cu-tabbar-height lg"></view>
 <view class='foot padding-lr'>
-  <button bindtap="Save" class='cu-btn block bg-red lg'>保 存</button>
+  <button bindtap="Save" disabled="{{!canSave}}" class='cu-btn block bg-red lg'>保 存</button>
 </view>

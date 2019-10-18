@@ -34,6 +34,7 @@ Component({
     portraitURL: "",
     
     // check data change by hashcode
+    globalUserHash: "",
     hashCode: {
       expect_info: '',
       love_info: '',
@@ -115,13 +116,17 @@ Component({
 
   pageLifetimes: {
       show: function() {
-          // monitor global userInfo change
+        // monitor global userInfo change
+        var globalUserHash = stringHash(JSON.stringify(globalData.userInfo))
+        if(this.data.globalUserHash != globalUserHash) {
           if(globalData.isLogin) {
             this.setData({
                 userInfo: globalData.userInfo,
-                authed: globalData.userInfo.auth_info.company_auth.authed
+                authed: globalData.userInfo.auth_info.company_auth.authed,
+                globalUserHash: globalUserHash
             })
           }
+        }
       }
   },
 
