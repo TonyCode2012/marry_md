@@ -143,7 +143,7 @@ Component({
     },
     clip() {
       wx.setClipboardData({
-        data: 'xxxxxxxxxxxxxxxxx',
+        data: this.data.seekerWechat,
         success(res) {
           wx.getClipboardData({
             success(res) {

@@ -1,13 +1,17 @@
 <!--pages/member/home/home.wxml-->
 <wxs module="funcModule">
-  var getAstro = function(date){
-    var m = parseInt(deal(date,5,2))
-    var d = parseInt(deal(date,8,2))
-    return "魔羯水瓶双鱼牡羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯".slice(m*2-(d<"102223444433".charAt(m-1)-19)*2,2);
-  }
   var deal = function(data,start,len) {
-    if (typeof(data) == 'string') return data.slice(start,len)
-    else return ""
+    if (typeof(data) == 'string') return data.substring(start,len)
+    return ""
+  }
+  var getAstro = function(data) {
+    if (typeof(data) == 'string') {
+        var m = data.substring(5,7)
+        var d = data.substring(8,10)
+        var start = m*2-(d<"102223444433".charAt(m-1)- -19)*2
+        return "魔羯水瓶双鱼牡羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯".slice(start,start+2)
+     } 
+     return "error"
   }
   module.exports = {
     deal : deal,

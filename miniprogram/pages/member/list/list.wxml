@@ -1,10 +1,20 @@
-<wxs module="ageModule">
+<wxs module="funcModule">
   var deal = function(data,start,len) {
     if (typeof(data) == 'string') return data.slice(start,len)
     else return ""
   }
+  var getAstro = function(data) {
+    if (typeof(data) == 'string') {
+        var m = data.substring(5,7)
+        var d = data.substring(8,10)
+        var start = m*2-(d<"102223444433".charAt(m-1)- -19)*2
+        return "魔羯水瓶双鱼牡羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯".slice(start,start+2)
+     } 
+     return "error"
+  }
   module.exports = {
-    deal : deal
+    deal : deal,
+    getAstro : getAstro,
   }
 </wxs>
 <view wx:for="{{seekerList}}" wx:key>
@@ -30,11 +40,11 @@
             </view>
             <view class='text-sm text-gray margin-top-xs'>
                   <text class="cuIcon-{{item.basic_info.gender}} text-{{item.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
-                  <text>  {{ageModule.deal(item.basic_info.birthday,0,4)}}年・水瓶座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
+                  <text>  {{funcModule.deal(item.basic_info.birthday,0,4)}}年・{{funcModule.getAstro(item.basic_info.birthday)}}座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
             </view>
             <view class="text-gray text-sm flex">
               <text class="text-cut">
-              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location[1]}}・{{ageModule.deal(item.basic_info.hometown[1],0,2)}}人</text>
+              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location[1]}}・{{funcModule.deal(item.basic_info.hometown[1],0,2)}}人</text>
             </view>
           </view>
         </view>
