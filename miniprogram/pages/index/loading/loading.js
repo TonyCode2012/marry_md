@@ -35,7 +35,7 @@ Component({
       const that = this
       var redirectPath = that.data.redirectPath
       this.getOpenId().then(openid => {
-        db.collection('zy_users').where({
+        db.collection('users').where({
           _openid: globalData.openid
         }).get().then(res => {
           if (res.data.length === 0) {

@@ -1,4 +1,5 @@
 // pages/like/home/home.js
+const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
 const {
   globalData
@@ -33,6 +34,10 @@ Component({
     ListTouchStartPos: 0,
     ListTouchDirection: '',
     match_info: {},
+    matchInfoHash: "",
+
+    seekerWechat: ""
+    //userInfo: {}
 
   },
 
@@ -62,7 +67,7 @@ Component({
         }
         if(ilikeMap.size + likemeMap.size == 0) return
         wx.cloud.getTempFileURL({
-          fileList: Array.from(ilikeMap.keys()).concat(Array.from(likemeMap)),
+          fileList: Array.from(ilikeMap.keys()).concat(Array.from(likemeMap.keys())),
           success: res => {
             // fileList 是一个有如下结构的对象数组
             // [{
@@ -92,11 +97,14 @@ Component({
 
   pageLifetimes: {
     show: function() {
-      //if(globalData.gotData) {
       if(globalData.isLogin) {
-        this.setData({
-          'userInfo.match_info': globalData.userInfo.match_info
-        })
+        var matchInfoHash = stringHash(JSON.stringify(globalData.userInfo.match_info))
+        if(matchInfoHash != this.data.matchInfoHash) {
+            this.setData({
+              userInfo: globalData.userInfo
+            })
+            this.data.matchInfoHash = matchInfoHash
+        }
       }
     }
   },
@@ -126,9 +134,10 @@ Component({
         modalName: null
       })
     },
-    showModal() {
+    showModal(e) {
       this.setData({
-        modalName: 'weixinModal'
+        modalName: 'weixinModal',
+        seekerWechat: e.currentTarget.dataset.wechat
       })
       return false;
     },
@@ -153,7 +162,7 @@ Component({
       wx.cloud.callFunction({
         name: 'likeAction_decide',
         data: {
-          table: 'zy_users',
+          table: 'users',
           likefrom_openid: this.data.userInfo.match_info.likeme[index]._openid,
           liketo_openid: this.data.userInfo._openid,
           decision: decision
@@ -180,7 +189,7 @@ Component({
       wx.cloud.callFunction({
         name: 'likeAction_delete',
         data: {
-          table: 'zy_users',
+          table: 'users',
           delItem: para.delItem,
           ilike: {
             myOpenid: para.ilike.fromOpenid,

@@ -1,3 +1,4 @@
+const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
 let {
   db,
@@ -53,6 +54,7 @@ Component({
         "location",
         "nickName",
         "profession",
+        "wechat",
     ],
 
     userInfo: {},
@@ -68,6 +70,8 @@ Component({
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg',
       'https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg'
     ],
+
+    relativePortraitHash: "",
     
   },
 
@@ -76,42 +80,46 @@ Component({
           const that = this
           // set relative info portraitURL
           if(this.data.userInfo.relativeInfo == undefined) return
-          var relations = this.data.userInfo.relativeInfo.relation
-          var tmpMap = new Map()
-          for(var i in relations) {
-            var relation = relations[i]
-            var portraitURL = relation.portraitURL
-            if (portraitURL != undefined && portraitURL.indexOf("http") == -1) {
-              var tmpArry = []
-              if(tmpMap.get(portraitURL) != undefined) {
-                tmpArry = tmpMap.get(portraitURL)
+          var tmpHash = stringHash(JSON.stringify(this.data.userInfo.relativeInfo))
+          if(tmpHash != this.data.relativePortraitHash) {
+              this.data.relativePortraitHash = tmpHash
+              var relations = this.data.userInfo.relativeInfo.relation
+              var tmpMap = new Map()
+              for(var i in relations) {
+                  var relation = relations[i]
+                  var portraitURL = relation.portraitURL
+                  if (portraitURL != undefined && portraitURL.indexOf("http") == -1) {
+                      var tmpArry = []
+                      if(tmpMap.get(portraitURL) != undefined) {
+                          tmpArry = tmpMap.get(portraitURL)
+                      }
+                      tmpArry.push(i)
+                      tmpMap.set(portraitURL,tmpArry)
+                  }
               }
-              tmpArry.push(i)
-              tmpMap.set(portraitURL,tmpArry)
-            }
+              if(tmpMap.size == 0) return
+              wx.cloud.getTempFileURL({
+                  fileList: Array.from(tmpMap.keys()),
+                  success: res => {
+                      // fileList 是一个有如下结构的对象数组
+                      // [{
+                      //    fileID: 'cloud://xxx.png', // 文件 ID
+                      //    tempFileURL: '', // 临时文件网络链接
+                      //    maxAge: 120 * 60 * 1000, // 有效期
+                      // }]
+                      res.fileList.forEach(function (el) {
+                          if(tmpMap.get(el.fileID) == undefined) return
+                          tmpMap.get(el.fileID).forEach(function(id){
+                            relations[id].portraitURL = el.tempFileURL
+                          })
+                      })
+                      that.setData({
+                          'userInfo.relativeInfo.relation': relations
+                      })
+                  },
+                  fail: console.error
+              })
           }
-          if(tmpMap.size == 0) return
-          wx.cloud.getTempFileURL({
-            fileList: Array.from(tmpMap.keys()),
-            success: res => {
-              // fileList 是一个有如下结构的对象数组
-              // [{
-              //    fileID: 'cloud://xxx.png', // 文件 ID
-              //    tempFileURL: '', // 临时文件网络链接
-              //    maxAge: 120 * 60 * 1000, // 有效期
-              // }]
-              res.fileList.forEach(function (el) {
-                if(tmpMap.get(el.fileID) == undefined) return
-                tmpMap.get(el.fileID).forEach(function(id){
-                  relations[id].portraitURL = el.tempFileURL
-                })
-              })
-              that.setData({
-                  'userInfo.relativeInfo.relation': relations
-              })
-            },
-            fail: console.error
-          })
       }
   },
 
@@ -232,40 +240,43 @@ Component({
       }
       const {source} = options;
       const _ = db.command
-      // get transmition
+      // enter from share mini card
       if(options.sopenid != undefined) {
-        console.log("enter from mini card")
-        // show user info by clicking mini card
-        db.collection('zy_nexus').where({
-          _openid: options.sopenid
-        }).get({
-          success:function(res) {
-            db.collection('zy_users').where({
-                _openid: options.topenid
-            }).get({
-                success: function(res2) {
-                    that.setData({
-                        userInfo: res2.data[0]
-                    })
-                },
-                fail: function(err) {
-                    console.log("Get user info failed!"+err)
-                }
-            })
-            var friends = res.data[0].friends
-            var loginID = globalData.userInfo._openid
-            if(loginID != undefined && friends.hasOwnProperty(loginID)) {
-                that.setData({
-                  relationship: true
-                })
-            } else {
-                that.chooseRelations(options.sopenid)
-            }
-          },
-          fail:function(res) {
-            console.log(res)
+          console.log("enter from mini card")
+          // show user info by clicking mini card
+          // if get the mini card from group, assume not a friend
+          if(!getFromGroup) {
+              db.collection('nexus').where({
+                _openid: options.sopenid
+              }).get({
+                  success:function(res) {
+                      db.collection('users').where({
+                          _openid: options.topenid
+                      }).get({
+                          success: function(res2) {
+                              that.setData({
+                                  userInfo: res2.data[0]
+                              })
+                          },
+                          fail: function(err) {
+                              console.log("Get user info failed!"+err)
+                          }
+                      })
+                      var friends = res.data[0].friends
+                      var loginID = globalData.userInfo._openid
+                      if(loginID != undefined && friends.hasOwnProperty(loginID)) {
+                          that.setData({
+                            relationship: true
+                          })
+                      } else {
+                          that.chooseRelations(options.sopenid)
+                      }
+                  },
+                  fail:function(res) {
+                      console.log(res)
+                  }
+              })
           }
-        })
       } else {
         console.log("enter from main port")
         // show user info by clicking mini card
@@ -310,7 +321,7 @@ Component({
     },
     bindBack: function() {
       wx.navigateTo({
-        url: '/pages/index/index?PageCur=meet',
+        url: '/pages/index/index?cur=meet',
       })
     },
     bindLike: function() {
@@ -326,8 +337,8 @@ Component({
           success(res) {
             if (res.confirm) {
               console.log('完善认证')
-              wx.redirectTo({
-                url: '/pages/mine/home/home',
+              wx.navigateTo({
+                url: '/pages/index/index?cur=mine',
               })
             } else if (res.cancel) {
               console.log('取消')
@@ -382,9 +393,9 @@ Component({
       wx.cloud.callFunction({
         name: 'likeAction',
         data: {
-          table: 'zy_users',
+          table: 'users',
           likefrom: {
-            openid: app.globalData.userInfo._openid,
+            openid: globalData.userInfo._openid,
             ilike: ilikeInfo
           },
           liketo: {
@@ -401,7 +412,7 @@ Component({
             duration: 2000
           })
           console.log(res)
-          app.globalData.userInfo.match_info.ilike = ilikeInfo
+          globalData.userInfo.match_info.ilike = ilikeInfo
           that.setData({
             likeTag: '已感兴趣'
           })
@@ -463,16 +474,3 @@ Component({
      }
     },
 })
-
-// Page({
-//   onShareAppMessage: function (res) {
-//     if (res.from === 'button') {
-//       // 来自页面内转发按钮
-//       console.log(res.target)
-//     }
-//     return {
-//       title: '自定义转发标题',
-//       path: '/page/user?id=123'
-//     }
-//   }
-// })

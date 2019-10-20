@@ -27,7 +27,7 @@ Page({
     email: '',
     jobTitle: '',
     authCode: '',
-    authed: false
+    authed: globalData.userInfo.authed
   },
   tabSelect(e) {
     this.setData({
@@ -92,16 +92,16 @@ Page({
       }
     })
 
-    // let resUsers =  await db.collection('zy_users').where({
+    // let resUsers =  await db.collection('users').where({
     //   _openid: globalData.openid
     // }).get()
     // let user = resUsers.data[0]
-    // await db.collection('zy_users').doc(user._id).update({
+    // await db.collection('users').doc(user._id).update({
     //   data: {
     //     auth_info:{
     //       company_auth: {
     //         authed: true,
-    //         company_name: corp,
+    //         company: corp,
     //         job_title: jobTitle
     //       }
     //     }
@@ -110,13 +110,13 @@ Page({
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
-        table: 'zy_users',
+        table: 'users',
         _openid: auth._openid,
         data: {
           auth_info:{
             company_auth: {
               authed: true,
-              company_name: corp,
+              company: corp,
               job_title: jobTitle
             }
           }
@@ -130,9 +130,10 @@ Page({
         })
         globalData.userInfo.auth_info.company_auth = {
             authed: true,
-            company_name: corp,
+            company: corp,
             job_title: jobTitle
         }
+        globalData.userInfo.authed = true
         that.setData({
           authed: true
         })
@@ -145,7 +146,7 @@ Page({
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
-        table: 'zy_nexus',
+        table: 'nexus',
         _openid: auth._openid,
         data: {
             authed: true,
@@ -227,18 +228,12 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: async function() {
-    let res = await db.collection('zy_users').where({
-      _openid: globalData.userInfo._openid,
-      auth_info: {
-        company_auth: {
-          authed: true
-        }
+  onShow: function() {
+      if(globalData.userInfo.authed) {
+          this.setData({
+              authed: true
+          })
       }
-    }).get()
-    this.setData({
-      authed: (res.data.length > 0)
-    })
   },
 
   /**

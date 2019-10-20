@@ -64,7 +64,7 @@ Component({
         })
       }
       // get user auth info
-      db.collection('zy_nexus').where({
+      db.collection('nexus').where({
           _openid: userInfo._openid
       }).get().then(
           function(res) {
@@ -132,7 +132,7 @@ Component({
 
   ready: function() {
     // const that = this
-    // db.collection('zy_users').where({
+    // db.collection('users').where({
     //   _openid: 'cisco0'
     // }).get({
     //   success: function(res) {

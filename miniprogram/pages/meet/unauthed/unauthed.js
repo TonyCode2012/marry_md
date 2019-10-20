@@ -136,7 +136,7 @@ Component({
     },
     getUserInfo: async function(openids) {
       // 如果没有指定 limit，则默认最多取 20 条记录。
-      let res = await db.collection('zy_users').field({
+      let res = await db.collection('users').field({
           basic_info: true,
           photos: true
         }).where({

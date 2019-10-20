@@ -28,7 +28,7 @@ Page({
     const that = this
     console.log(globalData)
     if (globalData.userInfo._openid == undefined) return
-    db.collection('zy_network').where({
+    db.collection('network').where({
       _openid: globalData.userInfo._openid
     }).get({
       success: res => {
@@ -138,7 +138,7 @@ Page({
         title: '加载中...',
       })
       console.log(e.detail.openid)
-      db.collection('zy_users').where({
+      db.collection('users').where({
         _openid: e.detail.openid
       }).get({
         success: function (res) {
@@ -147,10 +147,10 @@ Page({
           that.setData({
             userInfo: userInfo,
           })
-          that.setCompleted(userInfo)
+          that.setCompleteAndAuthd(userInfo)
+          that.setLikePortrait(userInfo)
           // get network resource
           that.getRelativeCandidates()
-          globalData.gotData = true
         },
         fail: function (res) {
           console.log(res)
@@ -160,17 +160,18 @@ Page({
     // }
   },
   // compute completed
-  setCompleted: async function(userInfo) {
+  setCompleteAndAuthd: async function(userInfo) {
     // compute complete
     if(userInfo.love_info != undefined) {
         var completed = true
-        for(var item of Object.keys(userInfo.love_info)) {
+        for(var key of Object.keys(userInfo.love_info)) {
+            var item = userInfo.love_info[key]
             if(item.content == undefined || item.content == "") {
                 completed = false
                 break
             }
         }
-        var res = await db.collection('zy_nexus').where({
+        var res = await db.collection('nexus').where({
             _openid: userInfo._openid
         }).get()
         globalData.userInfo.authed = res.data[0].authed
@@ -180,6 +181,43 @@ Page({
             'userInfo.authed': globalData.userInfo.authed
         })
     }
+  },
+  // set like info seeks head portrait
+  setLikePortrait: function(userInfo) {
+    if(userInfo.match_info == undefined) return
+    const that = this
+    var match_info = userInfo.match_info
+    var tags = ['ilike','likeme']
+    var likeOpenids = []
+    for(var tag of tags) {
+        var likeItem = match_info[tag]
+        for(var item of likeItem) {
+            likeOpenids.push({
+                _openid: item._openid
+            })
+        }
+    }
+    wx.cloud.callFunction({
+        name: 'getUserPortrait',
+        data: {
+            ids: likeOpenids
+        },
+        success: function(res) {
+            var o2p = res.result.data
+            for(var tag of tags) {
+                var likeItem = match_info[tag]
+                for(var item of likeItem) {
+                    item.portraitURL = o2p[item._openid]
+                }
+            }
+            that.setData({
+                'userInfo.match_info': match_info
+            })
+        },
+        fail: function(err) {
+            console.log("get like info portrait failed!"+JSON.stringify(err))
+        }
+    })
   },
 
   onLoad(query) {
@@ -201,7 +239,8 @@ Page({
       isLogin: app.globalData.isLogin
     })
     // set completed info
-    this.setCompleted(this.data.userInfo)
+    this.setCompleteAndAuthd(this.data.userInfo)
+    this.setLikePortrait(this.data.userInfo)
     
 
     // get seekers info from db
@@ -228,7 +267,7 @@ Page({
     //   wx.showLoading({
     //     title: '加载中...',
     //   })
-    //   db.collection('zy_users').where({
+    //   db.collection('users').where({
     //     _openid: openid
     //   }).get({
     //     success: function(res) {

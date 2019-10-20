@@ -1,0 +1,16 @@
+/* pages/mine/aboutme/list/list.wxss */
+
+.border-dotted{
+  border: 2px dotted var(--gray);
+  border-radius:10rpx;
+
+
+}
+
+.list-item{
+}
+
+.about-content-desc{
+  height: 122rpx;
+  overflow: hidden;
+}

@@ -48,7 +48,7 @@ var matchMap = {
 var _getUserInfo = async function(openid) {
   var userInfo = users.get(openid)
   if(userInfo != undefined) return userInfo
-  await db.collection('zy_users').where({
+  await db.collection('users').where({
     _openid: openid
   }).get().then(
     function (res) {
@@ -110,7 +110,7 @@ var getRelative = async function(data) {
         continue
     }
     var nexusInfo = {}
-    await db.collection('zy_nexus').where({
+    await db.collection('nexus').where({
       _openid: oid
     }).get().then(
       function(res) {
@@ -134,7 +134,7 @@ var getRelative = async function(data) {
 
 var getColleague = function(openid) {
   var cuser = users.get(openid)
-  for(var user of company2user.get(cuser.basic_info.company)) {
+  for(var user of company2user.get(cuser.auth_info.company_auth.company)) {
     if (user._openid != openid) {
       colleagues[user._openid] = null
     }
@@ -144,7 +144,7 @@ var getColleague = function(openid) {
 var getEmployee = function(openid) {
   var cuser = users.get(openid)
   for(var [_openid,user] of users) {
-    if(cuser._openid != _openid && cuser.basic_info.company != user.basic_info.company
+    if(cuser._openid != _openid && cuser.auth_info.company_auth.company != user.auth_info.company_auth.company
     && cuser.basic_info.gender != user.basic_info.gender) {
       employees[user._openid] = null
     }
@@ -194,7 +194,7 @@ exports.main = async (event, context) => {
   try {
     // ========== get all authed users nexus ========== //
     var seekers = []
-    await db.collection('zy_nexus').where({
+    await db.collection('nexus').where({
       authed: true
     }).get().then(
       function(res) {
@@ -204,19 +204,19 @@ exports.main = async (event, context) => {
         console.log(err)
       }
     )
-    // ========== get all complete users info ========== //
+    // ========== get all authed users info ========== //
     var cuserids = []
     for(var seeker of seekers) {
       cuserids.push({
         _openid: seeker._openid
       })
     }
-    await db.collection('zy_users').where(_.or(cuserids))
+    await db.collection('users').where(_.or(cuserids))
     .get().then(
       function(res) {
         for(var user of res.data) {
           users.set(user._openid,user)
-          var company = user.basic_info.company
+          var company = user.auth_info.company_auth.company
           var c2u = company2user.get(company)
           if(c2u == undefined || c2u.length == 0) c2u = []
           c2u.push(user)
@@ -242,13 +242,13 @@ exports.main = async (event, context) => {
       // get employee
       getEmployee(seeker._openid)
       // exclude deletes and recommended
-      await db.collection('zy_network').where({
+      await db.collection('network').where({
         _openid: seeker._openid
       }).get().then(
         function(res) {
           if(res.data.length == 0) {
             // if not find seeker's network, add one
-            db.collection('zy_network').add({
+            db.collection('network').add({
               data: {
                 _openid: seeker._openid,
                 deletes: [],
@@ -279,7 +279,7 @@ exports.main = async (event, context) => {
               }
             }
             seleteCandidates(seeker._openid)
-            db.collection('zy_network').where({
+            db.collection('network').where({
               _openid: seeker._openid
             }).update({
               data: {

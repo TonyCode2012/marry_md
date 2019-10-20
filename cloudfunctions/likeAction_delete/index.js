@@ -16,19 +16,32 @@ exports.main = async (event, context) => {
     var ilikePromise = ''
     var likemePromise = ''
     var resp = {
-      statuscode: 200,
-      resMsg: 'update ilike and likeme info successfully!'
+        ilike: {
+            statuscode: 200,
+            resMsg: 'update ilike info successfully!'
+        },
+        likeme: {
+            statuscode: 200,
+            resMsg: 'update likeme info successfully!'
+        }
     }
-    resp = await db.collection(event.table).where({
+    await db.collection(event.table).where({
       _openid: _.eq(event.ilike.myOpenid).or(_.eq(event.likeme.myOpenid))
     }).get().then(
-      function(res) {
+      async function(res) {
         var users = res.data
         if(users.length != 2) {
-          return {
-            statuscode: 400,
-            resMsg: 'get ilike and likeme info failed!'
-          }
+            resp = {
+                ilike: {
+                    statuscode: 500,
+                    resMsg: 'update ilike info failed!'
+                },
+                likeme: {
+                    statuscode: 500,
+                    resMsg: 'update likeme info failed!'
+                }
+            }
+            return
         }
         var ilike = []
         var ilikedel = []
@@ -36,7 +49,7 @@ exports.main = async (event, context) => {
         var likemedel = []
         if(users[0]._openid == event.ilike.myOpenid) {
           ilike = users[0].match_info.ilike
-          ilikedel = user[0].match_info.deletes
+          ilikedel = users[0].match_info.deletes
           likeme = users[1].match_info.likeme
           likemedel = users[1].match_info.deletes
         } else {
@@ -52,7 +65,10 @@ exports.main = async (event, context) => {
             ilikeIndex = i
             if(event.delItem == 'ilike') {
               var delItems = ilike.splice(i,1)
-              ilikedel.push(delItems[0]._openid)
+              var tmpSet = new Set(ilikedel)
+              if(!tmpSet.has(delItems[0]._openid)) {
+                ilikedel.push(delItems[0]._openid)
+              }
             } else {
               ilike[i].decision = "delete"
             }
@@ -64,71 +80,59 @@ exports.main = async (event, context) => {
             likemeIndex = i
             if(event.delItem == 'likeme') {
               var delItems = likeme.splice(i,1)
-              likemedel.push(delItems[0]._openid)
+              var tmpSet = new Set(likemedel)
+              if(!tmpSet.has(delItems[0]._openid)) {
+                likemedel.push(delItems[0]._openid)
+              }
             } else {
               likeme[i].decision = "delete"
             }
             break
           }
         }
-        if(ilikeIndex != -1) {
-          ilikePromise = db.collection(event.table).where({
-            _openid: event.ilike.myOpenid
-          }).update({
-            data: {
-              'match_info.ilike': ilike,
-              'match_info.deletes': ilikedel
+        await db.collection(event.table).where({
+          _openid: event.ilike.myOpenid
+        }).update({
+          data: {
+            'match_info.ilike': ilike,
+            'match_info.deletes': ilikedel
+          }
+        }).then(
+            function(res) {
+              console.log(res)
+            },
+            function(err) {
+              console.log("update ilike info failed! ERROR:"+JSON.stringify(err))
+              resp.ilike = {
+                statuscode: 500,
+                resMsg: 'update ilike info failed! ERROR:'+JSON.stringify(err)
+              }
             }
-          })
-        }
-        if (likemeIndex != -1) {
-          likemePromise = db.collection(event.table).where({
-            _openid: event.likeme.myOpenid
-          }).update({
-            data: {
-              'match_info.likeme': likeme,
-              'match_info.deletes': likemedel
+        )
+        await db.collection(event.table).where({
+          _openid: event.likeme.myOpenid
+        }).update({
+          data: {
+            'match_info.likeme': likeme,
+            'match_info.deletes': likemedel
+          }
+        }).then(
+            function(res) {
+              console.log(res)
+            },
+            function(err) {
+              console.log("update likeme info failed! ERROR:"+JSON.stringify(err))
+              resp.likeme = {
+                statuscode: 500,
+                resMsg: 'update likeme info failed! ERROR:'+JSON.stringify(err)
+              }
             }
-          })
-        }
-        return {
-          statuscode: 200,
-          resMsg: 'update ilike and likeme info successfully!'
-        }
+        )
       },
       function(err) {
         console.log(err)
-        return 500
       }
     )
-    if(ilikePromise != '') {
-      await ilikePromise.then(
-        function(res) {
-          console.log(res)
-        },
-        function(err) {
-          console.log("update ilike info failed! ERROR:"+JSON.stringify(err))
-          resp = {
-            statuscode: 201,
-            resMsg: 'update ilike info failed! ERROR:'+JSON.stringify(err)
-          }
-        }
-      )
-    }
-    if(likemePromise != '') {
-      await likemePromise.then(
-        function(res) {
-          console.log(res)
-        },
-        function (err) {
-          console.log("update likeme info failed! ERROR:" + JSON.stringify(err))
-          resp = {
-            statuscode: 202,
-            resMsg: 'update likeme info failed! ERROR:' + JSON.stringify(err)
-          }
-        }
-      )
-    }
     console.log(resp)
     return resp
   } catch (e) {

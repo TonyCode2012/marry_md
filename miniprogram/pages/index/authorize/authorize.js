@@ -92,7 +92,13 @@ Page({
     }
     var userInfo = {
         _openid: that.data.openid,
-        auth_info: {},
+        auth_info: {
+            company_auth: {
+                authed: false,
+                company: ""
+            },
+            personal_auth: false,
+        },
         basic_info: {
             gender: gender,
             nickName: nickName,
@@ -126,9 +132,9 @@ Page({
     wx.cloud.callFunction({
         name: 'addUser',
         data: {
-            userTable: 'zy_users',
+            userTable: 'users',
             userInfo: userInfo,
-            nexusTable: 'zy_nexus',
+            nexusTable: 'nexus',
             nexusInfo: nexusInfo
         },
         success: function(res) {
@@ -145,7 +151,7 @@ Page({
         }
     })
         /*
-    db.collection('zy_users').where({
+    db.collection('users').where({
       _openid: globalData.openid
     }).get().then(res => {
       if (res.data.length > 0) {

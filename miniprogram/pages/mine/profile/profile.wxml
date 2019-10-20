@@ -39,7 +39,7 @@
   <input class='text-right padding-lr-xs' value="{{basic_info.nickName}}" placeholder=""  data-type="nickName" bindinput="bindInfoInput"></input>
 </view>
 <view class="cu-form-group">
-  <view class="title">性别</view>
+  <view class="title">性别*</view>
   <view>
     <view class="cu-tag {{basic_info.gender=='male'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="male" bindtap="bindInfoChange">小哥哥</view>
     <view class="cu-tag {{basic_info.gender=='female'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="female" bindtap="bindInfoChange">小姐姐</view>
@@ -47,7 +47,7 @@
 </view>
 
 <view class="cu-form-group">
-  <view class="title">生日</view>
+  <view class="title">生日*</view>
   <picker data-type="birthday" bindchange="bindInfoInput" mode="date" value="{{basic_info.birthday}}" start="1970-01-01" end="{{now}}">
     <view class="picker">
       {{basic_info.birthday}}
@@ -65,7 +65,7 @@
 </view>
 
 <view class="cu-form-group">
-  <view class="title">身高</view>
+  <view class="title">身高*</view>
   <picker data-type="height" bindchange="bindInfoRange" value="{{rangeIndexObj.heightIndex}}" range="{{heightRange}}">
     <view class="picker">
       {{ heightRange[rangeIndexObj.heightIndex] }} cm
@@ -74,7 +74,7 @@
 </view>
 
 <view class="cu-form-group">
-  <view class="title">所在地</view>
+  <view class="title">所在地*</view>
   <picker mode="region" data-type="location" bindchange="bindInfoRegion" value="{{basic_info.location}}">
     <view class="picker">
       {{basic_info.location[0]}}，{{basic_info.location[1]}}，{{basic_info.location[2]}}
@@ -82,7 +82,7 @@
   </picker>
 </view>
 <view class="cu-form-group">
-  <view class="title">家乡</view>
+  <view class="title">家乡*</view>
   <picker mode="region" data-type="hometown" bindchange="bindInfoRegion" value="{{basic_info.hometown}}">
     <view class="picker">
       {{basic_info.hometown[0]}}，{{basic_info.hometown[1]}}，{{basic_info.hometown[2]}}
@@ -90,7 +90,7 @@
   </picker>
 </view>
 <view class="cu-form-group">
-  <view class="title">婚姻</view>
+  <view class="title">婚姻*</view>
   <view>
     <view data-type="marryStatus" data-value="unmarried" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='unmarried'?'bg':'line'}}-pink round padding-lr-sm">未婚</view>
     <view data-type="marryStatus" data-value="divorced" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='divorced'?'bg':'line'}}-pink round padding-lr-sm">离异</view>
@@ -99,7 +99,7 @@
 
 <!-- education -->
 <view class="cu-form-group margin-top">
-  <view class="title">最高学历</view>
+  <view class="title">学历*</view>
   <picker data-type="education" bindchange="bindInfoRange" value="{{rangeIndexObj.educationIndex}}" range="{{educationRange}}">
     <view class="picker">
       {{educationRange[rangeIndexObj.educationIndex]}}
@@ -114,11 +114,11 @@
 
 <!-- job -->
 <view class="cu-form-group margin-top">
-  <view class="title">职位/职业</view>
+  <view class="title">职位/职业*</view>
   <input placeholder="" class='text-right' value="{{basic_info.profession}}" data-type="profession" bindinput='bindInfoInput'></input>
 </view>
 <view class="cu-form-group">
-  <view class="title">公司</view>
+  <view class="title">公司*</view>
   <input placeholder="" class='text-right' value="{{basic_info.company}}" data-type="company" bindinput='bindInfoInput'></input>
 </view>
 <view class="cu-form-group">
@@ -128,6 +128,23 @@
       {{incomeRange[rangeIndexObj.incomeIndex]}}
     </view>
   </picker>
+</view>
+
+
+<view class="padding">
+  <view class='padding-tb-xs text-sm block text-gray'>* 完整的自我介绍更容易吸引ta哦，完善度低于80%无法发起喜欢</view>
+</view>
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class="action">
+    <text class="cuIcon-titles text-pink"></text>
+    <text class="text-df text-bold">关于我*</text>
+    <text class="margin-left-xs text-df text-pink">(完善度 {{completePercent}}%)</text>
+  </view>
+  <button wx:if="{{!isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>展开</button>
+  <button wx:if="{{isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>收起</button>
+</view>
+<view wx:if="{{isExpand}}" class="padding-lr bg-white">
+  <aboutme loveInfo="{{love_info}}"></aboutme>
 </view>
 
 
@@ -143,20 +160,19 @@
   <view class="cu-item">
     <view class="content flex align-center">
       <!-- <text class="cuIcon-weixin text-green "></text> -->
-      <text class="">微信号</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.weixin}}" data-type="wechat" bindinput='bindInfoInput'></input>
-
+      <text class="">微信号*</text>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.wechat}}" data-type="wechat" bindinput='bindInfoInput'></input>
     </view>
   </view>
   <view class='divider solid-bottom'></view>
-  <view class="cu-item">
+  <!--<view class="cu-item">
     <view class="content flex align-center">
-      <!-- <text class="cuIcon-phone text-green"></text> -->
+      <zy_delete text class="cuIcon-phone text-green"></text>
       <text class=" text-right">手机号</text>
       <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.phone}}" data-type="phone" bindinput='bindInfoInput'></input>
     </view>
-    <!-- <button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button> -->
-  </view>
+    <zy_delete button class='btn-getphone' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">click</button>
+  </view>-->
 </view>
 
 

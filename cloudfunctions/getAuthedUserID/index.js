@@ -11,7 +11,7 @@ const _ = db.command;
 // 云函数入口函数
 exports.main = async (event, context) => {
   var userIDs = []
-  await db.collection('zy_nexus')
+  await db.collection('nexus')
         //.where({completed: true })
         .get().then(
     function(res) {

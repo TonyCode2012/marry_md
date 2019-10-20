@@ -11,7 +11,7 @@ const _ = db.command;
 // 云函数入口函数
 exports.main = async (event, context) => {
   var users = []
-  await db.collection('zy_users').where(_.or(event.ids))
+  await db.collection('users').where(_.or(event.ids))
   .get().then(
     function(res) {
       users = res.data

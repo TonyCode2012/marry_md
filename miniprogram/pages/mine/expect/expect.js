@@ -88,7 +88,7 @@ Page({
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
-        table: 'zy_users',
+        table: 'users',
         _openid: app.globalData.userInfo._openid,
         data: {
           expect_info: that.data.expect_info

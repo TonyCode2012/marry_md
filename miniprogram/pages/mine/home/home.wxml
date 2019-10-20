@@ -63,7 +63,7 @@
 </view>
 
 
-<view class="cu-bar bg-white solid-bottom margin-top">
+<!--<view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action">
     <text class="cuIcon-titles text-pink"></text>
     <text class="text-df text-bold">关于我</text>
@@ -73,9 +73,8 @@
   <button wx:if="{{isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>收起</button>
 </view>
 <view wx:if="{{isExpand}}" class="padding-lr bg-white">
-  
   <aboutme loveInfo="{{userInfo.love_info}}"></aboutme>
-</view>
+</view>-->
 
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action flex justify-between "> 
@@ -83,7 +82,6 @@
     <text class="text-df text-bold">谁会被推荐给我</text> 
   </view>
   <button bindtap='gotoExpect' class='cu-btn round text-pink bg-white button-hover fr'>编辑</button>
-
 </view>
 <view class="padding bg-white">
   <view class="flex flex-wrap">

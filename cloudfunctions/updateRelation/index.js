@@ -17,7 +17,7 @@ exports.main = async (event, context) => {
   var resObj = {}
   var ids = [{_openid: to_openid},{_openid: from_openid}]
   console.log("ids:"+JSON.stringify(ids))
-  await db.collection('zy_nexus').where(_.or(ids)).
+  await db.collection('nexus').where(_.or(ids)).
   get().then(
     async function(res) {
       var nexusArry = res.data
@@ -58,7 +58,7 @@ exports.main = async (event, context) => {
         fromNexus['friends'][to_openid]['relationship'] = relationship
       }
       // update to user info
-      await db.collection('zy_nexus').where({
+      await db.collection('nexus').where({
         _openid: to_openid
       }).update({
         data: {
@@ -73,7 +73,7 @@ exports.main = async (event, context) => {
         }
       )
       // update from user info
-      await db.collection('zy_nexus').where({
+      await db.collection('nexus').where({
         _openid: from_openid
       }).update({
         data: {

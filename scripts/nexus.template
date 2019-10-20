@@ -1,8 +1,8 @@
 {
   "_id": "%ID%",
+  "_openid": "%OPENID%",
   "gender": "%GENDER%",
   "company": "%COMPANY%",
-  "_openid": "%OPENID%",
   "name": "%NAME%",
   "adjCompanies": {},
   "friends": {},

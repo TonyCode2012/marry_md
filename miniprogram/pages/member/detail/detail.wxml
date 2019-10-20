@@ -1,18 +1,24 @@
 <!--pages/member/home/home.wxml-->
-<wxs module="ageModule">
+<wxs module="funcModule">
+  var getAstro = function(date){
+    var m = parseInt(deal(date,5,2))
+    var d = parseInt(deal(date,8,2))
+    return "魔羯水瓶双鱼牡羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯".slice(m*2-(d<"102223444433".charAt(m-1)-19)*2,2);
+  }
   var deal = function(data,start,len) {
     if (typeof(data) == 'string') return data.slice(start,len)
     else return ""
   }
   module.exports = {
-    deal : deal
+    deal : deal,
+    getAstro : getAstro
   }
 </wxs>
 
-<view wx:if="{{getFromGroup}}">
+<!--view wx:if="{{getFromGroup}}">
   <view style="position: absolute;top:50%;left:50%">您无权查看此简历!!!</view>
-</view>
-<view wx:elif="{{isLogin}}">
+</view-->
+<view wx:if="{{isLogin}}">
 <view class="section">
   <view class="section__title"></view>
   <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" disabled="{{ship}}">
@@ -41,10 +47,10 @@
           </view>
           <view class='text-gray text-sm'>
             <text class="cuIcon-{{userInfo.basic_info.gender}} text-{{userInfo.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
-            <text>  {{ageModule.deal(userInfo.basic_info.birthday,0,4)}}年・水瓶座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.education}}・{{userInfo.basic_info.profession}}</text>
+            <text>  {{funcModule.deal(userInfo.basic_info.birthday,0,4)}}年・{{funcModule.getAstro(userInfo.basic_info.birthday)}}座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.education}}・{{userInfo.basic_info.profession}}</text>
           </view>
           <view class='text-gray text-sm'>
-            <text><text class="cuIcon-locationfill"></text> 现居{{userInfo.basic_info.location[1]}}・{{ageModule.deal(userInfo.basic_info.hometown[1],0,2)}}人</text>
+            <text><text class="cuIcon-locationfill"></text> 现居{{userInfo.basic_info.location[1]}}・{{funcModule.deal(userInfo.basic_info.hometown[1],0,2)}}人</text>
           </view>
           <view class='margin-top-sm flex justify-start align-center'>
             <!-- <view class='text-gray'>来历：</view> -->

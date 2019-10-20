@@ -2,6 +2,7 @@ const {
   formatDate
 } = require('../../../utils/util.js')
 const {
+  aboutme,
   weightRange,
   heightRange,
   educationRange,
@@ -9,6 +10,7 @@ const {
   incomeRange
 } = require('../../../utils/data.js')
 
+const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
 const {
   globalData
@@ -28,12 +30,23 @@ Page({
     canSave: true,
 
     basic_info: {},
+    love_info: {},
     photos: [],       // after save option, pic to show
     imgList: [],      // pic to show on GUI
-    // orgImgList: [],   // can only be cloud address
-    // addImgList: [],   // can only be local address
     delImgList: [],   // can only be cloud address
     type: "profile",
+    requiredInfo: [
+        'birthday',
+        'company',
+        'education',
+        'gender',
+        'height',
+        'hometown',
+        'location',
+        'marryStatus',
+        'profession',
+        'wechat'
+    ],
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -54,6 +67,17 @@ Page({
       educationIndex: 0,
       incomeIndex: 0
     },
+
+    // aboutme info variable 
+    completePercent: 0,
+    isExpand: false,
+    loveInfoHash: "",
+  },
+
+  toggleExpand(){
+    this.setData({
+      isExpand: !this.data.isExpand
+    })
   },
 
   bindInfoChange(e) {
@@ -86,16 +110,66 @@ Page({
     })
   },
 
+  checkComplete: function() {
+      if(this.data.completePercent < 80) return false
+      var basic_info = this.data.basic_info
+      for(var item of this.data.requiredInfo) {
+          var value = basic_info[item]
+          if(value == undefined || value == '') {
+              return false
+          }
+      }
+      return true
+  },
+
   Save: function(e) {
     const that = this
-    wx.showLoading({
-      title: '正在保存',
+    const completed = this.checkComplete()
+    if(!completed) {
+        wx.showModal({
+          title: '提示',
+          content: '带*号为必填选项，否则将无法发起感兴趣',
+          confirmText: '继续填写',
+          cancelText: '保存',
+          success(res) {
+            if (res.cancel) {
+                wx.showLoading({
+                  title: '正在保存',
+                })
+                // disable Save button
+                that.setData({
+                  canSave: false
+                })
+                that.dealSave()
+            }
+          }
+        })
+    } else {
+        wx.showLoading({
+          title: '正在保存',
+        })
+        // disable Save button
+        that.setData({
+          canSave: false
+        })
+        that.dealSave()
+    }
+    wx.cloud.callFunction({
+        name: 'dbupdate',
+        data: {
+            table: 'nexus',
+            _openid: globalData.userInfo._openid,
+            data: {
+                completed: completed
+            }
+        },
+        success: function(res) {
+            console.log("update completed status successfully!"+JSON.stringify(res))
+        },
+        fail: function(err) {
+            console.log("update completed status failed!"+JSON.stringify(err))
+        }
     })
-    // disable Save button
-    this.setData({
-      canSave: false
-    })
-    this.dealSave()
   },
   dealSave: async function() {
     this.uploadPic(0)
@@ -106,6 +180,7 @@ Page({
     while(i<imgList.length && imgList[i].indexOf("cloud") != -1) i++;
     if(i>=imgList.length) {
       that.deletePic(this.data.delImgList)
+      return
     }
     var pic = imgList[i]
     let now = new Date()
@@ -148,7 +223,7 @@ Page({
     wx.cloud.callFunction({
       name: 'dbupdate',
       data: {
-        table: 'zy_users',
+        table: 'users',
         _openid: globalData.userInfo._openid,
         data: {
           basic_info: that.data.basic_info,
@@ -189,7 +264,6 @@ Page({
       success: (res) => {
         this.setData({
           imgList: this.data.imgList.concat(res.tempFilePaths),
-          // addImgList: this.data.addImgList.concat(res.tempFilePaths)
         })
       }
     });
@@ -212,23 +286,9 @@ Page({
           if(delPic[0].indexOf("cloud") != -1) {
             this.data.delImgList.push(delPic)
           }
-          // check if the delted pic exists in original pics
-          // for (let i = 0; i < this.data.orgImgList.length; i++) {
-          //   if (delPic == this.data.orgImgList[i]) {
-          //     this.data.delImgList.push(delPic)
-          //     break
-          //   }
-          // }
-          // for (let i = 0; i < this.data.addImgList.length; i++) {
-          //   if (this.data.addImgList[i] == delPic) {
-          //     this.data.addImgList.splice(i, 1)
-          //     break
-          //   }
-          // }
           this.setData({
             imgList: this.data.imgList,
             delImgList: this.data.delImgList,
-            // addImgList: this.data.addImgList,
           })
         }
       }
@@ -242,11 +302,6 @@ Page({
     // get basic info
     let basic_info = globalData.userInfo.basic_info
     let imgList = globalData.userInfo.photos
-    this.setData({
-      basic_info: basic_info,
-      imgList: imgList,
-      // orgImgList: [].concat(imgList)
-    })
     let rangeIndexObj = {
       weightIndex: 0,
       heightIndex: 0,
@@ -255,8 +310,11 @@ Page({
     }
     for (let j = 0; j < this.data.rangeArry.length; j++) {
       let range = this.data.rangeArry[j]
-      if (basic_info[range] == '') continue
       let concretRange = this.data[range + 'Range']
+      // auto set height education
+      if (basic_info[range] == undefined || basic_info[range] == '') {
+          basic_info[range] = concretRange[0]
+      }
       for (let i = 0; i < concretRange.length; i++) {
         if (concretRange[i] == basic_info[range]) {
           rangeIndexObj[range + 'Index'] = i
@@ -265,6 +323,9 @@ Page({
       }
     }
     this.setData({
+      basic_info: basic_info,
+      love_info: globalData.userInfo.love_info,
+      imgList: imgList,
       rangeIndexObj: rangeIndexObj
     })
   },
@@ -280,7 +341,27 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-
+      const that = this
+      //const love_info = this.data.love_info
+      const love_info = globalData.userInfo.love_info
+      if(love_info == undefined) return
+      let loveInfoHash = stringHash(JSON.stringify(love_info))
+      // if hashcode is changed, update
+      if(loveInfoHash != this.data.loveInfoHash) {
+        let completePercent = 0
+        for(let i=0;i<aboutme.listItem.length;i++) {
+          var loveInfo_item = love_info[aboutme.listItem[i].type]
+          if (loveInfo_item != undefined && loveInfo_item.content != '') {
+            completePercent++
+          }
+        }
+        completePercent = parseInt(completePercent / aboutme.listItem.length * 100)
+        this.setData({
+            completePercent: completePercent,
+            loveInfoHash: loveInfoHash,
+            love_info: love_info
+        })
+      }
   },
 
   /**

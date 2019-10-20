@@ -1,4 +1,4 @@
-const {aboutme} = require("../../../../utils/data.js");
+const {aboutme} = require("../../../../../utils/data.js");
 const listItem = aboutme.listItem;
 const app = getApp()
 const { globalData } = app

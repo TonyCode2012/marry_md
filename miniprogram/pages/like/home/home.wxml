@@ -65,7 +65,7 @@
         <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适{{item.date}}</text>
         <text wx:if="{{item.decision=='pending'}}" class='text-grey'>待处理{{item.date}}</text>
         <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
-        <view catchtap='showModal' wx:if="{{item.decision=='yes'}}" class="cu-tag round text-green line-green text-sm">
+        <view catchtap='showModal' wx:if="{{item.decision=='yes'}}" data-wechat="{{item.basic_info.wechat}}" class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text>
           <text>查看</text>
         </view>
@@ -135,19 +135,19 @@
         </view>
         <!-- after clicking -->
         <text wx:if="{{item.decision=='no'}}" class='text-grey'>已拒绝</text>
-        <text wx:if="{{item.decision=='delete'}}" class='text-grey'>您已结束对话{{item.date}}</text>
-        <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' class="cu-tag round text-green line-green text-sm">
+        <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
+        <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' data-wechat="{{item.basic_info.wechat}}" class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text>
           <text>查看</text>
         </view>
       </view>
       <!-- approved -->
-      <!-- <view wx:if="{{item.decision == ''}}" catchtap='showModal' data-user="1" class="btn-group-decision flex-direction flex align-start">
+      <!--<view wx:if="{{item.decision == 'yes'}}" catchtap='showModal' class="btn-group-decision flex-direction flex align-start">
         <view catchtap='showModal' class="cu-tag round text-green line-green text-sm">
           <text class='cuIcon-weixin text-green'></text>
           <text>查看</text>
         </view>
-      </view> -->
+      </view>-->
       <view class="move">
         <view class="bg-red" bindtap="deleteLikeMe" data-index="{{index}}">删除</view>
       </view>
@@ -166,7 +166,7 @@
       </view>
     </view>
     <view class="padding-xl">
-      <text selectable="true">xxxxxxxxxxxxxxxxx</text>
+      <text selectable="true">{{seekerWechat}}</text>
     </view>
     <!-- <view class="cu-bar bg-green" bindtap="clip">
       <view class="action margin-0 flex-sub solid-left text-sl">
