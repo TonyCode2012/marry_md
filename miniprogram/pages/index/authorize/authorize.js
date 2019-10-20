@@ -104,7 +104,7 @@ Page({
             nickName: nickName,
             hometown: ['上海市','上海市','浦东新区'],
             location: ['上海市','上海市','浦东新区'],
-            birthday: "2000-01-01"
+            birthday: ""
         },
         expect_info: {},
         love_info: love_info,

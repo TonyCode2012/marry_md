@@ -38,17 +38,32 @@
   <view class="title">昵称</view>
   <input class='text-right padding-lr-xs' value="{{basic_info.nickName}}" placeholder=""  data-type="nickName" bindinput="bindInfoInput"></input>
 </view>
-<view class="cu-form-group">
+
+<view class="cu-form-group" style="min-height:100px" wx:if="{{!getRealID}}">
+  <view class="title" style="min-height:60px"><text>性别*\n生日*</text></view>
+  <view class="grid col-4 grid-square flex-sub" style="display:flex;align-items:center">
+    <view class='padding-tb-xs text-sm block text-gray' style="width:70%;text-align:center;margin-top:0px">请上传身份证照片进行身份验证(您的身份信息仅用来做验证，不会被保留)</view>
+    <view wx:if="{{idCardUrl != ''}}" class="bg-img" style="margin-bottom:0px" bindtap="ViewImage">
+      <image src="{{idCardUrl}}" mode='aspectFill'></image>
+        <view class="cu-tag bg-red" catchtap="DelIDCardImg">
+          <text class="cuIcon-close"></text>
+        </view>
+    </view>
+    <view wx:else class="solids" style="margin-bottom:0px" bindtap="ChooseIDCardImg">
+      <text class="cuIcon-cameraadd"></text>
+    </view>
+  </view>
+</view>
+<view class="cu-form-group" wx:if="{{getRealID}}">
   <view class="title">性别*</view>
   <view>
     <view class="cu-tag {{basic_info.gender=='male'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="male" bindtap="bindInfoChange">小哥哥</view>
     <view class="cu-tag {{basic_info.gender=='female'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="female" bindtap="bindInfoChange">小姐姐</view>
   </view>
-</view>
-
-<view class="cu-form-group">
+  </view>
+<view wx:if="{{getRealID}}" class="cu-form-group">
   <view class="title">生日*</view>
-  <picker data-type="birthday" bindchange="bindInfoInput" mode="date" value="{{basic_info.birthday}}" start="1970-01-01" end="{{now}}">
+  <picker disabled="true" data-type="birthday" bindchange="bindInfoInput" bindtap="noChangeBirth" mode="date" value="{{basic_info.birthday}}" start="1970-01-01" end="{{now}}">
     <view class="picker">
       {{basic_info.birthday}}
     </view>

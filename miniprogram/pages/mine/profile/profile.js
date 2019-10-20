@@ -72,6 +72,10 @@ Page({
     completePercent: 0,
     isExpand: false,
     loveInfoHash: "",
+
+    // identifier
+    idCardUrl: '',
+    getRealID: false,
   },
 
   toggleExpand(){
@@ -83,6 +87,14 @@ Page({
   bindInfoChange(e) {
     let type = e.currentTarget.dataset.type
     let value = e.currentTarget.dataset.value
+    if(type == 'gender') {
+        wx.showToast({
+          title: '无法修改,请联系管理员',
+          icon: 'none',
+          duration: 1500
+        })
+        return
+    }
     this.setData({
       ['basic_info.'+type+'']: value
     })
@@ -90,6 +102,14 @@ Page({
   bindInfoInput(e) {
     let type = e.currentTarget.dataset.type
     let value = e.detail.value
+    if(type == 'birthday') {
+        wx.showToast({
+          title: '无法修改,请联系管理员',
+          icon: 'none',
+          duration: 1500
+        })
+        return
+    }
     this.setData({
       ['basic_info.' + type + '']: value
     })
@@ -107,6 +127,13 @@ Page({
     let value = e.detail.value
     this.setData({
       ['basic_info.' + type + '']: value
+    })
+  },
+  noChangeBirth() {
+    wx.showToast({
+      title: '无法修改,请联系管理员',
+      icon: 'none',
+      duration: 1500
     })
   },
 
@@ -294,6 +321,85 @@ Page({
       }
     })
   },
+  ChooseIDCardImg(e) {
+    const that = this
+    wx.chooseImage({
+      count: 4, //默认9
+      sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+      sourceType: ['album', 'camera'], //从相册选择
+      success: (res) => {
+        var idCardUrl = res.tempFilePaths[0]
+        this.setData({
+          idCardUrl: idCardUrl,
+        })
+        wx.showLoading({
+            title: '身份验证请稍候...'
+        })
+        var now = Date.parse((new Date()).toUTCString())
+        wx.cloud.uploadFile({
+            cloudPath: that.data.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
+            filePath: idCardUrl,
+            complete(res) {
+                if (res.fileID != undefined) {
+                    wx.cloud.callFunction({
+                        name: 'identifier',
+                        data: {
+                            idCardUrl: res.fileID
+                        },
+                        success: function(res) {
+                            if(Object.keys(res.result.data).length != 0) {
+                                var birthday = res.result.data.birthday
+                                var gender = res.result.data.gender
+                                globalData.userInfo.basic_info.birthday = birthday
+                                globalData.userInfo.basic_info.gender = gender
+                                that.setData({
+                                    basic_info: globalData.userInfo.basic_info,
+                                    getRealID: true
+                                })
+                                wx.showToast({
+                                    title: '身份验证成功!',
+                                    icon: 'success',
+                                    duration: 1500
+                                })
+                            } else {
+                                console.log(res)
+                                that.setData({
+                                    idCardUrl: ' '
+                                })
+                                wx.showToast({
+                                    title: '身份验证失败!请上传正确身份证!',
+                                    icon: 'none',
+                                    duration: 1500
+                                })
+                            }
+                        },
+                        fail: function(err) {
+                            that.setData({
+                                idCardUrl: ' '
+                            })
+                            wx.showToast({
+                                title: '身份验证失败!请上传正确身份证!',
+                                icon: 'none',
+                                duration: 1500
+                            })
+                        },
+                        complete: function(res) {
+                            wx.hideLoading()
+                        },
+                    })
+                } else {
+                    console.log("upload file failed!")
+                }
+            }
+        })
+      }
+    });
+  },
+  DelIDCardImg(e) {
+      this.setData({
+          idCardUrl: ''
+      })
+  },
 
   /**
    * 生命周期函数--监听页面加载
@@ -326,7 +432,8 @@ Page({
       basic_info: basic_info,
       love_info: globalData.userInfo.love_info,
       imgList: imgList,
-      rangeIndexObj: rangeIndexObj
+      rangeIndexObj: rangeIndexObj,
+      getRealID: basic_info.birthday!='' && basic_info.gender!=''
     })
   },
 

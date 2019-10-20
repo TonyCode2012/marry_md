@@ -87,7 +87,7 @@ Component({
       if(userInfo.photos.length != 0 ) {
           portraitURL = userInfo.photos[0]
           wx.cloud.getTempFileURL({
-            fileList: [portraitURL],
+              fileList: [portraitURL],
             success: res => {
               // fileList 是一个有如下结构的对象数组
               // [{
