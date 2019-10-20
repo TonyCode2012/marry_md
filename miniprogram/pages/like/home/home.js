@@ -33,7 +33,7 @@ Component({
     decision: 'pending',
     ListTouchStartPos: 0,
     ListTouchDirection: '',
-    match_info: {},
+    //match_info: {},
     matchInfoHash: "",
 
     seekerWechat: ""
