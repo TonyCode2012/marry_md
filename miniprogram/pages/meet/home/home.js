@@ -14,7 +14,8 @@ Component({
    */
   properties: {
     seekers: Object,
-    userIDs: Array
+    userIDs: Array,
+    authed: Boolean,
   },
 
   /**
@@ -25,6 +26,9 @@ Component({
     TabCur: 0,
     CustomBar: globalData.CustomBar,
     userIdx: 0
+  },
+
+  observers: {
   },
 
   

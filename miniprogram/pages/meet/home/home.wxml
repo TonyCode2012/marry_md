@@ -27,9 +27,8 @@
 </scroll-view>
 
 <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
-<authed wx:if="{{isAuth}}"></authed> 
-<!-- <unauthed wx:if="{{!isAuth}}" seekerList="{{seekerList}}"></unauthed>  -->
-<unauthed wx:if="{{!isAuth}}" seekers="{{seekers}}" tabCur="{{TabCur}}"></unauthed> 
+<authed wx:if="{{authed}}"></authed> 
+<unauthed wx:else seekers="{{seekers}}" tabCur="{{TabCur}}"></unauthed> 
 
 
 <view class="cu-tabbar-height"></view>
