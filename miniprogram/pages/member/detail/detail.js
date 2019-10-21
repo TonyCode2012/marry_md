@@ -319,9 +319,9 @@ Component({
         isLogin: globalData.isLogin
       })
     },
-    bindBack: function() {
+    toHomePage: function() {
       wx.navigateTo({
-        url: '/pages/index/index?cur=meet',
+        url: '/pages/index/index?cur=meet&update=false',
       })
     },
     bindLike: function() {

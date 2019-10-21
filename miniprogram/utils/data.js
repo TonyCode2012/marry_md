@@ -48,6 +48,8 @@ const educationRange = ['大专', '本科', '硕士', '博士'];
 const incomeRange = ['5-15W', '15-30W', '30-50W', '50-100W'];
 const jobRange = ['手动填写', '产品经理', '程序员', '设计师', '运营'];
 
+const loveInfoCompletePer = 0.8
+
 module.exports = {
   aboutme: {
     listItem: listItem
@@ -56,5 +58,6 @@ module.exports = {
   heightRange,
   educationRange,
   incomeRange,
-  jobRange
+  jobRange,
+  loveInfoCompletePer
 }

@@ -186,7 +186,7 @@ Page({
     let now = new Date()
     now = Date.parse(now.toUTCString())
     wx.cloud.uploadFile({
-      cloudPath: that.data.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
+      cloudPath: that.data.type + '_' + globalData.userInfo._openid + '_' + now + '.jpeg',
       filePath: pic,
       complete(res) {
         if (res.fileID != undefined) {

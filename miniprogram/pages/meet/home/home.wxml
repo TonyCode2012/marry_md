@@ -27,7 +27,8 @@
 </scroll-view>
 
 <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
-<authed wx:if="{{authed}}"></authed> 
+
+<authed wx:if="{{authed}}" seekers="{{seekers}}" tabCur="{{TabCur}}"></authed> 
 <unauthed wx:else seekers="{{seekers}}" tabCur="{{TabCur}}"></unauthed> 
 
 

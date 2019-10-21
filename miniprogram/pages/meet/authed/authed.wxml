@@ -4,4 +4,11 @@
     <button class="cu-btn round sm fr" bindtap="gotoMyGroup">我的公会</button>
   </view>
 </view>
-<memberlist source="meet"></memberlist>
+
+<memberlist 
+class="{{tabCur===0? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{seekers.relativeCandidates}}"></memberlist>
+
+<memberlist 
+class="{{tabCur===1? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{seekers.colleagueCandidates}}"></memberlist>
+
+<memberlist class="{{tabCur===2? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{seekers.companyCandidates}}"></memberlist>

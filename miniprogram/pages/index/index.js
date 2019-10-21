@@ -1,6 +1,9 @@
 const observer = require("../../utils/observer.js")
 const app = getApp()
-const { aboutme } = require("../../utils/data.js");
+const { 
+  aboutme,
+  loveInfoCompletePer 
+} = require("../../utils/data.js");
 
 const {
   db,
@@ -22,6 +25,9 @@ Page({
       schoolmate: '同学',
       colleague: '同事'
     },
+
+    // back to home page from other page
+    update: true,
   },
 
   getRelativeCandidates: function () {
@@ -124,53 +130,49 @@ Page({
   // when select user,get related info
   selectUser(e) {
     const that = this
-    // if (globalData.gotData) {
-    //   this.setData({
-    //     userInfo: app.globalData.userInfo,
-    //     seekers: app.globalData.seekers
-    //   })
-    // } else {
-      // clear previous seekers
-      that.setData({
-        seekers: {}
-      })
-      wx.showLoading({
-        title: '加载中...',
-      })
-      console.log(e.detail.openid)
-      db.collection('users').where({
-        _openid: e.detail.openid
-      }).get({
-        success: function (res) {
-          app.globalData.userInfo = res.data[0]
-          let userInfo = app.globalData.userInfo
-          that.setData({
-            userInfo: userInfo,
-          })
-          that.setCompleteAndAuthd(userInfo)
-          that.setLikePortrait(userInfo)
-          // get network resource
-          that.getRelativeCandidates()
-        },
-        fail: function (res) {
-          console.log(res)
-          wx.hideLoading()
-        }
-      })
-    // }
+    // clear previous seekers
+    that.setData({
+      seekers: {}
+    })
+    wx.showLoading({
+      title: '加载中...',
+    })
+    console.log(e.detail.openid)
+    db.collection('users').where({
+      _openid: e.detail.openid
+    }).get({
+      success: function (res) {
+        app.globalData.userInfo = res.data[0]
+        let userInfo = app.globalData.userInfo
+        that.setData({
+          userInfo: userInfo,
+        })
+        that.setCompleteAndAuthd(userInfo)
+        that.setLikePortrait(userInfo)
+        // get network resource
+        that.getRelativeCandidates()
+      },
+      fail: function (res) {
+        console.log(res)
+        wx.hideLoading()
+      }
+    })
   },
   // compute completed
   setCompleteAndAuthd: async function(userInfo) {
-    // compute complete
     if(userInfo.love_info != undefined) {
+        // compute complete
         var completed = true
+        var allNum = Object.keys(userInfo.love_info).length
+        var completeNum = allNum
         for(var key of Object.keys(userInfo.love_info)) {
             var item = userInfo.love_info[key]
             if(item.content == undefined || item.content == "") {
-                completed = false
-                break
+                completed--
             }
         }
+        if(completeNum/allNum < loveInfoCompletePer) completed = false
+        // get auth info
         var res = await db.collection('nexus').where({
             _openid: userInfo._openid
         }).get()
@@ -221,26 +223,22 @@ Page({
   },
 
   onLoad(query) {
-    // if (globalData.gotData) {
-    //   this.setData({
-    //     isLogin: true,
-    //     query: query
-    //   })
-    //   return
-    // }
     if (!app.globalData.isLogin){
       return false
     }
     // get network resource
-    this.getRelativeCandidates()
+    if(this.data.update) {
+      this.getRelativeCandidates()
+    }
 
     this.setData({
       query: query,
-      isLogin: app.globalData.isLogin
+      isLogin: app.globalData.isLogin,
+      userInfo: globalData.userInfo
     })
     // set completed info
-    this.setCompleteAndAuthd(this.data.userInfo)
-    this.setLikePortrait(this.data.userInfo)
+    this.setCompleteAndAuthd(globalData.userInfo)
+    this.setLikePortrait(globalData.userInfo)
     
 
     // get seekers info from db
@@ -293,6 +291,9 @@ Page({
       this.setData({
         PageCur: this.data.query.cur
       })
+      if(this.data.query.update) {
+        this.data.update = this.data.query.update
+      }
     }
 
   },

@@ -139,6 +139,9 @@ var getColleague = function(openid) {
       colleagues[user._openid] = null
     }
   }
+  // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
+  //   console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
+  // }
 }
 
 var getEmployee = function(openid) {
@@ -149,6 +152,9 @@ var getEmployee = function(openid) {
       employees[user._openid] = null
     }
   }
+  // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
+  //   console.log("find Emma's employee data:" + JSON.stringify(employees))
+  // }
 }
 
 // select candidates according to seeker's expect
@@ -158,26 +164,27 @@ var seleteCandidates = function(openid) {
   var seekerExpectInfo = users.get(openid).expect_info
   for(var i in category) {
     for (var candidateID of Object.keys(category[i])) {
-      // console.log(category[i])
       var candidate = category[i][candidateID]
       var expectBInfo = {
         seekerExpect: seekerExpectInfo,
         candidateBasic: users.get(candidateID).basic_info
       }
       if (matchExpect(expectBInfo)) {
-        //console.log(candidate)
         rCategory[i][candidateID] = candidate
-        // console.log(rCategory[i])
-        // (rCategory[i]).push(candidate)
       }
     }
   }
+  // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
+  //   console.log("find Emma's rColleague data:" + JSON.stringify(rColleagues))
+  //   console.log("find Emma's rEmployee data:" + JSON.stringify(rEmployees))
+  // }
 }
 
 // do match
 var matchExpect = function(data) {
   const {seekerExpect,candidateBasic} = data
   for(var el of Object.keys(matchMap)) {
+    // FIXME: if el is not defined in candidateBasic and seekerExepect
     if (matchMap[el][candidateBasic[el]] < matchMap[el][seekerExpect[el]]) {
       return false
     }
@@ -195,7 +202,8 @@ exports.main = async (event, context) => {
     // ========== get all authed users nexus ========== //
     var seekers = []
     await db.collection('nexus').where({
-      authed: true
+      authed: true,
+      completed: true
     }).get().then(
       function(res) {
         seekers = res.data
@@ -246,6 +254,7 @@ exports.main = async (event, context) => {
         _openid: seeker._openid
       }).get().then(
         function(res) {
+          seleteCandidates(seeker._openid)
           if(res.data.length == 0) {
             // if not find seeker's network, add one
             db.collection('network').add({
@@ -259,26 +268,27 @@ exports.main = async (event, context) => {
               }
             }).then(
               function(res) {
-                console.log('add relative successfully! Info:'+JSON.stringify(res))
+                console.log('add ' + seeker._openid +
+                ' relative successfully! Info:'+JSON.stringify(res))
               },
               function(err) {
-                console.log('add relative failed! Error:'+JSON.stringify(err))
+                console.log('add ' + seeker._openid +
+                ' relative failed! Error:'+JSON.stringify(err))
               }
             )
           } else {
             // if find, exclude deletes and recommended
+            // if (seeker._openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
+            //   console.log("find Emma's meta data:" + JSON.stringify(res.data[0]))
+            // }
             const networkInfo = res.data[0]
             const deletesSet = new Set(networkInfo.deletes)
             const recommendedSet = new Set(networkInfo.recommended)
-            // for(var i=0;i<candidates.length;) {
             for(var openid of Object.keys(candidates)) {
-              // const openid = candidates[i]._openid
               if(deletesSet.has(openid) || recommendedSet.has(openid)) {
-                // candidates.splice(i,1)
                 delete candidates[openid]
               }
             }
-            seleteCandidates(seeker._openid)
             db.collection('network').where({
               _openid: seeker._openid
             }).update({
@@ -289,10 +299,12 @@ exports.main = async (event, context) => {
               }
             }).then(
               function(res) {
-                console.log('update relative successfully! Info:'+JSON.stringify(res))
+                console.log('update ' + seeker._openid +
+                ' relative successfully! Info:'+JSON.stringify(res))
               },
               function(err) {
-                console.log('update relative failed! Error:'+JSON.stringify(err))
+                console.log('update ' + seeker._openid +
+                ' relative failed! Error:'+JSON.stringify(err))
               }
             )
           }
