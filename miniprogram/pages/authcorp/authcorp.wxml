@@ -39,8 +39,18 @@
 
     <view class='padding-lr'>
       <view class='bg-white radius'>
-        <view class="cu-form-group b">
+      
+        <view class="cu-form-group ">
+          <view class="title">单位</view>
+          <picker bindchange="corpPickerChange" value="{{index_corp}}" range="{{corp}}">
+            <view class="picker">
+              {{index_corp !==null ? corp[index_corp]:''}}
+            </view>
+          </picker>
+        </view>
+        <view class="cu-form-group">
           <input placeholder="填写企业邮箱" bindinput="inputEmail" value="{{email}}"></input>
+          <view class="padding-right-xs">{{emailSuffix}}</view>
           <button class="cu-btn bg-green sm shadow" bindtap="getAuthCode">获取校验码</button>
         </view>
         <view class="cu-form-group">
@@ -55,14 +65,6 @@
     </view>
     <view class='padding-lr'>
       <view class='bg-white radius'>
-        <view class="cu-form-group ">
-          <view class="title">单位</view>
-          <picker bindchange="PickerChange" value="{{index_corp}}" range="{{corp}}">
-            <view class="picker">
-              {{index_corp !==null ? corp[index_corp]:''}}
-            </view>
-          </picker>
-        </view>
         <view class="cu-form-group">
           <view class="title">职位</view>
           <input class='text-right ' bindinput="inputJobTitle" value="{{jobTitle}}" placeholder=""></input>
@@ -117,7 +119,7 @@
       <view class='bg-white radius'>
         <view class="cu-form-group ">
           <view class="title">单位</view>
-          <picker bindchange="PickerChange" value="{{index_corp}}" range="{{corp}}">
+          <picker bindchange="corpPickerChange" value="{{index_corp}}" range="{{corp}}">
             <view class="picker">
               {{index_corp !==null ? corp[index_corp]:''}}
             </view>
