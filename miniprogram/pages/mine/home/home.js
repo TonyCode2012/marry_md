@@ -131,6 +131,7 @@ Component({
   },
 
   ready: function() {
+      console.log(globalData.userInfo)
     // const that = this
     // db.collection('users').where({
     //   _openid: 'cisco0'

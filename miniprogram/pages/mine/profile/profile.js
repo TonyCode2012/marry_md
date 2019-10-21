@@ -1,5 +1,7 @@
 const {
-  formatDate
+  formatDate,
+  checkComplete,
+  stringHash
 } = require('../../../utils/util.js')
 const {
   aboutme,
@@ -7,10 +9,10 @@ const {
   heightRange,
   educationRange,
   jobRange,
-  incomeRange
+  incomeRange,
+  requiredInfo
 } = require('../../../utils/data.js')
 
-const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
 const {
   globalData
@@ -35,18 +37,6 @@ Page({
     imgList: [],      // pic to show on GUI
     delImgList: [],   // can only be cloud address
     type: "profile",
-    requiredInfo: [
-        'birthday',
-        'company',
-        'education',
-        'gender',
-        'height',
-        'hometown',
-        'location',
-        'marryStatus',
-        'profession',
-        'wechat'
-    ],
 
     weightIndex: 20,
     weightRange: weightRange,
@@ -110,22 +100,12 @@ Page({
     })
   },
 
-  checkComplete: function() {
-      if(this.data.completePercent < 80) return false
-      var basic_info = this.data.basic_info
-      for(var item of this.data.requiredInfo) {
-          var value = basic_info[item]
-          if(value == undefined || value == '') {
-              return false
-          }
-      }
-      return true
-  },
 
   Save: function(e) {
     const that = this
-    const completed = this.checkComplete()
-    if(!completed) {
+    globalData.userInfo.basic_info = this.data.basic_info
+    globalData.completed = checkComplete(globalData.userInfo)
+    if(!globalData.completed) {
         wx.showModal({
           title: '提示',
           content: '带*号为必填选项，否则将无法发起感兴趣',
@@ -220,41 +200,55 @@ Page({
     const that = this
     console.log(that.data.basic_info)
 
-    wx.cloud.callFunction({
-      name: 'dbupdate',
-      data: {
-        table: 'users',
-        _openid: globalData.userInfo._openid,
-        data: {
-          basic_info: that.data.basic_info,
-          photos: that.data.imgList
-        }
-      },
-      success: function (res) {
-        // update parent page data
-        globalData.userInfo.basic_info = that.data.basic_info
-        globalData.userInfo.photos = that.data.imgList
+    // update parent page data
+    globalData.userInfo.basic_info = that.data.basic_info
+    globalData.userInfo.photos = that.data.imgList
+    var userInfoHash = stringHash(JSON.stringify(globalData.userInfo))
+    if(userInfoHash != globalData.userInfoHash) {
+        globalData.userInfoHash = userInfoHash
+        wx.cloud.callFunction({
+          name: 'dbupdate',
+          data: {
+            table: 'users',
+            _openid: globalData.userInfo._openid,
+            data: {
+              basic_info: that.data.basic_info,
+              photos: that.data.imgList
+            }
+          },
+          success: function (res) {
+            wx.hideLoading()
+            wx.showToast({
+              title: '成功',
+              icon: 'success',
+              duration: 2000
+            })
+          },
+          fail:function(res) {
+            wx.hideLoading()
+            wx.showToast({
+              title: '失败',
+              icon: 'fail',
+              duration: 2000
+            })
+          },
+          complete: function(res) {
+            that.setData({
+              canSave: true
+            })
+          }
+        })
+    } else {
         wx.hideLoading()
         wx.showToast({
           title: '成功',
           icon: 'success',
           duration: 2000
         })
-      },
-      fail:function(res) {
-        wx.hideLoading()
-        wx.showToast({
-          title: '失败',
-          icon: 'fail',
-          duration: 2000
-        })
-      },
-      complete: function(res) {
         that.setData({
           canSave: true
         })
-      }
-    })
+    }
   },
   ChooseImage() {
     wx.chooseImage({

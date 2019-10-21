@@ -27,7 +27,7 @@ Page({
     email: '',
     jobTitle: '',
     authCode: '',
-    authed: globalData.userInfo.authed
+    authed: globalData.authed
   },
   tabSelect(e) {
     this.setData({
@@ -133,7 +133,7 @@ Page({
             company: corp,
             job_title: jobTitle
         }
-        globalData.userInfo.authed = true
+        globalData.authed = true
         that.setData({
           authed: true
         })
@@ -229,7 +229,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-      if(globalData.userInfo.authed) {
+      if(globalData.authed) {
           this.setData({
               authed: true
           })

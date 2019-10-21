@@ -88,7 +88,8 @@ Component({
             that.setData({
               'userInfo.match_info': matchInfo
             })
-            globalData.userInfo.match_info = matchInfo
+            // don't save tmp file url to globalData
+            //globalData.userInfo.match_info = matchInfo
           },
           fail: console.error
         })
@@ -211,9 +212,9 @@ Component({
           that.setData({
             userInfo: para.userInfo
           })
-          app.globalData.userInfo = para.userInfo
+          globalData.userInfo = para.userInfo
           // update father page data
-          var param = {userInfo: app.globalData.userInfo}
+          var param = {userInfo: globalData.userInfo}
           that.triggerEvent('userInfoChange',param)
         },
         fail: res => {

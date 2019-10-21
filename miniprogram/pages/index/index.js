@@ -2,8 +2,10 @@ const observer = require("../../utils/observer.js")
 const app = getApp()
 const { 
   aboutme,
-  loveInfoCompletePer 
+  loveInfoCompletePer,
 } = require("../../utils/data.js");
+
+const { checkComplete } = require("../../utils/util.js")
 
 const {
   db,
@@ -16,7 +18,7 @@ Page({
     PageCur: 'meet',
     query: null,
     isLogin: false,
-    userInfo: app.globalData.userInfo,
+    userInfo: globalData.userInfo,
     seekers: {},
     userIDs: [],
     relationMap: {
@@ -25,6 +27,10 @@ Page({
       schoolmate: '同学',
       colleague: '同事'
     },
+
+    // authed and completed
+    authed: globalData.authed,
+    completed: globalData.completed,
 
     // back to home page from other page
     update: true,
@@ -142,8 +148,8 @@ Page({
       _openid: e.detail.openid
     }).get({
       success: function (res) {
-        app.globalData.userInfo = res.data[0]
-        let userInfo = app.globalData.userInfo
+        globalData.userInfo = res.data[0]
+        let userInfo = globalData.userInfo
         that.setData({
           userInfo: userInfo,
         })
@@ -161,26 +167,17 @@ Page({
   // compute completed
   setCompleteAndAuthd: async function(userInfo) {
     if(userInfo.love_info != undefined) {
-        // compute complete
-        var completed = true
-        var allNum = Object.keys(userInfo.love_info).length
-        var completeNum = allNum
-        for(var key of Object.keys(userInfo.love_info)) {
-            var item = userInfo.love_info[key]
-            if(item.content == undefined || item.content == "") {
-                completed--
-            }
-        }
-        if(completeNum/allNum < loveInfoCompletePer) completed = false
+        // check complete
+        var completed = checkComplete(userInfo)
         // get auth info
         var res = await db.collection('nexus').where({
             _openid: userInfo._openid
         }).get()
-        globalData.userInfo.authed = res.data[0].authed
-        globalData.userInfo.completed = completed
+        globalData.authed = res.data[0].authed
+        globalData.completed = completed
         this.setData({
-            'userInfo.completed': completed,
-            'userInfo.authed': globalData.userInfo.authed
+            completed: completed,
+            authed: globalData.authed
         })
     }
   },
@@ -223,17 +220,37 @@ Page({
   },
 
   onLoad(query) {
-    if (!app.globalData.isLogin){
-      return false
-    }
-    // get network resource
-    if(this.data.update) {
-      this.getRelativeCandidates()
+    if (!globalData.isLogin) return false
+
+    const that = this
+    if(query.update && query.update == 'true' || query.update == undefined) {
+        // if back from other pages
+        // get network relation
+        this.getRelativeCandidates()
+        // get my profile from db
+        wx.cloud.callFunction({
+          name: 'getAuthedUserID',
+          data: {},
+          success: res=> {
+            var userIDs = ['请选择ID'].concat(res.result.data)
+            that.setData({
+              userIDs: userIDs
+            })
+            globalData.userIDs = userIDs
+          }
+        })
+    } else {
+        // reset parameters
+        this.setData({
+            seekers: globalData.seekers,
+            userIDs: globalData.userIDs
+        })
     }
 
+    // these data wouldn't change after login
     this.setData({
       query: query,
-      isLogin: app.globalData.isLogin,
+      isLogin: globalData.isLogin,
       userInfo: globalData.userInfo
     })
     // set completed info
@@ -241,25 +258,10 @@ Page({
     this.setLikePortrait(globalData.userInfo)
     
 
-    // get seekers info from db
-    const that = this
-    const _ = db.command
-    // get my profile from db
-    wx.cloud.callFunction({
-      name: 'getAuthedUserID',
-      data: {},
-      success: res=> {
-        var userIDs = ['请选择ID'].concat(res.result.data)
-        that.setData({
-          userIDs: userIDs
-        })
-        globalData.userIDs = userIDs
-      }
-    })
     // if(globalData.gotData) {
     //   this.setData({
-    //     userInfo: app.globalData.userInfo,
-    //     seekers: app.globalData.seekers
+    //     userInfo: globalData.userInfo,
+    //     seekers: globalData.seekers
     //   })
     // } else {
     //   wx.showLoading({
@@ -269,8 +271,8 @@ Page({
     //     _openid: openid
     //   }).get({
     //     success: function(res) {
-    //       app.globalData.userInfo = res.data[0]
-    //       let userInfo =  app.globalData.userInfo
+    //       globalData.userInfo = res.data[0]
+    //       let userInfo =  globalData.userInfo
     //       that.setData({
     //         userInfo: userInfo,
     //       })
@@ -291,9 +293,9 @@ Page({
       this.setData({
         PageCur: this.data.query.cur
       })
-      if(this.data.query.update) {
-        this.data.update = this.data.query.update
-      }
+      //if(this.data.query.update) {
+      //  this.data.update = this.data.query.update == 'true'
+      //}
     }
 
   },

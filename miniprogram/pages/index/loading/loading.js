@@ -1,3 +1,4 @@
+const { stringHash } = require("../../../utils/util.js")
 const app = getApp()
 let {
   db,
@@ -44,10 +45,10 @@ Component({
               url: `/pages/index/authorize/authorize?openid=${globalData.openid}&path=${redirectPath}`,
             })
           } else {
-            app.globalData.wechat_info = res.data[0];
             app.globalData.userInfo = res.data[0]
+            app.globalData.userInfoHash = stringHash(JSON.stringify(res.data[0]))
             app.globalData.isLogin = true;
-            console.log('user profile from loading: ', app.globalData.wechat_info);
+            console.log('user profile from loading: ', app.globalData.userInfo);
             wx.reLaunch({
               url: redirectPath,
             })

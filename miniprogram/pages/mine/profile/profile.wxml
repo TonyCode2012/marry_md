@@ -5,7 +5,7 @@
 
 <view class="">
   <view class="padding flex justify-between align-center">
-    <text class='text-sm block text-gray'>* 完成资料，找到对的人</text>
+    <text class='text-sm block text-gray'>* 完成资料，找到对的人。带“*”为必填项</text>
   </view>
 </view>
 

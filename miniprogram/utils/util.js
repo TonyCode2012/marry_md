@@ -1,3 +1,5 @@
+const infoData = require('./data.js')
+
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -36,9 +38,32 @@ const stringHash = str => {
   return hash;
 }
 
+const checkComplete = function(userInfo) {
+    if(!userInfo.love_info || !userInfo.basic_info) return false
+    // compute complete
+    var allNum = Object.keys(userInfo.love_info).length
+    var completeNum = allNum
+    for(var key of Object.keys(userInfo.love_info)) {
+        var item = userInfo.love_info[key]
+        if(item.content == undefined || item.content == "") {
+            completeNum--
+        }
+    }
+    if(completeNum/allNum < infoData.loveInfoCompletePer) return false 
+
+    for(var key of infoData.requiredInfo) {
+        var value = userInfo.basic_info[key]
+        if(!value || value == '') {
+            return false
+        }
+    }
+    return true
+}
+
 
 module.exports = {
   formatTime: formatTime,
   formatDate: formatDate,
-  stringHash: stringHash
+  stringHash: stringHash,
+  checkComplete: checkComplete
 }

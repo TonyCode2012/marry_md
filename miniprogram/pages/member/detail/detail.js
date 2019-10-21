@@ -328,7 +328,7 @@ Component({
       const that = this
       if(this.data.likeTag != "感兴趣") return
       // just ahthed and completed user can like
-      if(!globalData.userInfo.authed || !globalData.userInfo.completed) {
+      if(!globalData.authed || !globalData.completed) {
         wx.showModal({
           title: '提示',
           content: '没有认证和完善资料无法发起感兴趣',
@@ -338,7 +338,8 @@ Component({
             if (res.confirm) {
               console.log('完善认证')
               wx.navigateTo({
-                url: '/pages/index/index?cur=mine',
+                //url: '/pages/index/index?cur=mine',
+                url: '/pages/mine/profile/profile',
               })
             } else if (res.cancel) {
               console.log('取消')

@@ -1,4 +1,5 @@
 // miniprogram/pages/meet/authorize/authorize.js
+const { stringHash } = require("../../../utils/util.js")
 const { aboutme } = require("../../../utils/data.js");
 const listItem = aboutme.listItem;
 
@@ -80,7 +81,7 @@ Page({
 
   bindGetUserInfo (e) {
     const that = this
-    var userInfo = e.detail.userInfo
+    var wechat_info = e.detail.userInfo
     var gender = userInfo.gender==1 ? "male" : "female"
     var nickName = userInfo.nickName
     var love_info = {}
@@ -114,7 +115,7 @@ Page({
           deletes: []
         },
         photos: [],
-        wechat_info: userInfo
+        wechat_info: wechat_info
     }
     var nexusInfo = {
         _openid: that.data.openid,
@@ -140,6 +141,7 @@ Page({
         success: function(res) {
             globalData.isLogin = true
             globalData.userInfo = userInfo;
+            globalData.userInfoHash = stringHash(JSON.stringify(userInfo));
             wx.reLaunch({
                 url: that.data.redirectPath
             })

@@ -21,12 +21,14 @@ App({
     this.globalData = {
       weixin_info: {},
       userInfo: {},
+      userInfoHash: "", // used to check if userInfo changed
       seekers: {},
       userIDs: [],
       userMap: null,
       openid: null,
       isLogin: false,
       authed: false,
+      completed: false,
       scene: opt.scene
     };
 
