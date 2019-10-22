@@ -155,6 +155,7 @@ Page({
         })
         that.setCompleteAndAuthd(userInfo)
         that.setLikePortrait(userInfo)
+        that.setChance(userInfo._openid)
         // get network resource
         that.getRelativeCandidates()
       },
@@ -218,6 +219,21 @@ Page({
         }
     })
   },
+  // set change
+  setChance: async function(openid) {
+      await db.collection('nexus').where({
+          _openid: openid
+      }).get().then(
+          function(res) {
+              if(res.data.length != 0) {
+                  globalData.chance = res.data[0].chance
+              }
+          },
+          function(err) {
+              console.log("Get user nexus failed!"+JSON.stringify(err))
+          }
+      )
+  },
 
   onLoad(query) {
     if (!globalData.isLogin) return false
@@ -256,6 +272,7 @@ Page({
     // set completed info
     this.setCompleteAndAuthd(globalData.userInfo)
     this.setLikePortrait(globalData.userInfo)
+    this.setChance(globalData.userInfo._openid)
     
 
     // if(globalData.gotData) {

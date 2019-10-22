@@ -327,6 +327,14 @@ Component({
     bindLike: function() {
       const that = this
       if(this.data.likeTag != "感兴趣") return
+      if(globalData.chance == 0 ) {
+          wx.showToast({
+            title: '每天只有一次喜欢机会',
+            icon: 'none',
+            duration: 2000
+          })
+          return
+      }
       // just ahthed and completed user can like
       if(!globalData.authed || !globalData.completed) {
         wx.showModal({
@@ -349,89 +357,118 @@ Component({
         })
         return
       }
-      // create like info
-      wx.showLoading({
-        title: '正在处理',
-      })
-      let now = new Date()
-      var basic_info_t = {}
-      for(var item of this.data.basic_item) {
-          basic_info_t[item] = this.data.userInfo.basic_info[item]
-      }
-      var portraitURL = ""
-      if(this.data.userInfo.photos.length != 0) {
-          portraitURL = this.data.userInfo.photos[0]
-      } else {
-          portraitURL = this.data.userInfo.wechat_info.avatarUrl
-      }
-      let likeInfo = {
-        _openid: this.data.userInfo._openid,
-        decision: 'pending',
-        time: now,
-        basic_info: basic_info_t,
-        portraitURL: portraitURL
-      }
-      // update ilike info to db
-      var ilikeInfo = app.globalData.userInfo.match_info.ilike
-      ilikeInfo.push(likeInfo)
-      var basic_info_g = {}
-      for(var item of this.data.basic_item) {
-          basic_info_g[item] = app.globalData.userInfo.basic_info[item]
-      }
-      portraitURL = ""
-      if(app.globalData.userInfo.photos.length != 0) {
-          portraitURL = app.globalData.userInfo.photos[0]
-      } else {
-          portraitURL = app.globalData.userInfo.wechat_info.avatarUrl
-      }
-      let likemeInfo = {
-        _openid: app.globalData.userInfo._openid,
-        decision: 'pending',
-        time: now,
-        basic_info: basic_info_g,
-        portraitURL: portraitURL
-      }
-      wx.cloud.callFunction({
-        name: 'likeAction',
-        data: {
-          table: 'users',
-          likefrom: {
-            openid: globalData.userInfo._openid,
-            ilike: ilikeInfo
-          },
-          liketo: {
-            openid: that.data.userInfo._openid,
-            likeme: likemeInfo
+      wx.showModal({
+          title: '提示',
+          content: '每天只有一次发起喜欢的机会，确定是ta么?',
+          confirmText: '发起喜欢',
+          cancelText: '取消',
+          success: function(res) {
+              if(res.confirm) {
+                  that._doLike()
+              }
           }
-        },
-        success: res=> {
-          // TO DO
-          wx.hideLoading()
-          wx.showToast({
-            title: '处理成功',
-            icon: 'success',
-            duration: 2000
-          })
-          console.log(res)
-          globalData.userInfo.match_info.ilike = ilikeInfo
-          that.setData({
-            likeTag: '已感兴趣'
-          })
-          // wx.redirectTo({
-          //   url: `/pages/index/index?cur=like`,
-          // })
-        },
-        fail: res => {
-          wx.hideLoading()
-          wx.showToast({
-            title: '处理失败',
-            icon: 'none',
-            duration: 2000
-          })
-          console.log("failed!"+JSON.stringify(res))
-        }
       })
       // TODO: create like event
+    },
+    _doLike() {
+        const that = this
+        // create like info
+        wx.showLoading({
+          title: '正在处理',
+        })
+        let now = new Date()
+        var basic_info_t = {}
+        for(var item of this.data.basic_item) {
+            basic_info_t[item] = this.data.userInfo.basic_info[item]
+        }
+        var portraitURL = ""
+        if(this.data.userInfo.photos.length != 0) {
+            portraitURL = this.data.userInfo.photos[0]
+        } else {
+            portraitURL = this.data.userInfo.wechat_info.avatarUrl
+        }
+        let likeInfo = {
+          _openid: this.data.userInfo._openid,
+          decision: 'pending',
+          time: now,
+          basic_info: basic_info_t,
+          portraitURL: portraitURL
+        }
+        // update ilike info to db
+        var ilikeInfo = app.globalData.userInfo.match_info.ilike
+        ilikeInfo.push(likeInfo)
+        var basic_info_g = {}
+        for(var item of this.data.basic_item) {
+            basic_info_g[item] = app.globalData.userInfo.basic_info[item]
+        }
+        portraitURL = ""
+        if(app.globalData.userInfo.photos.length != 0) {
+            portraitURL = app.globalData.userInfo.photos[0]
+        } else {
+            portraitURL = app.globalData.userInfo.wechat_info.avatarUrl
+        }
+        let likemeInfo = {
+          _openid: app.globalData.userInfo._openid,
+          decision: 'pending',
+          time: now,
+          basic_info: basic_info_g,
+          portraitURL: portraitURL
+        }
+        wx.cloud.callFunction({
+          name: 'likeAction',
+          data: {
+            table: 'users',
+            likefrom: {
+              openid: globalData.userInfo._openid,
+              ilike: ilikeInfo
+            },
+            liketo: {
+              openid: that.data.userInfo._openid,
+              likeme: likemeInfo
+            }
+          },
+          success: res=> {
+              // TO DO
+              wx.hideLoading()
+              var statusCode = res.result.statusCode
+              if(statusCode == 200) {
+                  wx.showToast({
+                    title: '处理成功',
+                    icon: 'success',
+                    duration: 2000
+                  })
+                  console.log(res)
+                  globalData.userInfo.match_info.ilike = ilikeInfo
+                  that.setData({
+                    likeTag: '已感兴趣'
+                  })
+              } else if(statusCode == 401) {
+                  wx.showToast({
+                    title: '每天只有一次喜欢机会',
+                    icon: 'none',
+                    duration: 2000
+                  })
+              } else {
+                  wx.showToast({
+                    title: '处理失败',
+                    icon: 'none',
+                    duration: 2000
+                  })
+              }
+              // wx.redirectTo({
+              //   url: `/pages/index/index?cur=like`,
+              // })
+          },
+          fail: res => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '处理失败',
+              icon: 'none',
+              duration: 2000
+            })
+            console.log("failed!"+JSON.stringify(res))
+          }
+        })
     },
     // bindPickerChange: function (e) {
     //   console.log('picker发送选择改变，携带值为', e.detail.value)

@@ -13,20 +13,84 @@ const _ = db.command;
 exports.main = async (event, context) => {
   console.log(event)
   try {
+    var statusCode = 200
+    var resMsg = "like action successfully"
+    await db.collection('nexus').where({
+        _openid: event.likefrom.openid
+    }).get().then(
+        async function(res) {
+            if(res.data.length == 0) {
+                statusCode = 500
+                resMsg = "Get user nexus info failed!"
+                console.log(resMsg)
+            } else {
+                if(res.data[0].chance == 1) {
+                    await db.collection('nexus').where({
+                        _openid: event.likefrom.openid
+                    }).update({
+                        data: {
+                            chance: 0
+                        }
+                    }).then(
+                        function(res) {
+                            resMsg = "Get chance success!"+JSON.stringify(res)
+                            console.log(resMsg)
+                        },
+                        function(err) {
+                            statusCode = 500
+                            resMsg = "Get chance failed!"+JSON.stringify(err)
+                            console.log(resMsg)
+                        }
+                    )
+                } else {
+                    statusCode = 401
+                    resMsg = "no chance left"
+                    console.log(resMsg)
+                }
+            }
+        },
+        function(err) {
+            statusCode = 500
+            resMsg = "Get user nexus internal error"+JSON.stringify(err)
+            console.log(resMsg)
+        }
+    )
+    if(statusCode != 200) {
+        return {
+            statusCode: statusCode,
+            resMsg: resMsg
+        }
+    }
+    // update ilike info
     await db.collection(event.table).where({
       _openid: event.likefrom.openid
     }).update({
       data: {
         "match_info.ilike": event.likefrom.ilike
       },
-    })
-
-    // get likeme info
-    var likemePromise = ''
+    }).then(
+        function(res) {
+            resMsg = "Update ilike info successfully!"
+            console.log(resMsg)
+        },
+        function(err) {
+            statusCode = 500
+            resMsg = "Update ilike info failed!"+JSON.stringify(err)
+            console.log(resMsg)
+        }
+    )
+    if(statusCode != 200) {
+        return {
+            statusCode: statusCode,
+            resMsg: resMsg
+        }
+    }
+    // set likeme info
+    //var likemePromise = ''
     await db.collection(event.table).where({
       _openid: event.liketo.openid
     }).get().then(
-      function(res) {
+      async function(res) {
         console.log(res)
         var likeme = res.data[0].match_info.likeme
         // check if exist
@@ -39,7 +103,8 @@ exports.main = async (event, context) => {
         }
         likeme.push(event.liketo.likeme)
         // update likeme info
-        likemePromise = db.collection(event.table).where({
+        //likemePromise = db.collection(event.table).where({
+        await db.collection(event.table).where({
           _openid: event.liketo.openid
         }).update({
           data: {
@@ -51,19 +116,34 @@ exports.main = async (event, context) => {
           fail: res => {
             console.log("update likeme info failed,_openid:" + event.liketo.openid)
           }
-        })
+        }).then(
+            function(res) {
+                console.log("Set likeme info successfully!"+JSON.stringify(res))
+            },
+            function(err) {
+                statusCode = 402
+                resMsg = "Set likeme info failed!"+JSON.stringify(err)
+                console.log(resMsg)
+            }
+        )
       },
       function(err) {
-        console.log(err)
+          statusCode = 500
+          resMsg = "Set likeme info internal error" + JSON.stringify(err)
+          console.log(resMsg)
       }
     )
-    if(likemePromise != '') {
-      return await likemePromise.then(
-        function(res) {
-          console.log(res)
-        }
-      )
+    return {
+        statusCode: statusCode,
+        resMsg: resMsg
     }
+    //if(likemePromise != '') {
+    //  return await likemePromise.then(
+    //    function(res) {
+    //      console.log(res)
+    //    }
+    //  )
+    //}
   } catch (e) {
     console.error(e);
   }

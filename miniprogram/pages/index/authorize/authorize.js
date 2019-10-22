@@ -121,11 +121,12 @@ Page({
         _openid: that.data.openid,
         adjCompanies: {},
         authed: false,
+        chance: 1,
         company: "",
         completed: false,
         friends: {},
         gender: gender,
-        name: nickName
+        name: nickName,
     }
     wx.showLoading({
       title: '请稍等',

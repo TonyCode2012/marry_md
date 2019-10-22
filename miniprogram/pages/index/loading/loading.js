@@ -38,21 +38,22 @@ Component({
       this.getOpenId().then(openid => {
         db.collection('users').where({
           _openid: globalData.openid
-        }).get().then(res => {
-          if (res.data.length === 0) {
-            redirectPath = escape(redirectPath)
-            wx.reLaunch({
-              url: `/pages/index/authorize/authorize?openid=${globalData.openid}&path=${redirectPath}`,
-            })
-          } else {
-            app.globalData.userInfo = res.data[0]
-            app.globalData.userInfoHash = stringHash(JSON.stringify(res.data[0]))
-            app.globalData.isLogin = true;
-            console.log('user profile from loading: ', app.globalData.userInfo);
-            wx.reLaunch({
-              url: redirectPath,
-            })
-          }
+        }).get().then(
+            function(res) {
+              if (res.data.length === 0) {
+                redirectPath = escape(redirectPath)
+                wx.reLaunch({
+                  url: `/pages/index/authorize/authorize?openid=${globalData.openid}&path=${redirectPath}`,
+                })
+              } else {
+                app.globalData.userInfo = res.data[0]
+                app.globalData.userInfoHash = stringHash(JSON.stringify(res.data[0]))
+                app.globalData.isLogin = true;
+                console.log('user profile from loading: ', app.globalData.userInfo);
+                wx.reLaunch({
+                  url: redirectPath,
+                })
+              }
         })
       });
     },

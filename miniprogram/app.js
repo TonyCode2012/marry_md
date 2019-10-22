@@ -29,6 +29,7 @@ App({
       isLogin: false,
       authed: false,
       completed: false,
+      chance: 0,
       scene: opt.scene
     };
 
