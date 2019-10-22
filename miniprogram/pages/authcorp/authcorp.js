@@ -17,7 +17,13 @@ Page({
     imgList: [],
     TabCur: 0,
     scrollLeft: 0,
-    corp: ['思科', '腾讯', '阿里巴巴'],
+    corp: ['思科'],
+    // corp: ['思科', '腾讯', '阿里巴巴'],
+    emailSuffixMap: {
+      '思科': '@cisco.com',
+      '腾讯': '@tencent.com',
+      '阿里巴巴': '@alibaba.com',
+    },
     corpMap: {
         '思科': 'cisco',
         '腾讯': 'tencent',
@@ -25,6 +31,7 @@ Page({
     },
     index_corp: 0,
     email: '',
+    emailSuffix: '',
     jobTitle: '',
     authCode: '',
     authed: globalData.authed
@@ -37,7 +44,7 @@ Page({
   },
   submitAuthCorp: async function() {
     const that = this
-    let email = this.data.email
+    let email = this.data.email + this.data.emailSuffix
     let authCode = this.data.authCode
     let corp = this.data.corp[this.data.index_corp]
     corp = this.data.corpMap[corp]
@@ -164,7 +171,7 @@ Page({
 
   getAuthCode: async function() {
     let regx = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
-    let email = this.data.email
+    let email = this.data.email + this.data.emailSuffix
     if (!(email && regx.test(email))) {
       wx.showToast({
         title: '请填写正确的企业邮箱',
@@ -196,6 +203,15 @@ Page({
       console.log(res)
     })
   },
+  corpPickerChange: function (e) {
+    let corp = this.data.corp[e.detail.value]
+    let emailSuffix = this.data.emailSuffixMap[corp]
+    this.setData({
+      index_corp: e.detail.value,
+      email: '',
+      emailSuffix: emailSuffix
+    })
+  },
   inputCode: function (e) {
     this.setData({
       authCode: e.detail.value
@@ -222,7 +238,11 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function() {
-
+    let corp = this.data.corp[0]
+    let emailSuffix = this.data.emailSuffixMap[corp]
+    this.setData({
+      emailSuffix: emailSuffix
+    })
   },
 
   /**
