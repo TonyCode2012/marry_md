@@ -64,6 +64,10 @@ Component({
         })
       }
       // get user auth info
+      that.setData({
+          authed: globalData.authed
+      })
+      /*
       db.collection('nexus').where({
           _openid: userInfo._openid
       }).get().then(
@@ -82,6 +86,7 @@ Component({
               console.log("get nexus info failed!")
           }
       )
+      */
       // add user head portrait
       var portraitURL = ""
       if(userInfo.photos.length != 0 ) {
@@ -122,7 +127,7 @@ Component({
           if(globalData.isLogin) {
             this.setData({
                 userInfo: globalData.userInfo,
-                authed: globalData.userInfo.auth_info.company_auth.authed,
+                authed: globalData.authed,
                 globalUserHash: globalUserHash
             })
           }

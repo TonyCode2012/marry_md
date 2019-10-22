@@ -33,8 +33,8 @@ Page({
 
         basic_info: {},
         love_info: {},
-        photos: [],       // after save option, pic to show
         imgList: [],      // pic to show on GUI
+        orgAllHash: "",
         delImgList: [],   // can only be cloud address
         type: "profile",
 
@@ -58,6 +58,9 @@ Page({
             incomeIndex: 0
         },
 
+        // auth info
+        authed: false,
+
         // aboutme info variable 
         completePercent: 0,
         isExpand: false,
@@ -65,6 +68,40 @@ Page({
 
         // file folder on cloud
         photoDir: "",
+
+        // monitor data change
+        dataChanged: false,
+    },
+
+
+    watch: {
+        basic_info: function(data,that) {
+            that.setOrgAllHash()
+        },
+        //love_info: function(data,that) {
+        //    that.setOrgAllHash()
+        //},
+        imgList: function(data,that) {
+            that.setOrgAllHash()
+        }
+    },
+
+    calOrgAllHash() {
+        var basic_info = JSON.stringify(this.data.basic_info)
+        var love_info = JSON.stringify(this.data.love_info)
+        var imgList = JSON.stringify(this.data.imgList)
+        
+        return stringHash(basic_info+love_info+imgList)
+    },
+    setOrgAllHash() {
+        var allHash = this.calOrgAllHash()
+        var dataChanged = false
+        if(allHash != this.data.orgAllHash) {
+            dataChanged = true
+        }
+        this.setData({
+            dataChanged: dataChanged
+        })
     },
 
     toggleExpand() {
@@ -90,8 +127,10 @@ Page({
     bindInfoRange(e) {
         let type = e.currentTarget.dataset.type
         let value = this.data[type + 'Range'][e.detail.value]
+        this.data.basic_info[type] = value
         this.setData({
-            ['basic_info.' + type + '']: value,
+            //['basic_info.' + type + '']: value,
+            basic_info: this.data.basic_info,
             ['rangeIndexObj.' + type + 'Index']: e.detail.value
         })
     },
@@ -293,6 +332,11 @@ Page({
             }
         })
     },
+    gotoAuthCorp() {
+      wx.navigateTo({
+        url: '/pages/authcorp/authcorp',
+      })
+    },
 
     /**
      * 生命周期函数--监听页面加载
@@ -326,8 +370,13 @@ Page({
             love_info: globalData.userInfo.love_info,
             imgList: imgList,
             rangeIndexObj: rangeIndexObj,
-            photoDir: globalData.userInfo._openid
+            photoDir: globalData.userInfo._openid,
+            authed: globalData.authed,
         })
+        this.data.orgAllHash = this.calOrgAllHash()
+
+        // set watcher
+        app.setWatcher(this.data,this.watch, this)
     },
 
     /**
@@ -394,7 +443,24 @@ Page({
     /**
      * 用户点击右上角分享
      */
-    onShareAppMessage: function () {
-
+    onShareAppMessage: function (res) {
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+            console.log(res.target)
+        }
+        if(globalData.authed && globalData.completed) {
+            var openid = globalData.userInfo._openid
+            return {
+                title: "from:" + openid + ",user:" + openid,
+                //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
+                path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
+            }
+        } else {
+            wx.showToast({
+                title: '请完成认证和完善资料，否则无法分享',
+                icon: 'none',
+                duration: 2000
+            })
+        }
     }
 })

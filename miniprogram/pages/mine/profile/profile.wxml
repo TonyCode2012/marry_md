@@ -108,18 +108,31 @@
 </view>
 <view class="cu-form-group">
   <view class="title">毕业院校</view>
-  <input placeholder="" class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
+  <input placeholder="请填写您的毕业学校" class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
 </view>
 
 
 <!-- job -->
 <view class="cu-form-group margin-top">
   <view class="title">职位/职业*</view>
-  <input placeholder="" class='text-right' value="{{basic_info.profession}}" data-type="profession" bindinput='bindInfoInput'></input>
+  <input placeholder="请填写您的职业" class='text-right' value="{{basic_info.profession}}" data-type="profession" bindinput='bindInfoInput'></input>
 </view>
-<view class="cu-form-group">
+<!--view class="cu-form-group">
   <view class="title">公司*</view>
   <input placeholder="" class='text-right' value="{{basic_info.company}}" data-type="company" bindinput='bindInfoInput'></input>
+</view-->
+<view bindtap="gotoAuthCorp" class="cu-list menu solid-top">
+  <view class="cu-item arrow">
+    <view class="content flex">
+      <view class="text-xxl margin-right-sm">
+        <text class="cuIcon-group text-pink"></text>
+      </view>
+      <text class="text-df text-bold">工作认证*</text>
+    </view>
+    <view class="action bg-gradual-orange round">
+      <text class="text-white text-sm padding-sm">{{authed ? '已认证' : '未认证'}}</text>
+    </view>
+  </view>
 </view>
 <view class="cu-form-group">
   <view class="title">年收入</view>
@@ -161,7 +174,7 @@
     <view class="content flex align-center">
       <!-- <text class="cuIcon-weixin text-green "></text> -->
       <text class="">微信号*</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.wechat}}" data-type="wechat" bindinput='bindInfoInput'></input>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="请填写您的微信号" value="{{basic_info.wechat}}" data-type="wechat" bindinput='bindInfoInput'></input>
     </view>
   </view>
   <view class='divider solid-bottom'></view>
@@ -175,10 +188,10 @@
   </view>-->
 </view>
 
-<button class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false">分享我</button>
+<button open-type="share" class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false">分享我</button>
 
 
 <view class="cu-tabbar-height lg"></view>
 <view class='foot padding-lr'>
-  <button bindtap="Save" disabled="{{!canSave}}" class='cu-btn block bg-red lg'>保 存</button>
+<button bindtap="Save" disabled="{{!canSave}}" class="cu-btn block bg-{{dataChanged?'red':'blue'}} lg">{{dataChanged?'有改动注意保存':'保 存'}}</button>
 </view>

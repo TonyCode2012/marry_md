@@ -245,7 +245,7 @@ Component({
                 console.log("enter from mini card")
                 // show user info by clicking mini card
                 // if get the mini card from group, assume not a friend
-                if (!getFromGroup) {
+                if (!that.data.getFromGroup) {
                     db.collection('nexus').where({
                         _openid: options.sopenid
                     }).get({
@@ -320,8 +320,16 @@ Component({
             })
         },
         toHomePage: function () {
-            wx.navigateTo({
-                url: '/pages/index/index?cur=meet&update=false',
+            wx.navigateBack({
+                delta: 1,
+                success: res => {
+                    console.log("To home page")
+                },
+                fail: err => {
+                    wx.reLaunch({
+                        url: '/pages/index/index?cur=meet',
+                    })
+                }
             })
         },
         bindLike: function () {
