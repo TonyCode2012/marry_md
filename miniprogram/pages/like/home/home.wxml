@@ -7,9 +7,12 @@
   <view class="cu-item {{0==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
     我想认识
   </view>
+  <view hidden="{{tags['ilike']==0}}" class="cu-tag badge" style="position:relative;right:0px">{{tags['ilike']}}</view>
   <view class="cu-item {{1==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
     想认识我
   </view>
+  <view hidden="{{tags['likeme']==0}}" class="cu-tag badge" style="position:relative;right:0px">{{tags['likeme']}}</view>
+  <!-- <view></view> -->
 </scroll-view>
 
 <!-- <view wx:if="{{TabCur==0}}">
@@ -51,9 +54,10 @@
 
 <view wx:if="{{TabCur==0}}">
   <view class="cu-list menu-avatar">
-    <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+    <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-index="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}" data-tag="ilike">
 
-      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});"></view>
+      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">
+        <view hidden="{{item.checked}}" class="cu-tag badge"></view></view>
       <view class="content">
         <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
         <view class="text-gray text-sm text-cut">
@@ -114,9 +118,11 @@
 
 <view wx:if="{{TabCur==1}}">
   <view class="cu-list menu-avatar">
-    <view wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+    <view wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}"  data-index="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}" data-tag="likeme">
 
-      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});"></view>
+      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">
+        <view hidden="{{item.checked}}" class="cu-tag badge"></view>
+      </view>
       <view class="content">
         <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
         <view class="text-gray text-sm text-cut">

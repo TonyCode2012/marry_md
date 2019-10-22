@@ -30,7 +30,11 @@ App({
       authed: false,
       completed: false,
       chance: 0,
-      scene: opt.scene
+      scene: opt.scene,
+      tags: {
+          ilike: 0,
+          likeme: 0
+      },
     };
 
     //wx.login({

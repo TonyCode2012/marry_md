@@ -1,7 +1,7 @@
 <view wx:if="{{isLogin}}">
   <scroll-view scroll-y class="scrollPage">
     <meet style="display:{{PageCur=='meet'?'block':'none'}}" authed="{{authed}}" seekers="{{seekers}}" id="meetCom" userIDs="{{userIDs}}" bind:selectUser="selectUser"></meet>
-    <like style="display:{{PageCur=='like'?'block':'none'}}" bind:userInfoChange="updateUserInfo" userInfo="{{userInfo}}"></like>
+    <like style="display:{{PageCur=='like'?'block':'none'}}" bind:userInfoChange="updateUserInfo" bind:globalDataChange="updateGlobalData" userInfo="{{userInfo}}"></like>
     <!-- <intro wx:if="{{PageCur=='intro'}}"></intro> -->
     <mine style="display:{{PageCur=='mine'?'block':'none'}}" bind:userInfoChange="updateUserInfo" userInfo="{{userInfo}}"></mine>
   </scroll-view>
@@ -14,11 +14,13 @@
         <text class="cuIcon-home lg"></text>
       </view>
       <view>遇见</view>
+      
     </view>
     <!-- like -->
     <view class="{{PageCur=='like'?'text-pink':'text-gray'}} action" bindtap="NavChange" data-cur="like">
       <view class='cuIcon-cu-image'>
         <text class="cuIcon-like lg"></text>
+        <view hidden="{{tags['ilike']+tags['likeme'] == 0}}" class="cu-tag badge">{{tags['ilike']+tags['likeme']}}</view>
       </view>
       <view>匹配</view>
     </view>

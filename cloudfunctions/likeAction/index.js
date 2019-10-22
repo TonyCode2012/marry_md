@@ -86,7 +86,6 @@ exports.main = async (event, context) => {
         }
     }
     // set likeme info
-    //var likemePromise = ''
     await db.collection(event.table).where({
       _openid: event.liketo.openid
     }).get().then(
@@ -103,7 +102,6 @@ exports.main = async (event, context) => {
         }
         likeme.push(event.liketo.likeme)
         // update likeme info
-        //likemePromise = db.collection(event.table).where({
         await db.collection(event.table).where({
           _openid: event.liketo.openid
         }).update({
@@ -137,13 +135,6 @@ exports.main = async (event, context) => {
         statusCode: statusCode,
         resMsg: resMsg
     }
-    //if(likemePromise != '') {
-    //  return await likemePromise.then(
-    //    function(res) {
-    //      console.log(res)
-    //    }
-    //  )
-    //}
   } catch (e) {
     console.error(e);
   }

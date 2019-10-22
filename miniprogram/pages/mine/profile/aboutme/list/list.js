@@ -30,7 +30,7 @@ Component({
       const type = e.currentTarget.dataset.type;
       //const loveDetail = JSON.stringify(this.data.loveInfo[type])
       wx.navigateTo({
-        url: `/pages/mine/aboutme/edit/edit?type=${type}`
+        url: `/pages/mine/profile/aboutme/edit/edit?type=${type}`
       })
     }
   }

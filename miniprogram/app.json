@@ -9,7 +9,7 @@
     "pages/group/detail/detail",
     "pages/member/detail/detail",
     "pages/mine/expect/expect",
-    "pages/mine/aboutme/edit/edit",
+    "pages/mine/profile/aboutme/edit/edit",
     "pages/authcorp/authcorp",
     "pages/index/authorize/authorize"
   ],

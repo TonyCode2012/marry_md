@@ -1,5 +1,5 @@
 {
   "usingComponents": {
-    "aboutme": "/pages/mine/aboutme/list/list"
+    "aboutme": "/pages/mine/profile/aboutme/list/list"
   }
 }

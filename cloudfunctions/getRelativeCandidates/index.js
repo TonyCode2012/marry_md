@@ -9,8 +9,9 @@ const db = cloud.database({
 const _ = db.command
 
 // all users
-var users = new Map()
-var company2user = new Map()
+var authedUsers = new Map()
+var authedNexus = new Map()
+var company2AUser = new Map()
 // ========== tmp data for one user search ========== //
 // relative
 var candidates = {}
@@ -46,7 +47,7 @@ var matchMap = {
 }
 
 var _getUserInfo = async function(openid) {
-  var userInfo = users.get(openid)
+  var userInfo = authedUsers.get(openid)
   if(userInfo != undefined) return userInfo
   await db.collection('users').where({
     _openid: openid
@@ -85,8 +86,8 @@ var getRelative = async function(data) {
     relation.push({_openid:oid,name:friend.name})
     // do not include immediate friend
     if(level != 1) {
-      // if person info completed and not contains this person yet 
-      if(friend.completed && friend.gender != data.orgGender 
+      // if person info completed, authed and not contains this person yet 
+      if(friend.completed && friend.authed && friend.gender != data.orgGender 
       && !candidatesIDSet.has(oid) && !serachFriedsSet.has(oid)) {
         var portraitURL = relation[relation.length-1].portraitURL
         if(portraitURL == undefined || portraitURL == '') {
@@ -133,9 +134,10 @@ var getRelative = async function(data) {
 }
 
 var getColleague = function(openid) {
-  var cuser = users.get(openid)
-  for(var user of company2user.get(cuser.auth_info.company_auth.company)) {
-    if (user._openid != openid) {
+  var cuser = authedUsers.get(openid)
+  const cNexus = authedNexus.get(openid) 
+  for(var user of company2AUser.get(cuser.auth_info.company_auth.company)) {
+    if (user._openid != openid && cNexus.completed) {
       colleagues[user._openid] = null
     }
   }
@@ -145,10 +147,11 @@ var getColleague = function(openid) {
 }
 
 var getEmployee = function(openid) {
-  var cuser = users.get(openid)
-  for(var [_openid,user] of users) {
+  var cuser = authedUsers.get(openid)
+  var cNexus = authedNexus.get(openid)
+  for(var [_openid,user] of authedUsers) {
     if(cuser._openid != _openid && cuser.auth_info.company_auth.company != user.auth_info.company_auth.company
-    && cuser.basic_info.gender != user.basic_info.gender) {
+    && cuser.basic_info.gender != user.basic_info.gender && cNexus.completed) {
       employees[user._openid] = null
     }
   }
@@ -161,13 +164,13 @@ var getEmployee = function(openid) {
 var seleteCandidates = function(openid) {
   var category = [candidates,colleagues,employees]
   var rCategory = [rCandidates,rColleagues,rEmployees]
-  var seekerExpectInfo = users.get(openid).expect_info
+  var seekerExpectInfo = authedUsers.get(openid).expect_info
   for(var i in category) {
     for (var candidateID of Object.keys(category[i])) {
       var candidate = category[i][candidateID]
       var expectBInfo = {
         seekerExpect: seekerExpectInfo,
-        candidateBasic: users.get(candidateID).basic_info
+        candidateBasic: authedUsers.get(candidateID).basic_info
       }
       if (matchExpect(expectBInfo)) {
         rCategory[i][candidateID] = candidate
@@ -203,39 +206,41 @@ exports.main = async (event, context) => {
     var seekers = []
     await db.collection('nexus').where({
       authed: true,
-      completed: true
     }).get().then(
       function(res) {
         seekers = res.data
-      },
-      function(err) {
-        console.log(err)
-      }
-    )
-    // ========== get all authed users info ========== //
-    var cuserids = []
-    for(var seeker of seekers) {
-      cuserids.push({
-        _openid: seeker._openid
-      })
-    }
-    await db.collection('users').where(_.or(cuserids))
-    .get().then(
-      function(res) {
-        for(var user of res.data) {
-          users.set(user._openid,user)
-          var company = user.auth_info.company_auth.company
-          var c2u = company2user.get(company)
-          if(c2u == undefined || c2u.length == 0) c2u = []
-          c2u.push(user)
-          company2user.set(company,c2u)
+        for(var nexus of res.data) {
+            authedNexus.set(nexus._openid,nexus)
         }
       },
       function(err) {
         console.log(err)
       }
     )
-    // console.log(company2user)
+    // ========== get all authed users info ========== //
+    var authedUserIDs = []
+    for(var seeker of seekers) {
+      authedUserIDs.push({
+        _openid: seeker._openid
+      })
+    }
+    await db.collection('users').where(_.or(authedUserIDs))
+    .get().then(
+      function(res) {
+        for(var user of res.data) {
+          authedUsers.set(user._openid,user)
+          var company = user.auth_info.company_auth.company
+          var c2u = company2AUser.get(company)
+          if(c2u == undefined || c2u.length == 0) c2u = []
+          c2u.push(user)
+          company2AUser.set(company,c2u)
+        }
+      },
+      function(err) {
+        console.log(err)
+      }
+    )
+    // console.log(company2AUser)
     // ========== get candidates according to network ========== //
     for(var seeker of seekers) {
       // get relative

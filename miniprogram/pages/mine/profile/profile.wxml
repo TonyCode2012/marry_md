@@ -5,7 +5,7 @@
 
 <view class="">
   <view class="padding flex justify-between align-center">
-    <text class='text-sm block text-gray'>* 完成资料，找到对的人。带“*”为必填项</text>
+    <text class='text-sm block text-red'>* 完成资料，找到对的人。带*为必填项</text>
   </view>
 </view>
 
@@ -175,6 +175,7 @@
   </view>-->
 </view>
 
+<button class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false">分享我</button>
 
 
 <view class="cu-tabbar-height lg"></view>
