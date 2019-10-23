@@ -98,7 +98,8 @@ var getRelative = async function (data) {
                     var acOid = acUser._openid
                     if (acOid != friendOid && acUser.basic_info.gender != data.orgGender
                         && !candidatesIDSet.has(acOid)) {
-                        var tmpRelations = [].concat(relations)
+                        //var tmpRelations = [].concat(relations)
+                        var tmpRelations = JSON.parse(JSON.stringify(relations))
                         tmpRelations[tmpRelations.length - 1].relationship = 'colleague'
                         tmpRelations.push({ _openid: acOid, name: acUser.basic_info.nickName })
                         candidates[acOid] = { relation: tmpRelations }
@@ -106,6 +107,9 @@ var getRelative = async function (data) {
                     }
                 }
             }
+            //if (relations[0]._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+            //   console.log("find Emma's colleagues data:" + JSON.stringify(candidates))
+            //}
         }
         // do not include immediate friend
         if (level != 1) {
@@ -166,24 +170,24 @@ var getColleague = function (openid) {
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-     console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
-    }
+    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+    // console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
+    //}
 }
 
 var getEmployee = function (openid) {
     // var cuser = acUsers.get(openid)
     var cNexus = allNexus.get(openid)
     for (var [_openid, user] of acUsers) {
-        if (cNexus._openid != _openid && cNexus.company != user.company
+        if (cNexus._openid != _openid && cNexus.company != user.auth_info.company_auth.company
             && cNexus.gender != user.basic_info.gender) {
             employees[_openid] = null
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-       console.log("find Emma's employee data:" + JSON.stringify(employees))
-    }
+    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+    //   console.log("find Emma's employee data:" + JSON.stringify(employees))
+    //}
 }
 
 // select candidates according to seeker's expect
@@ -226,17 +230,14 @@ var seleteCandidates = async function (openid) {
                 seekerBasic: seekerBasicInfo,
                 candidateBasic: acUsers.get(candidateID).basic_info
             }
-            if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-                console.log("Emma's info:"+JSON.stringify(expectBInfo))
-            }
             if (matchExpect(expectBInfo, openid)) {
                 rCategory[i][candidateID] = candidate
             }
         }
     }
-    rCandidates = ([].concat([rCategory[0]]))[0]
-    rColleagues = ([].concat([rCategory[1]]))[0]
-    rEmployees = ([].concat([rCategory[2]]))[0]
+    rCandidates = [].concat([rCategory[0]])[0]
+    rColleagues = [].concat([rCategory[1]])[0]
+    rEmployees = [].concat([rCategory[2]])[0]
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
     // if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
     //     console.log("find Emma's rColleague data:" + JSON.stringify(rColleagues))
@@ -249,22 +250,12 @@ var seleteCandidates = async function (openid) {
 // do match
 var matchExpect = function (data,openid) {
     const { seekerExpect, seekerBasic, candidateBasic } = data
-    // for (var el of Object.keys(matchMap)) {
-    //     // FIXME: if el is not defined in candidateBasic and seekerExepect
-    //     if(seekerExpect[el] == undefined) continue
-    //     if (matchMap[el][candidateBasic[el]] < matchMap[el][seekerExpect[el]]) {
-    //         return false
-    //     }
-    // }
     var property = 'education'
     // deal with education and marrayStatus
     if (seekerExpect[property] != undefined &&
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
         matchMap[property][seekerBasic[property]] > matchMap[property][candidateBasic[property]]) {
-        if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-            console.log(property + " error")
-        }
         return false
     }
     property = 'marryStatus'
@@ -272,9 +263,6 @@ var matchExpect = function (data,openid) {
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
         matchMap[property][seekerBasic[property]] > matchMap[property][candidateBasic[property]]) {
-        if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-            console.log(property + " error")
-        }
         return false
     }
     // deal with hometown and location
@@ -283,9 +271,6 @@ var matchExpect = function (data,openid) {
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
         seekerBasic[property][0] != candidateBasic[property][0]) {
-        if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-            console.log(property + " error")
-        }
         return false
     }
     property = 'location'
@@ -293,17 +278,11 @@ var matchExpect = function (data,openid) {
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
         seekerBasic[property][1] != candidateBasic[property][1]) {
-        if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-            console.log(property + " error")
-        }
         return false
     }
     var candidateAge = (new Date()).getFullYear() - candidateBasic.birthday
     if(seekerExpect.startAge == undefined || seekerExpect.endAge == undefined) return true
     if (seekerExpect.startHeight == undefined || seekerExpect.endHeight == undefined) return true
-    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-        console.log("birthday error")
-    }
     if (candidateAge < seekerExpect.startAge || candidateAge > seekerExpect.endAge) return false
     if (candidateBasic.height < seekerExpect.startHeight || candidateBasic.height > seekerExpect.endHeight) return false
     return true
@@ -327,7 +306,7 @@ exports.main = async (event, context) => {
                 console.log(err)
             }
         )
-        // ========== get all authed users info ========== //
+        // ========== get all authed and completed users info ========== //
         var acUserIDs = []
         for (var [_openid, nexus] of allNexus) {
             if (nexus.authed && nexus.completed) {
@@ -416,9 +395,6 @@ exports.main = async (event, context) => {
                         var updateData = {}
                         for(var i in updateKeys) {
                             var key = updateKeys[i]
-                            // if (nexus._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-                            //     console.log("==========:" + JSON.stringify(rCandidates))
-                            // }
                             if(Object.keys(updateValues[i]).length != 0) {
                                 updateData[key] = updateValues[i]
                             }

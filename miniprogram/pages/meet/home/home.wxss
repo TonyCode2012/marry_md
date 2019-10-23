@@ -9,3 +9,11 @@
 .memberlist {
   position: relative;
 }
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}

@@ -28,6 +28,8 @@
 
 <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
 
+<memberlist class="{{0==TabCur? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{seekers.relativeCandidates}}"></memberlist>
+
 <authed wx:if="{{authed}}" seekers="{{seekers}}" tabCur="{{TabCur}}"></authed> 
 <unauthed wx:else seekers="{{seekers}}" tabCur="{{TabCur}}"></unauthed> 
 

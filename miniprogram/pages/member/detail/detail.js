@@ -77,13 +77,16 @@ Component({
 
     observers: {
         'userInfo': function (data) {
+        },
+        'userInfo.relativeInfo.relation': function(data) {
             const that = this
             // set relative info portraitURL
             if (this.data.userInfo.relativeInfo == undefined) return
             var tmpHash = stringHash(JSON.stringify(this.data.userInfo.relativeInfo))
             if (tmpHash != this.data.relativePortraitHash) {
                 this.data.relativePortraitHash = tmpHash
-                var relations = this.data.userInfo.relativeInfo.relation
+                //var relations = this.data.userInfo.relativeInfo.relation
+                var relations = data
                 var tmpMap = new Map()
                 for (var i in relations) {
                     var relation = relations[i]
@@ -260,7 +263,7 @@ Component({
                 if(userInfo == undefined) {
                     // get user info
                     await db.collection('users').where({
-                        _openid: options.topenid
+                        _openid: options.openid
                     }).get().then(
                         function (res) {
                             if (res.data.length > 0) {
@@ -473,6 +476,7 @@ Component({
                         })
                         console.log(res)
                         globalData.userInfo.match_info.ilike = ilikeInfo
+                        globalData.chance--
                         that.setData({
                             likeTag: '已感兴趣'
                         })

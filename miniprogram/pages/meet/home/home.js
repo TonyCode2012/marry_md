@@ -23,7 +23,7 @@ Component({
    */
   data: { 
     isAuth: false,
-    TabCur: 1,
+    TabCur: 0,
     CustomBar: globalData.CustomBar,
     userIdx: 0
   },
