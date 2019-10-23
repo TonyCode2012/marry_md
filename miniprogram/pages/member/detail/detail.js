@@ -399,6 +399,7 @@ Component({
                 _openid: this.data.userInfo._openid,
                 decision: 'pending',
                 time: now,
+                checked: true,
                 basic_info: basic_info_t,
                 portraitURL: portraitURL
             }
@@ -419,6 +420,7 @@ Component({
                 _openid: app.globalData.userInfo._openid,
                 decision: 'pending',
                 time: now,
+                checked: false,
                 basic_info: basic_info_g,
                 portraitURL: portraitURL
             }

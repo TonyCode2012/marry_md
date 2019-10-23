@@ -130,7 +130,7 @@
       <text class="text-df text-bold">工作认证*</text>
     </view>
     <view class="action bg-gradual-orange round">
-      <text class="text-white text-sm padding-sm">{{authed ? '已认证' : '未认证'}}</text>
+      <text class="text-white text-sm padding-sm">{{authed ? basic_info.company+' 已认证' : '未认证'}}</text>
     </view>
   </view>
 </view>
@@ -188,7 +188,9 @@
   </view>-->
 </view>
 
-<button open-type="share" class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false">分享我</button>
+<!--view bindtap="shareMyself">
+</view-->
+<button open-type="{{canShare?'share':''}}" bindtap="{{canShare?'':'checkShareStatus'}}" class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false">分享我</button>
 
 
 <view class="cu-tabbar-height lg"></view>

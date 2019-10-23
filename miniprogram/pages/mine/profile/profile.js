@@ -30,6 +30,7 @@ Page({
         now: formatDate(new Date()),
 
         canSave: true,
+        canShare: false,
 
         basic_info: {},
         love_info: {},
@@ -76,13 +77,13 @@ Page({
 
     watch: {
         basic_info: function(data,that) {
-            that.setOrgAllHash()
+            that.setDataChanged()
         },
         //love_info: function(data,that) {
-        //    that.setOrgAllHash()
+        //    that.setDataChanged()
         //},
         imgList: function(data,that) {
-            that.setOrgAllHash()
+            that.setDataChanged()
         }
     },
 
@@ -93,7 +94,7 @@ Page({
         
         return stringHash(basic_info+love_info+imgList)
     },
-    setOrgAllHash() {
+    setDataChanged() {
         var allHash = this.calOrgAllHash()
         var dataChanged = false
         if(allHash != this.data.orgAllHash) {
@@ -113,15 +114,19 @@ Page({
     bindInfoChange(e) {
         let type = e.currentTarget.dataset.type
         let value = e.currentTarget.dataset.value
+        this.data.basic_info[type] = value
         this.setData({
-            ['basic_info.' + type + '']: value
+            //['basic_info.' + type + '']: value
+            basic_info: this.data.basic_info,
         })
     },
     bindInfoInput(e) {
         let type = e.currentTarget.dataset.type
         let value = e.detail.value
+        this.data.basic_info[type] = value
         this.setData({
-            ['basic_info.' + type + '']: value
+            //['basic_info.' + type + '']: value
+            basic_info: this.data.basic_info,
         })
     },
     bindInfoRange(e) {
@@ -137,45 +142,56 @@ Page({
     bindInfoRegion(e) {
         let type = e.currentTarget.dataset.type
         let value = e.detail.value
+        this.data.basic_info[type] = value
         this.setData({
-            ['basic_info.' + type + '']: value
+            //['basic_info.' + type + '']: value
+            basic_info: this.data.basic_info,
         })
     },
 
 
     Save: function (e) {
         const that = this
+        this.data.basic_info.company = globalData.userInfo.auth_info.company_auth.company
         globalData.userInfo.basic_info = this.data.basic_info
         globalData.completed = checkComplete(globalData.userInfo)
-        if (!globalData.completed) {
-            wx.showModal({
-                title: '提示',
-                content: '带*号为必填选项，否则将无法发起感兴趣',
-                confirmText: '继续填写',
-                cancelText: '保存',
-                success(res) {
-                    if (res.cancel) {
-                        wx.showLoading({
-                            title: '正在保存',
-                        })
-                        // disable Save button
-                        that.setData({
-                            canSave: false
-                        })
-                        that.dealSave()
-                    }
-                }
-            })
-        } else {
-            wx.showLoading({
-                title: '正在保存',
-            })
-            // disable Save button
-            that.setData({
-                canSave: false
-            })
-            that.dealSave()
-        }
+        //if (!globalData.completed) {
+        //    wx.showModal({
+        //        title: '提示',
+        //        content: '带*号为必填选项，否则将无法发起感兴趣',
+        //        confirmText: '继续填写',
+        //        cancelText: '保存',
+        //        success(res) {
+        //            if (res.cancel) {
+        //                wx.showLoading({
+        //                    title: '正在保存',
+        //                })
+        //                // disable Save button
+        //                that.setData({
+        //                    canSave: false
+        //                })
+        //                that.dealSave()
+        //            }
+        //        }
+        //    })
+        //} else {
+        //    wx.showLoading({
+        //        title: '正在保存',
+        //    })
+        //    // disable Save button
+        //    that.setData({
+        //        canSave: false
+        //    })
+        //    that.dealSave()
+        //}
+        wx.showLoading({
+            title: '正在保存',
+        })
+        // disable Save button
+        that.setData({
+            canSave: false
+        })
+        that.dealSave()
         // after change user profile update related completed property
         wx.cloud.callFunction({
             name: 'dbupdate',
@@ -261,6 +277,11 @@ Page({
                     }
                 },
                 success: function (res) {
+                    that.setData({
+                        canShare: globalData.authed && globalData.completed,
+                        orgAllHash: that.calOrgAllHash(),
+                        dataChanged: false,
+                    })
                     wx.hideLoading()
                     wx.showToast({
                         title: '成功',
@@ -278,7 +299,7 @@ Page({
                 },
                 complete: function (res) {
                     that.setData({
-                        canSave: true
+                        canSave: true,
                     })
                 }
             })
@@ -344,6 +365,7 @@ Page({
     onLoad: function (options) {
         // get basic info
         let basic_info = globalData.userInfo.basic_info
+        basic_info.company = globalData.userInfo.auth_info.company_auth.company
         let imgList = globalData.userInfo.photos
         let rangeIndexObj = {
             weightIndex: 0,
@@ -351,6 +373,7 @@ Page({
             educationIndex: 0,
             incomeIndex: 0
         }
+        // initial range property
         for (let j = 0; j < this.data.rangeArry.length; j++) {
             let range = this.data.rangeArry[j]
             let concretRange = this.data[range + 'Range']
@@ -372,6 +395,7 @@ Page({
             rangeIndexObj: rangeIndexObj,
             photoDir: globalData.userInfo._openid,
             authed: globalData.authed,
+            canShare: globalData.authed && globalData.completed,
         })
         this.data.orgAllHash = this.calOrgAllHash()
 
@@ -394,7 +418,7 @@ Page({
         const love_info = globalData.userInfo.love_info
         if (love_info == undefined) return
         let loveInfoHash = stringHash(JSON.stringify(love_info))
-        // if hashcode is changed, update
+        // if love_info hashcode is changed, update
         if (loveInfoHash != this.data.loveInfoHash) {
             let completePercent = 0
             for (let i = 0; i < aboutme.listItem.length; i++) {
@@ -408,6 +432,18 @@ Page({
                 completePercent: completePercent,
                 loveInfoHash: loveInfoHash,
                 love_info: love_info
+            })
+        }
+        // if authed info changed, update
+        if(globalData.authed) {
+            var userInfo = {
+                basic_info: that.data.basic_info,
+                love_info: love_info,
+            }
+            that.setData({
+                'basic_info.company': globalData.userInfo.auth_info.company_auth.company,
+                authed: true,
+                canShare: checkComplete(userInfo),
             })
         }
     },
@@ -443,24 +479,36 @@ Page({
     /**
      * 用户点击右上角分享
      */
+    checkShareStatus: function(res) {
+        wx.showToast({
+            title: '请完成认证和完善资料，否则无法分享',
+            icon: 'none',
+            duration: 2000
+        })
+    },
     onShareAppMessage: function (res) {
         if (res.from === 'button') {
             // 来自页面内转发按钮
             console.log(res.target)
         }
-        if(globalData.authed && globalData.completed) {
-            var openid = globalData.userInfo._openid
-            return {
-                title: "from:" + openid + ",user:" + openid,
-                //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
-                path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
-            }
-        } else {
-            wx.showToast({
-                title: '请完成认证和完善资料，否则无法分享',
-                icon: 'none',
-                duration: 2000
-            })
+        return {
+            title: "from:" + openid + ",user:" + openid,
+            //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
+            path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
         }
+        //if(globalData.authed && globalData.completed) {
+        //    var openid = globalData.userInfo._openid
+        //    return {
+        //        title: "from:" + openid + ",user:" + openid,
+        //        //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
+        //        path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
+        //    }
+        //} else {
+        //    wx.showToast({
+        //        title: '请完成认证和完善资料，否则无法分享',
+        //        icon: 'none',
+        //        duration: 2000
+        //    })
+        //}
     }
 })
