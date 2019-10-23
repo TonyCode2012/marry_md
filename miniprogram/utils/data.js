@@ -49,7 +49,7 @@ const weightEnd = 120
 var weightStep = weightStart - 1
 const weightRange = Array.apply(null,{length:weightEnd-weightStart+1}).map(function (v,i){weightStep++;return weightStep;})
 
-const heightStart = 160
+const heightStart = 150
 const heightEnd = 220
 var heightStep = heightStart - 1
 const heightRange = Array.apply(null,{length:heightEnd-heightStart+1}).map(function (v,i){heightStep++;return heightStep;})

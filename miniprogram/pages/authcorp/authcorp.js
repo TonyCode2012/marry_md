@@ -99,21 +99,7 @@ Page({
             }
         })
 
-        // let resUsers =  await db.collection('users').where({
-        //   _openid: globalData.openid
-        // }).get()
-        // let user = resUsers.data[0]
-        // await db.collection('users').doc(user._id).update({
-        //   data: {
-        //     auth_info:{
-        //       company_auth: {
-        //         authed: true,
-        //         company: corp,
-        //         job_title: jobTitle
-        //       }
-        //     }
-        //   }
-        // })
+        // update users info
         wx.cloud.callFunction({
             name: 'dbupdate',
             data: {
@@ -149,7 +135,7 @@ Page({
                 console.log("认证失败," + err)
             }
         })
-
+        // update nexus info
         wx.cloud.callFunction({
             name: 'dbupdate',
             data: {

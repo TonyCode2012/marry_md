@@ -75,7 +75,7 @@ Page({
                     relative.relation.reverse()
                     // relative.relation.reverse()
                     for (var relation of relative.relation) {
-                        relation.relation = that.data.relationMap[relation.relation]
+                        relation.relationship = that.data.relationMap[relation.relationship]
                     }
                 }
                 // get users from database

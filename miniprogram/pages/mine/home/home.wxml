@@ -32,7 +32,7 @@
       <text class='text-xs text-orange'>{{authed ? '已认证' : '未认证'}}</text>
     </view>
     <view class="text-gray text-xs  margin-top-xs">
-      <text>*只有通过认证且资料完整度50%以上才能被别人看到并认识其他人</text>
+      <text>*只有通过认证且资料完整度80%以上才能被别人看到并认识其他人</text>
     </view>
   </view>
 

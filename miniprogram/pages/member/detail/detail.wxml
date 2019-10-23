@@ -61,9 +61,9 @@
             <scroll-view scroll-x>
               <view class="source-group padding-lr-xs flex">
                 <view wx:for="{{userInfo.relativeInfo.relation}}" wx:key class="source-item flex">
-                  <view style="display:{{!item.relation?'none':'block'}};text-align:center" class='source-connection'>
+                  <view style="display:{{!item.relationship?'none':'block'}};text-align:center" class='source-connection'>
                     <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">{{item.relation}}</text>
+                    <text class="cu-tag round bg-green sm">{{item.relationship}}</text>
                   </view>
                   <view class='source-user flex flex-direction justify-center align-center'>
                     <!--<view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>-->

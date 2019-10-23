@@ -194,39 +194,9 @@ Component({
             openid = this.data.userIDs[openid]
             openid = openid.substring(openid.indexOf(':') + 1, openid.length)
             this.chooseRelations(openid)
-            // wx.showLoading({
-            //   title: '正在分享',
-            // })
-            // wx.cloud.callFunction({
-            //   name: 'updateRelation',
-            //   data: {
-            //     to_openid: openid,
-            //     from_openid: globalData.userInfo._openid,
-            //     relationship: that.data.relationRArry[that.data.relationIndex],
-            //     name: that.data.userInfo.basic_info.nickName
-            //   },
-            //   success: res => {
-            //     console.log(res)
-            //     wx.hideLoading()
-            //     wx.showToast({
-            //       title: '分享成功',
-            //       icon: 'success',
-            //       duration: 1500
-            //     })
-            //   },
-            //   fail: err => {
-            //     console.log(err)
-            //     wx.hideLoading()
-            //     wx.showToast({
-            //       title: '分享失败',
-            //       icon: 'none',
-            //       duration: 1500
-            //     })
-            //   }
-            // })
         },
 
-        onLoad: function (options) {
+        onLoad: async function (options) {
             const that = this
             if (!globalData.isLogin) {
                 if (options.sopenid == undefined || options.topenid == undefined) {
@@ -240,81 +210,135 @@ Component({
             }
             const { source } = options;
             const _ = db.command
+            var userInfo = null
             // enter from share mini card
             if (options.sopenid != undefined) {
                 console.log("enter from mini card")
                 // show user info by clicking mini card
                 // if get the mini card from group, assume not a friend
                 if (!that.data.getFromGroup) {
-                    db.collection('nexus').where({
-                        _openid: options.sopenid
-                    }).get({
-                        success: function (res) {
-                            db.collection('users').where({
-                                _openid: options.topenid
-                            }).get({
-                                success: function (res2) {
+                    if (options.sopenid != globalData.userInfo._openid) {
+                        db.collection('nexus').where({
+                            _openid: options.sopenid
+                        }).get({
+                            success: function (res) {
+                                var friends = res.data[0].friends
+                                var loginID = globalData.userInfo._openid
+                                if (loginID != undefined && friends.hasOwnProperty(loginID)) {
                                     that.setData({
-                                        userInfo: res2.data[0]
+                                        relationship: true
                                     })
-                                },
-                                fail: function (err) {
-                                    console.log("Get user info failed!" + err)
+                                } else {
+                                    that.chooseRelations(options.sopenid)
                                 }
-                            })
-                            var friends = res.data[0].friends
-                            var loginID = globalData.userInfo._openid
-                            if (loginID != undefined && friends.hasOwnProperty(loginID)) {
-                                that.setData({
-                                    relationship: true
-                                })
-                            } else {
-                                that.chooseRelations(options.sopenid)
+                            },
+                            fail: function (res) {
+                                console.log(res)
                             }
-                        },
-                        fail: function (res) {
-                            console.log(res)
-                        }
-                    })
+                        })
+                    }
                 }
+                // get user info
+                await db.collection('users').where({
+                    _openid: options.topenid
+                }).get().then(
+                    function (res) {
+                        if (res.data.length > 0) {
+                            userInfo = res.data[0]
+                        } else {
+                            console.log("Get user info failed! no user found!")
+                        }
+                    },
+                    function (err) {
+                        console.log("Get user info failed!" + err)
+                    }
+                )
             } else {
                 console.log("enter from main port")
                 // show user info by clicking mini card
-                var userInfo = globalData.userMap.get(options.openid)
-                // set show like tag
-                if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
-                    that.setData({
-                        showLike: false
-                    })
-                }
-                // check if this user info has been existed on the match list
-                var loginILike = app.globalData.userInfo.match_info.ilike
-                var loginLikeMe = app.globalData.userInfo.match_info.likeme
-                for (var i = 0; i < loginILike.length; i++) {
-                    if (loginILike[i]._openid == userInfo._openid) {
-                        this.setData({
-                            likeTag: "已感兴趣"
-                        })
-                        break
-                    }
-                }
-                for (var i = 0; i < loginLikeMe.length; i++) {
-                    if (loginLikeMe[i]._openid == userInfo._openid) {
-                        this.setData({
-                            likeTag: "对你感兴趣"
-                        })
-                        break
-                    }
+                userInfo = globalData.userMap.get(options.openid)
+                if(userInfo == undefined) {
+                    // get user info
+                    await db.collection('users').where({
+                        _openid: options.topenid
+                    }).get().then(
+                        function (res) {
+                            if (res.data.length > 0) {
+                                userInfo = res.data[0]
+                            } else {
+                                console.log("Get user info failed! no user found!")
+                            }
+                        },
+                        function (err) {
+                            console.log("Get user info failed!" + err)
+                        }
+                    )
                 }
                 // get user information
                 that.setData({
-                    userInfo: userInfo,
                     userIDs: globalData.userIDs
+                })
+            }
+            // set show like tag
+            if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
+                that.setData({
+                    showLike: false
+                })
+            }
+            // check if this user info has been existed on the match list
+            var loginILike = app.globalData.userInfo.match_info.ilike
+            var loginLikeMe = app.globalData.userInfo.match_info.likeme
+            for (var i = 0; i < loginILike.length; i++) {
+                if (loginILike[i]._openid == userInfo._openid) {
+                    this.setData({
+                        likeTag: "已感兴趣"
+                    })
+                    break
+                }
+            }
+            for (var i = 0; i < loginLikeMe.length; i++) {
+                if (loginLikeMe[i]._openid == userInfo._openid) {
+                    this.setData({
+                        likeTag: "对你感兴趣"
+                    })
+                    break
+                }
+            }
+            // set relative portrait, async get
+            if(userInfo.relativeInfo != undefined) {
+                var relativeIDs = []
+                for(var item of userInfo.relativeInfo.relation) {
+                    relativeIDs.push({
+                        _openid: item._openid
+                    })
+                }
+                db.collection('users').where(_.or(relativeIDs)).get({
+                    success: function(res) {
+                        var tmpMap = new Map()
+                        for(var user of res.data) {
+                            tmpMap.set(user._openid,user)
+                        }
+                        for(var item of userInfo.relativeInfo.relation) {
+                            var user = tmpMap.get(item._openid)
+                            var portraitUrl = user.wechat_info.avatarUrl
+                            if(user.photos.length != 0) {
+                                portraitUrl = user.photos[0]
+                            }
+                            item.portraitURL = portraitUrl
+                        }
+                        that.setData({
+                            'userInfo.relativeInfo.relation': userInfo.relativeInfo.relation
+                        })
+                    },
+                    fail: function(err) {
+                        console.log("Set relative portraitUrl failed!")
+                    }
                 })
             }
 
             console.log('user detail', options, this.properties);
             this.setData({
+                userInfo: userInfo,
                 source: source,
                 isLogin: globalData.isLogin
             })

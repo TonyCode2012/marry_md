@@ -97,11 +97,16 @@ Page({
     setDataChanged() {
         var allHash = this.calOrgAllHash()
         var dataChanged = false
+        var canShare = checkComplete({
+            basic_info: this.data.basic_info,
+            love_info: this.data.love_info,
+        })
         if(allHash != this.data.orgAllHash) {
             dataChanged = true
         }
         this.setData({
-            dataChanged: dataChanged
+            dataChanged: dataChanged,
+            canShare: canShare,
         })
     },
 
@@ -442,6 +447,7 @@ Page({
             }
             that.setData({
                 'basic_info.company': globalData.userInfo.auth_info.company_auth.company,
+                'basic_info.job_title': globalData.userInfo.auth_info.company_auth.job_title,
                 authed: true,
                 canShare: checkComplete(userInfo),
             })
@@ -491,24 +497,16 @@ Page({
             // 来自页面内转发按钮
             console.log(res.target)
         }
+        var openid = globalData.userInfo._openid
+        var imageUrl = globalData.userInfo.wechat_info.avatarUrl
+        if(this.data.imgList.length != 0) {
+            imageUrl = this.data.imgList[0]
+        }
         return {
             title: "from:" + openid + ",user:" + openid,
+            imageUrl: imageUrl,
             //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
             path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
         }
-        //if(globalData.authed && globalData.completed) {
-        //    var openid = globalData.userInfo._openid
-        //    return {
-        //        title: "from:" + openid + ",user:" + openid,
-        //        //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
-        //        path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
-        //    }
-        //} else {
-        //    wx.showToast({
-        //        title: '请完成认证和完善资料，否则无法分享',
-        //        icon: 'none',
-        //        duration: 2000
-        //    })
-        //}
     }
 })
