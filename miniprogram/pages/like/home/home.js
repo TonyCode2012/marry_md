@@ -2,8 +2,10 @@
 const { stringHash } = require("../../../utils/util.js");
 const app = getApp()
 const {
+    db,
     globalData
 } = app
+const _ = db.command
 
 Component({
     options: {
@@ -27,12 +29,16 @@ Component({
      * 组件的初始数据
      */
     data: {
-        TabCur: 0,
+        tabCur: 0,
         scrollLeft: 0,
         modalName: '',
         decision: 'pending',
         ListTouchStartPos: 0,
         ListTouchDirection: '',
+        mainTouchStartPos: 0,
+        mainTouchDirection: '',
+        mainTabCurMax: 1,
+        disableMainTab: false,
         // tab set
         tabs: {
             ilike: '我想认识',
@@ -58,56 +64,80 @@ Component({
             that.setData({
                 tags: globalData.tags
             })
-            // set match info
-            if (this.data.userInfo.match_info == undefined) return
-            var matchInfo = this.data.userInfo.match_info
-            var types = ['ilike', 'likeme']
-            var ilikeMap = new Map()
-            var likemeMap = new Map()
-            var maps = [ilikeMap, likemeMap]
-            for (var tid in types) {
-                var likeInfo = matchInfo[types[tid]]
-                var tmpMap = maps[tid]
-                for (var i in likeInfo) {
-                    var item = likeInfo[i]
-                    var portraitURL = item.portraitURL
-                    if (portraitURL == undefined || portraitURL.indexOf("http") != -1) continue
-                    var tmpArry = []
-                    if (tmpMap.get(portraitURL) != undefined) {
-                        tmpArry = tmpMap.get(portraitURL)
+            // set like user info
+            if (this.data.userInfo.match_info != undefined) {
+                var matchInfo = this.data.userInfo.match_info
+                var likeIDs = []
+                var id2likeItem = new Map()
+                var types = ['ilike', 'likeme']
+                var ilikeMap = new Map()
+                var likemeMap = new Map()
+                var maps = [ilikeMap, likemeMap]
+                for (var tid in types) {
+                    var likeInfo = matchInfo[types[tid]]
+                    var tmpMap = maps[tid]
+                    for (var i in likeInfo) {
+                        var item = likeInfo[i]
+                        var portraitURL = item.portraitURL
+                        if (portraitURL == undefined || portraitURL.indexOf("http") != -1) continue
+                        var tmpArry = []
+                        if (tmpMap.get(portraitURL) != undefined) {
+                            tmpArry = tmpMap.get(portraitURL)
+                        }
+                        tmpArry.push(i)
+                        tmpMap.set(portraitURL, tmpArry)
+                        likeIDs.push({
+                            _openid: item._openid
+                        })
+                        id2likeItem.set(item._openid,item)
                     }
-                    tmpArry.push(i)
-                    tmpMap.set(portraitURL, tmpArry)
                 }
-            }
-            if (ilikeMap.size + likemeMap.size == 0) return
-            wx.cloud.getTempFileURL({
-                fileList: Array.from(ilikeMap.keys()).concat(Array.from(likemeMap.keys())),
-                success: res => {
-                    // fileList 是一个有如下结构的对象数组
-                    // [{
-                    //    fileID: 'cloud://xxx.png', // 文件 ID
-                    //    tempFileURL: '', // 临时文件网络链接
-                    //    maxAge: 120 * 60 * 1000, // 有效期
-                    // }]
-                    for (var el of res.fileList) {
-                        for (var i in maps) {
-                            var tmpMap = maps[i]
-                            var likeInfo = matchInfo[types[i]]
-                            if (tmpMap.get(el.fileID) == undefined) continue
-                            tmpMap.get(el.fileID).forEach(function (id) {
-                                likeInfo[id].portraitURL = el.tempFileURL
+                // get like user portrait
+                if (ilikeMap.size + likemeMap.size != 0) {
+                    wx.cloud.getTempFileURL({
+                        fileList: Array.from(ilikeMap.keys()).concat(Array.from(likemeMap.keys())),
+                        success: res => {
+                            // fileList 是一个有如下结构的对象数组
+                            // [{
+                            //    fileID: 'cloud://xxx.png', // 文件 ID
+                            //    tempFileURL: '', // 临时文件网络链接
+                            //    maxAge: 120 * 60 * 1000, // 有效期
+                            // }]
+                            for (var el of res.fileList) {
+                                for (var i in maps) {
+                                    var tmpMap = maps[i]
+                                    var likeInfo = matchInfo[types[i]]
+                                    if (tmpMap.get(el.fileID) == undefined) continue
+                                    tmpMap.get(el.fileID).forEach(function (id) {
+                                        likeInfo[id].portraitURL = el.tempFileURL
+                                    })
+                                }
+                            }
+                            that.setData({
+                                'userInfo.match_info': matchInfo
+                            })
+                            // don't save tmp file url to globalData
+                            //globalData.userInfo.match_info = matchInfo
+                        },
+                        fail: console.error
+                    })
+                    // get like user basic info
+                    db.collection('users').where(_.or(likeIDs))
+                    .get().then(
+                        function(res) {
+                            for(var user of res.data) {
+                                var item = id2likeItem.get(user._openid)
+                                if(item != undefined) {
+                                    item.basic_info = user.basic_info
+                                }
+                            }
+                            that.setData({
+                                'userInfo.match_info': matchInfo
                             })
                         }
-                    }
-                    that.setData({
-                        'userInfo.match_info': matchInfo
-                    })
-                    // don't save tmp file url to globalData
-                    //globalData.userInfo.match_info = matchInfo
-                },
-                fail: console.error
-            })
+                    )
+                }
+            }
         }
     },
 
@@ -134,7 +164,7 @@ Component({
     methods: {
         tabSelect(e) {
             this.setData({
-                TabCur: e.currentTarget.dataset.id,
+                tabCur: e.currentTarget.dataset.id,
                 scrollLeft: (e.currentTarget.dataset.id - 1) * 60
             })
         },
@@ -283,7 +313,8 @@ Component({
         // ListTouch触摸开始
         ListTouchStart(e) {
             this.setData({
-                ListTouchStartPos: e.touches[0].pageX
+                ListTouchStartPos: e.touches[0].pageX,
+                disableMainTab: true,
             })
             var index = e.currentTarget.dataset.index
             var tag = e.currentTarget.dataset.tag
@@ -315,7 +346,6 @@ Component({
                 this.triggerEvent('globalDataChange', param)
             }
         },
-
         // ListTouch计算方向
         ListTouchMove(e) {
             this.setData({
@@ -324,17 +354,54 @@ Component({
         },
         // ListTouch计算滚动
         ListTouchEnd(e) {
-            if (this.data.ListTouchDirection == 'left') {
-                this.setData({
-                    modalName: e.currentTarget.dataset.target
-                })
-            } else {
-                this.setData({
-                    modalName: null
-                })
+            var modalName = e.currentTarget.dataset.target
+            if (this.data.ListTouchDirection != 'left') {
+                modalName = null
             }
             this.setData({
-                ListTouchDirection: null
+                ListTouchDirection: null,
+                modalName: modalName,
+                disableMainTab: false,
+            })
+        },
+        // ListTouch触摸开始
+        mainTouchStart(e) {
+            if (this.data.disableMainTab) return
+            this.setData({
+                mainTouchStartPos: e.touches[0].pageX
+            })
+        },
+        // ListTouch计算方向
+        mainTouchMove(e) {
+            if (this.data.disableMainTab) return
+            var shiftDis = e.touches[0].pageX - this.data.mainTouchStartPos
+            if (Math.abs(shiftDis) < 50) return
+            this.setData({
+                mainTouchDirection: shiftDis < 0 ? 'right' : 'left'
+            })
+        },
+        // ListTouch计算滚动
+        mainTouchEnd(e) {
+            if(this.data.disableMainTab) return
+            var direction = this.data.mainTouchDirection
+            if (direction == '') return
+            var tabCur = this.data.tabCur
+            if (direction == 'right') {
+                if (tabCur < this.data.mainTabCurMax) {
+                    tabCur++
+                } else {
+                    tabCur = this.data.mainTabCurMax
+                }
+            } else {
+                if (tabCur > 0) {
+                    tabCur--
+                } else {
+                    tabCur = 0
+                }
+            }
+            this.setData({
+                tabCur: tabCur,
+                mainTouchDirection: '',
             })
         },
 

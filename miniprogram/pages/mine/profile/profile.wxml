@@ -194,7 +194,7 @@
 
 <!--view bindtap="shareMyself">
 </view-->
-<button open-type="{{canShare?'share':''}}" bindtap="{{canShare?'':'checkShareStatus'}}" class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false">分享我</button>
+<button open-type="{{canShare?'share':''}}" bindtap="{{canShare?'':'checkShareStatus'}}" class="cu-btn round bg-cyan" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false"><text class="cuIcon-upload"></text> 分享</button>
 
 
 <view class="cu-tabbar-height lg"></view>

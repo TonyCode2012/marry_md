@@ -1,6 +1,17 @@
 <wxs module="funcModule">
-  var deal = function(data,start,len) {
-    if (typeof(data) == 'string') return data.slice(start,len)
+  var dealProvince = function(data) {
+    if (typeof(data) == 'string') {
+        if(data.indexOf('内蒙古')!=-1 || data.indexOf('黑龙江')!=-1) {
+            return data.substring(0,3)
+        }
+        return data.substring(0,2)
+    }
+    else return ""
+  }
+  var dealLength = function(data,start,len) {
+    if (typeof(data) == 'string') {
+        return data.slice(start,len)
+    }
     else return ""
   }
   var getAstro = function(data) {
@@ -13,7 +24,8 @@
      return "error"
   }
   module.exports = {
-    deal : deal,
+    dealProvince : dealProvince,
+    dealLength : dealLength,
     getAstro : getAstro,
   }
 </wxs>
@@ -40,11 +52,11 @@
             </view>
             <view class='text-sm text-gray margin-top-xs'>
                   <text class="cuIcon-{{item.basic_info.gender}} text-{{item.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
-                  <text>  {{funcModule.deal(item.basic_info.birthday,0,4)}}年・{{funcModule.getAstro(item.basic_info.birthday)}}座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
+                  <text>  {{funcModule.dealLength(item.basic_info.birthday,0,4)}}年・{{funcModule.getAstro(item.basic_info.birthday)}}座・{{item.basic_info.height}}CM・{{item.basic_info.college}} {{item.basic_info.academic}}・{{item.basic_info.profession}}</text>
             </view>
             <view class="text-gray text-sm flex">
               <text class="text-cut">
-              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location[1]}}・{{funcModule.deal(item.basic_info.hometown[1],0,2)}}人</text>
+              <text class="cuIcon-locationfill margin-right-xs"></text> 现居{{item.basic_info.location[1]}}・{{funcModule.dealProvince(item.basic_info.hometown[0])}}人</text>
             </view>
           </view>
         </view>

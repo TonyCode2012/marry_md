@@ -4,18 +4,18 @@
 </cu-custom>
 
 <scroll-view scroll-x class="bg-white nav text-center">
-  <view class="cu-item {{0==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
+  <view class="cu-item {{0==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
     我想认识
   </view>
   <view hidden="{{tags['ilike']==0}}" class="cu-tag badge" style="position:relative;right:0px">{{tags['ilike']}}</view>
-  <view class="cu-item {{1==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
+  <view class="cu-item {{1==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
     想认识我
   </view>
   <view hidden="{{tags['likeme']==0}}" class="cu-tag badge" style="position:relative;right:0px">{{tags['likeme']}}</view>
   <!-- <view></view> -->
 </scroll-view>
 
-<!-- <view wx:if="{{TabCur==0}}">
+<!-- <view wx:if="{{tabCur==0}}">
   <view class="cu-list menu-avatar">
     <view wx:for="{{fromMe}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
@@ -42,17 +42,30 @@
   </view>
 </view> -->
 
-<wxs module="ageModule">
-  var deal = function(data,start,len) {
-    if (typeof(data) == 'string') return data.slice(start,len)
+<wxs module="funcModule">
+  var dealProvince = function(data) {
+    if (typeof(data) == 'string') {
+        if(data.indexOf('内蒙古')!=-1 || data.indexOf('黑龙江')!=-1) {
+            return data.substring(0,3)
+        }
+        return data.substring(0,2)
+    }
+    else return ""
+  }
+  var dealLength = function(data,start,len) {
+    if (typeof(data) == 'string') {
+        return data.slice(start,len)
+    }
     else return ""
   }
   module.exports = {
-    deal : deal
+    dealLength : dealLength,
+    dealProvince : dealProvince,
   }
 </wxs>
 
-<view wx:if="{{TabCur==0}}">
+<view style="min-height:600px" bindtouchstart="mainTouchStart" bindtouchmove="mainTouchMove" bindtouchend="mainTouchEnd">
+<view wx:if="{{tabCur==0}}" style="z-index:9999">
   <view class="cu-list menu-avatar">
     <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-index="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}" data-tag="ilike">
 
@@ -63,7 +76,7 @@
         <view class="text-gray text-sm text-cut">
           <!--text class='cuIcon-female text-pink margin-right-xs'></text-->
           <text class="cuIcon-{{item.basic_info.gender}} text-{{item.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
-          <text>{{ageModule.deal(item.basic_info.birthday,2,4)}} · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{ageModule.deal(item.basic_info.hometown[0],0,2)}}人 · 现居{{item.basic_info.location[1]}}</text>
+          <text>{{funcModule.dealLength(item.basic_info.birthday,0,4)}}年 · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{funcModule.dealProvince(item.basic_info.hometown[0])}}人 · 现居{{item.basic_info.location[1]}}</text>
         </view>
       </view>
       <view class="btn-group-decision flex-direction flex align-start text-sm">
@@ -82,7 +95,7 @@
   </view>
 </view>
 
-<!-- <view wx:if="{{TabCur==1}}">
+<!-- <view wx:if="{{tabCur==1}}">
   <view class="cu-list menu-avatar">
     <view wx:for="{{toMe}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
 
@@ -116,7 +129,7 @@
   </view>
 </view> -->
 
-<view wx:if="{{TabCur==1}}">
+<view wx:if="{{tabCur==1}}" style="z-index:9999">
   <view class="cu-list menu-avatar">
     <view wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}"  data-index="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}" data-tag="likeme">
 
@@ -129,7 +142,7 @@
 
           <!--text class='cuIcon-female text-pink margin-right-xs'></text-->
           <text class="cuIcon-{{item.basic_info.gender}} text-{{item.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
-          <text>{{ageModule.deal(item.basic_info.birthday,2,4)}} · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{ageModule.deal(item.basic_info.hometown[0],0,2)}}人 · 现居{{item.basic_info.location[1]}}</text>
+          <text>{{funcModule.dealLength(item.basic_info.birthday,0,4)}}年 · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{funcModule.dealProvince(item.basic_info.hometown[0])}}人 · 现居{{item.basic_info.location[1]}}</text>
         </view>
 
       </view>
@@ -188,3 +201,4 @@
   <button wx:if="{{userInfo._openid=='o7-nX5cr9anN9KzPJkVMBPBWKxTo'}}" bindtap="getRelation" class='cu-btn block bg-red lg'>更新关系网</button>
 
 <view class="cu-tabbar-height"></view>
+</view>

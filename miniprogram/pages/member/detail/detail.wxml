@@ -1,5 +1,14 @@
 <!--pages/member/home/home.wxml-->
 <wxs module="funcModule">
+  var dealProvince = function(data) {
+    if (typeof(data) == 'string') {
+        if(data.indexOf('内蒙古')!=-1 || data.indexOf('黑龙江')!=-1) {
+            return data.substring(0,3)
+        }
+        return data.substring(0,2)
+    }
+    else return ""
+  }
   var deal = function(data,start,len) {
     if (typeof(data) == 'string') return data.substring(start,len)
     return ""
@@ -15,7 +24,8 @@
   }
   module.exports = {
     deal : deal,
-    getAstro : getAstro
+    getAstro : getAstro,
+    dealProvince : dealProvince,
   }
 </wxs>
 
@@ -54,7 +64,7 @@
             <text>  {{funcModule.deal(userInfo.basic_info.birthday,0,4)}}年・{{funcModule.getAstro(userInfo.basic_info.birthday)}}座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.education}}・{{userInfo.basic_info.profession}}</text>
           </view>
           <view class='text-gray text-sm'>
-            <text><text class="cuIcon-locationfill"></text> 现居{{userInfo.basic_info.location[1]}}・{{funcModule.deal(userInfo.basic_info.hometown[1],0,2)}}人</text>
+            <text><text class="cuIcon-locationfill"></text> 现居:{{userInfo.basic_info.location[1]}}・家乡:{{userInfo.basic_info.hometown[0]}}{{userInfo.basic_info.hometown[1]}}</text>
           </view>
           <view class='margin-top-sm flex justify-start align-center'>
             <!-- <view class='text-gray'>来历：</view> -->
