@@ -25,7 +25,8 @@ Component({
      */
     data: {
         // move control
-        ListTouchStartPos: 0,
+        ListTouchStartPosX: 0,
+        ListTouchStartPosY: 0,
         ListTouchDirection: '',
 
         isAuth: false,
@@ -80,15 +81,17 @@ Component({
         // ListTouch触摸开始
         ListTouchStart(e) {
             this.setData({
-                ListTouchStartPos: e.touches[0].pageX
+                ListTouchStartPosX: e.touches[0].pageX,
+                ListTouchStartPosY: e.touches[0].pageY,
             })
         },
         // ListTouch计算方向
         ListTouchMove(e) {
-            var shiftDis = e.touches[0].pageX - this.data.ListTouchStartPos
-            if(Math.abs(shiftDis) < 50) return
+            var shiftDisX = e.touches[0].pageX - this.data.ListTouchStartPosX
+            var shiftDisY = e.touches[0].pageY - this.data.ListTouchStartPosY
+            if (Math.abs(shiftDisX) < 50 || Math.abs(shiftDisY) > 50) return
             this.setData({
-                ListTouchDirection: shiftDis < 0 ? 'right' : 'left'
+                ListTouchDirection: shiftDisX < 0 ? 'right' : 'left'
             })
         },
         // ListTouch计算滚动
