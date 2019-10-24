@@ -29,8 +29,8 @@ Page({
         },
 
         // authed and completed
-        authed: globalData.authed,
-        completed: globalData.completed,
+        authed: globalData.nexusInfo.authed,
+        completed: globalData.nexusInfo.completed,
 
         // back to home page from other page
         update: true,
@@ -168,9 +168,9 @@ Page({
                 that.setData({
                     userInfo: userInfo,
                 })
-                that.setCompleteAndAuthd(userInfo)
+                //that.setCompleteAndAuthd(userInfo)
                 that.setLikePortrait(userInfo)
-                that.setChance(userInfo._openid)
+                //that.setChance(userInfo._openid)
                 // get network resource
                 that.getRelativeCandidates()
             },
@@ -181,6 +181,7 @@ Page({
         })
     },
     // compute completed
+    /*
     setCompleteAndAuthd: async function (userInfo) {
         if (userInfo.love_info != undefined) {
             // check complete
@@ -189,14 +190,15 @@ Page({
             var res = await db.collection('nexus').where({
                 _openid: userInfo._openid
             }).get()
-            globalData.authed = res.data[0].authed
-            globalData.completed = completed
+            globalData.nexusInfo.authed = res.data[0].authed
+            globalData.nexusInfo.completed = completed
             this.setData({
                 completed: completed,
-                authed: globalData.authed
+                authed: globalData.nexusInfo.authed
             })
         }
     },
+    */
     // set like info seeks head portrait
     setLikePortrait: function (userInfo) {
         if (userInfo.match_info == undefined) return
@@ -252,13 +254,14 @@ Page({
         })
     },
     // set change
+    /*
     setChance: async function (openid) {
         await db.collection('nexus').where({
             _openid: openid
         }).get().then(
             function (res) {
                 if (res.data.length != 0) {
-                    globalData.chance = res.data[0].chance
+                    globalData.nexusInfo.chance = res.data[0].chance
                 }
             },
             function (err) {
@@ -266,6 +269,7 @@ Page({
             }
         )
     },
+    */
 
     onLoad(query) {
         if (!globalData.isLogin) return false
@@ -302,39 +306,9 @@ Page({
             userInfo: globalData.userInfo
         })
         // set completed info
-        this.setCompleteAndAuthd(globalData.userInfo)
+        //this.setCompleteAndAuthd(globalData.userInfo)
         this.setLikePortrait(globalData.userInfo)
-        this.setChance(globalData.userInfo._openid)
-
-
-        // if(globalData.gotData) {
-        //   this.setData({
-        //     userInfo: globalData.userInfo,
-        //     seekers: globalData.seekers
-        //   })
-        // } else {
-        //   wx.showLoading({
-        //     title: '加载中...',
-        //   })
-        //   db.collection('users').where({
-        //     _openid: openid
-        //   }).get({
-        //     success: function(res) {
-        //       globalData.userInfo = res.data[0]
-        //       let userInfo =  globalData.userInfo
-        //       that.setData({
-        //         userInfo: userInfo,
-        //       })
-        //       // get network resource
-        //       that.data.methods.getRelativeCandidates(that)
-        //       globalData.gotData = true
-        //     },
-        //     fail: function(res) {
-        //       console.log(res)
-        //       wx.hideLoading()
-        //     }
-        //   })
-        // }
+        //this.setChance(globalData.userInfo._openid)
     },
 
     onReady() {

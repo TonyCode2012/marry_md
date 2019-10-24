@@ -19,17 +19,16 @@ App({
 
         this.db = wx.cloud.database()
         this.globalData = {
-            weixin_info: {},
+            //weixin_info: {},
             userInfo: {},
+            nexusInfo: {},
             userInfoHash: "", // used to check if userInfo changed
             seekers: {},
             userIDs: [],
             userMap: null,
-            openid: null,
+            //openid: null,
             isLogin: false,
-            authed: false,
-            completed: false,
-            chance: 0,
+            //chance: 0,
             scene: opt.scene,
             tags: {
                 ilike: 0,

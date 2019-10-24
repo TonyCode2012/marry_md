@@ -41,7 +41,7 @@ Component({
 
     pageLifetimes: {
         show: function() {
-            if(globalData.authed) {
+            if(globalData.nexusInfo.authed) {
                 this.setData({
                     authed: true
                 })

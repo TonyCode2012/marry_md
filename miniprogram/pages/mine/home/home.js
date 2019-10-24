@@ -65,7 +65,7 @@ Component({
       }
       // get user auth info
       that.setData({
-          authed: globalData.authed
+          authed: globalData.nexusInfo.authed
       })
       /*
       db.collection('nexus').where({
@@ -127,7 +127,7 @@ Component({
           if(globalData.isLogin) {
             this.setData({
                 userInfo: globalData.userInfo,
-                authed: globalData.authed,
+                authed: globalData.nexusInfo.authed,
                 globalUserHash: globalUserHash
             })
           }

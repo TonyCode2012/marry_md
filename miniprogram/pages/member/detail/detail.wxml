@@ -94,7 +94,7 @@
 
         </view>
 
-        <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="share2Friend"/>
+        <!--zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="share2Friend"/-->
 
         <view class="section">
           <view class="section-title">

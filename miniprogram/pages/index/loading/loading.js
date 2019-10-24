@@ -1,81 +1,97 @@
 const { stringHash } = require("../../../utils/util.js")
 const app = getApp()
 let {
-  db,
-  globalData
+    db,
+    globalData
 } = app
 
 Component({
-  /**
-   * 组件的属性列表
-   */
-  properties: {
-    redirectPath: {
-        type: String,
-        value: '/pages/index/index'
-    }
-  },
-
-  /**
-   * 组件的初始数据
-   */
-  data: {
-
-  },
-  ready() {
-    if (!app.globalData.isLogin) {
-      this.checkAuthorize()
-    }
-  },
-
-  /**
-   * 组件的方法列表
-   */
-  methods: {
-    checkAuthorize() {
-      const that = this
-      var redirectPath = that.data.redirectPath
-      this.getOpenId().then(openid => {
-        db.collection('users').where({
-          _openid: globalData.openid
-        }).get().then(
-            function(res) {
-              if (res.data.length === 0) {
-                redirectPath = escape(redirectPath)
-                wx.reLaunch({
-                  url: `/pages/index/authorize/authorize?openid=${globalData.openid}&path=${redirectPath}`,
-                })
-              } else {
-                app.globalData.userInfo = res.data[0]
-                app.globalData.userInfoHash = stringHash(JSON.stringify(res.data[0]))
-                app.globalData.isLogin = true;
-                console.log('user profile from loading: ', app.globalData.userInfo);
-                wx.reLaunch({
-                  url: redirectPath,
-                })
-              }
-        })
-      });
+    /**
+     * 组件的属性列表
+     */
+    properties: {
+        redirectPath: {
+            type: String,
+            value: '/pages/index/index'
+        }
     },
-    getOpenId() {
-      const openid = wx.getStorageSync('openid')
-      if (openid) {
-        console.log('openid from storage: ', openid)
-        globalData.openid = openid;
-        return Promise.resolve(openid)
-      }
-      return wx.cloud.callFunction({
-        name: 'login'
-      }).then(res => {
-        console.log('openid from cloud: ', res)
-        const openid = res.result.openid;
-        globalData.openid = openid;
-        wx.setStorage({
-          key: "openid",
-          data: openid
-        })
-        return openid
-      })
+
+    /**
+     * 组件的初始数据
+     */
+    data: {
+
+    },
+    ready() {
+        if (!globalData.isLogin) {
+            this.checkAuthorize()
+        }
+    },
+
+    /**
+     * 组件的方法列表
+     */
+    methods: {
+        checkAuthorize() {
+            const that = this
+            var redirectPath = that.data.redirectPath
+            this.getOpenId().then(openid => {
+                db.collection('users').where({
+                    _openid: globalData.userInfo.openid
+                }).get().then(
+                    function (res) {
+                        if (res.data.length === 0) {
+                            redirectPath = escape(redirectPath)
+                            wx.reLaunch({
+                                url: `/pages/index/authorize/authorize?openid=${globalData.userInfo.openid}&path=${redirectPath}`,
+                            })
+                        } else {
+                            globalData.userInfo = res.data[0]
+                            globalData.userInfoHash = stringHash(JSON.stringify(res.data[0]))
+                            globalData.isLogin = true;
+                            db.collection('nexus').where({
+                                _openid: globalData.userInfo._openid
+                            }).get().then(
+                                function(res) {
+                                    if(res.data.length == 0) {
+                                        console.log("Get nexus info failed!")
+                                    } else {
+                                        globalData.nexusInfo = res.data[0]
+                                        wx.reLaunch({
+                                            url: redirectPath,
+                                        })
+                                    }
+                                },
+                                function(err) {
+                                    console.log("Get nexus info failed! internal error!",err)
+                                }
+                            )
+                        }
+                    }),
+                    function(err) {
+                        console.log("Get user info failed!")
+                    }
+            });
+        },
+        getOpenId() {
+            const openid = wx.getStorageSync('openid')
+            if (openid) {
+                console.log('openid from storage: ', openid)
+                globalData.userInfo.openid = openid;
+                return Promise.resolve(openid)
+            }
+            return wx.cloud.callFunction({
+                name: 'login'
+            }).then(res => {
+                console.log('openid from cloud: ', res)
+                const openid = res.result.openid;
+                globalData.userInfo.openid = openid;
+                wx.setStorage({
+                    key: "openid",
+                    data: openid
+                })
+                return openid
+            })
+        }
     }
-  }
 })

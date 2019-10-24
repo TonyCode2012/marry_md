@@ -36,7 +36,7 @@ Page({
         emailSuffix: '',
         jobTitle: '',
         authCode: '',
-        authed: globalData.authed
+        authed: globalData.nexusInfo.authed
     },
     tabSelect(e) {
         this.setData({
@@ -62,7 +62,7 @@ Page({
         }
 
         let res = await db.collection("auth").where({
-            _openid: globalData.openid,
+            _openid: globalData.userInfo.openid,
             auth_code: authCode,
             is_active: true
         }).get()
@@ -101,6 +101,9 @@ Page({
             }
         })
 
+        wx.showLoading({
+            title: '正在认证',
+        })
         wx.cloud.callFunction({
             name: 'authCompany',
             data: {
@@ -145,14 +148,20 @@ Page({
                         company: corp,
                         job_title: jobTitle
                     }
-                    globalData.authed = true
+                    globalData.userInfo.basic_info.company = corp
+                    globalData.userInfo.basic_info.job_title = jobTitle
+                    globalData.nexusInfo.authed = true
+                    globalData.nexusInfo.company = corp
                     that.setData({
-                        authed: globalData.authed
+                        authed: globalData.nexusInfo.authed
                     })
                 }
             },
             fail: function(err) {
                 console.log("Auth failed!" + JSON.stringify(err))
+            },
+            complete: function(res) {
+                wx.hideLoading()
             }
         })
         /*
@@ -183,7 +192,7 @@ Page({
                     company: corp,
                     job_title: jobTitle
                 }
-                globalData.authed = true
+                globalData.nexusInfo.authed = true
                 that.setData({
                     authed: true
                 })
@@ -310,7 +319,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function () {
-        if (globalData.authed) {
+        if (globalData.nexusInfo.authed) {
             this.setData({
                 authed: true
             })

@@ -92,8 +92,8 @@
 <view class="cu-form-group">
   <view class="title">婚姻*</view>
   <view>
-    <view data-type="marryStatus" data-value="unmarried" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='未婚'?'bg':'line'}}-pink round padding-lr-sm">未婚</view>
-    <view data-type="marryStatus" data-value="divorced" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='离异'?'bg':'line'}}-pink round padding-lr-sm">离异</view>
+    <view data-type="marryStatus" data-value="未婚" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='未婚'?'bg':'line'}}-pink round padding-lr-sm">未婚</view>
+    <view data-type="marryStatus" data-value="离异" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='离异'?'bg':'line'}}-pink round padding-lr-sm">离异</view>
   </view>
 </view>
 

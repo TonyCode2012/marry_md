@@ -35,7 +35,8 @@ Component({
         decision: 'pending',
         ListTouchStartPos: 0,
         ListTouchDirection: '',
-        mainTouchStartPos: 0,
+        mainTouchStartPosX: 0,
+        mainTouchStartPosY: 0,
         mainTouchDirection: '',
         mainTabCurMax: 1,
         disableMainTab: false,
@@ -144,7 +145,7 @@ Component({
     pageLifetimes: {
         show: function () {
             if (globalData.isLogin) {
-                var matchInfoHash = stringHash(JSON.stringify(globalData.userInfo))
+                var matchInfoHash = stringHash(JSON.stringify(globalData.userInfo.match_info))
                 if (matchInfoHash != this.data.matchInfoHash) {
                     this.data.matchInfoHash = matchInfoHash
                     this.setData({
@@ -215,8 +216,9 @@ Component({
                 },
                 success: res => {
                     if (res.result.statuscode == 200) {
+                        globalData.userInfo.match_info = that.data.userInfo.match_info
                         that.setData({
-                            userInfo: this.data.userInfo
+                            'userInfo.match_info': that.data.userInfo.match_info,
                             // match_info: that.data.match_info
                         })
                     }
@@ -255,9 +257,9 @@ Component({
                     })
                     console.log("delete " + para.delItem + " item successfully!" + JSON.stringify(res))
                     that.setData({
-                        userInfo: para.userInfo
+                        'userInfo.match_info': that.data.userInfo.match_info,
                     })
-                    globalData.userInfo = para.userInfo
+                    globalData.userInfo.match_info = that.data.userInfo.match_info
                     // update father page data
                     var param = { userInfo: globalData.userInfo }
                     that.triggerEvent('userInfoChange', param)
@@ -285,10 +287,7 @@ Component({
                     fromOpenid: ilikeItem._openid,
                     toOpenid: this.data.userInfo._openid
                 },
-                userInfo: this.data.userInfo,
-                that: this
             }
-            //this.data.methods._deleteLike(data)
             this._deleteLike(para)
         },
         deleteLikeMe(e) {
@@ -321,7 +320,9 @@ Component({
             var item = globalData.userInfo.match_info[tag][index]
             if(!item.checked) {
                 item.checked = true
-                globalData.tags[tag]--
+                if(globalData.tags[tag] > 0){
+                    globalData.tags[tag]--
+                }
                 wx.cloud.callFunction({
                     name: 'dbupdate',
                     data: {
@@ -368,16 +369,18 @@ Component({
         mainTouchStart(e) {
             if (this.data.disableMainTab) return
             this.setData({
-                mainTouchStartPos: e.touches[0].pageX
+                mainTouchStartPosX: e.touches[0].pageX,
+                mainTouchStartPosY: e.touches[0].pageY,
             })
         },
         // ListTouch计算方向
         mainTouchMove(e) {
             if (this.data.disableMainTab) return
-            var shiftDis = e.touches[0].pageX - this.data.mainTouchStartPos
-            if (Math.abs(shiftDis) < 50) return
+            var shiftDisX = e.touches[0].pageX - this.data.mainTouchStartPosX
+            var shiftDisY = e.touches[0].pageY - this.data.mainTouchStartPosY
+            if (Math.abs(shiftDisX) < 50 || Math.abs(shiftDisY) > 50) return
             this.setData({
-                mainTouchDirection: shiftDis < 0 ? 'right' : 'left'
+                mainTouchDirection: shiftDisX < 0 ? 'right' : 'left'
             })
         },
         // ListTouch计算滚动

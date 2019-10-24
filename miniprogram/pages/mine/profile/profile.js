@@ -71,6 +71,7 @@ Page({
         completePercent: 0,
         isExpand: false,
         loveInfoHash: "",
+        basicInfoHash: "",
 
         // file folder on cloud
         photoDir: "",
@@ -164,8 +165,8 @@ Page({
         const that = this
         this.data.basic_info.company = globalData.userInfo.auth_info.company_auth.company
         globalData.userInfo.basic_info = this.data.basic_info
-        globalData.completed = checkComplete(globalData.userInfo)
-        //if (!globalData.completed) {
+        globalData.nexusInfo.completed = checkComplete(globalData.userInfo)
+        //if (!globalData.nexusInfo.completed) {
         //    wx.showModal({
         //        title: '提示',
         //        content: '带*号为必填选项，否则将无法发起感兴趣',
@@ -202,14 +203,14 @@ Page({
             canSave: false
         })
         that.dealSave()
-        // after change user profile update related completed property
+        // after change user profile, update related completed property
         wx.cloud.callFunction({
             name: 'dbupdate',
             data: {
                 table: 'nexus',
                 _openid: globalData.userInfo._openid,
                 data: {
-                    completed: globalData.completed
+                    completed: globalData.nexusInfo.completed
                 }
             },
             success: function (res) {
@@ -288,7 +289,7 @@ Page({
                 },
                 success: function (res) {
                     that.setData({
-                        canShare: globalData.authed && globalData.completed,
+                        canShare: globalData.nexusInfo.authed && globalData.nexusInfo.completed,
                         orgAllHash: that.calOrgAllHash(),
                         dataChanged: false,
                     })
@@ -404,8 +405,8 @@ Page({
             imgList: imgList,
             rangeIndexObj: rangeIndexObj,
             photoDir: globalData.userInfo._openid,
-            authed: globalData.authed,
-            canShare: globalData.authed && globalData.completed,
+            authed: globalData.nexusInfo.authed,
+            canShare: globalData.nexusInfo.authed && globalData.nexusInfo.completed,
         })
         this.data.orgAllHash = this.calOrgAllHash()
 
@@ -425,9 +426,9 @@ Page({
      */
     onShow: function () {
         const that = this
+        // check if love info changed
         const love_info = globalData.userInfo.love_info
-        if (love_info == undefined) return
-        let loveInfoHash = stringHash(JSON.stringify(love_info))
+        var loveInfoHash = stringHash(JSON.stringify(love_info))
         // if love_info hashcode is changed, update
         if (loveInfoHash != this.data.loveInfoHash) {
             let completePercent = 0
@@ -445,17 +446,23 @@ Page({
             })
         }
         // if authed info changed, update
-        if(globalData.authed) {
-            var userInfo = {
-                basic_info: that.data.basic_info,
-                love_info: love_info,
+        const basic_info = globalData.userInfo.basic_info
+        var basicInfoHash = stringHash(JSON.stringify(basic_info))
+        if(basicInfoHash != that.data.basicInfoHash) {
+            that.data.basicInfoHash = basicInfoHash
+            if(globalData.nexusInfo.authed) {
+                var checkedUserInfo = {
+                    basic_info: that.data.basic_info,
+                    love_info: love_info,
+                }
+                that.setData({
+                    //'basic_info.company': globalData.userInfo.auth_info.company_auth.company,
+                    //'basic_info.job_title': globalData.userInfo.auth_info.company_auth.job_title,
+                    basic_info: basic_info,
+                    authed: globalData.nexusInfo.authed,
+                    canShare: checkComplete(checkedUserInfo),
+                })
             }
-            that.setData({
-                'basic_info.company': globalData.userInfo.auth_info.company_auth.company,
-                'basic_info.job_title': globalData.userInfo.auth_info.company_auth.job_title,
-                authed: true,
-                canShare: checkComplete(userInfo),
-            })
         }
     },
 
@@ -507,8 +514,23 @@ Page({
         if(this.data.imgList.length != 0) {
             imageUrl = this.data.imgList[0]
         }
+        // generate description
+        const basic_info = this.data.basic_info
+        var loc = basic_info.location[0]
+        if(loc.indexOf("黑龙江")!=-1 || loc.indexOf("内蒙古")!=-1) loc = loc.substring(0,3)
+        else loc = loc.substring(0,2)
+        var home = basic_info.hometown[0]
+        if(home.indexOf("黑龙江")!=-1 || home.indexOf("内蒙古")!=-1) home = home.substring(0,3)
+        else home = home.substring(0,2)
+        var job = basic_info.job_title
+        job = job ? job : ''
+        var age = basic_info.birthday.substring(2,4)
+        var desc = "「" + loc + "」" + age + "年 身高" + basic_info.height + " " + 
+            job + (basic_info.gender=='male'?'小哥哥,':'小姐姐,') + 
+            home + "人," + basic_info.education + "学位"
         return {
-            title: "from:" + openid + ",user:" + openid,
+            //title: "from:" + openid + ",user:" + openid,
+            title: desc,
             imageUrl: imageUrl,
             //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
             path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid

@@ -362,7 +362,7 @@ Component({
         bindLike: function () {
             const that = this
             if (this.data.likeTag != "感兴趣") return
-            if (globalData.chance == 0) {
+            if (globalData.nexusInfo.chance == 0) {
                 wx.showToast({
                     title: '每天只有一次喜欢机会',
                     icon: 'none',
@@ -371,7 +371,7 @@ Component({
                 return
             }
             // just ahthed and completed user can like
-            if (!globalData.authed || !globalData.completed) {
+            if (!globalData.nexusInfo.authed || !globalData.nexusInfo.completed) {
                 wx.showModal({
                     title: '提示',
                     content: '没有认证和完善资料无法发起感兴趣',
@@ -476,7 +476,7 @@ Component({
                         })
                         console.log(res)
                         globalData.userInfo.match_info.ilike = ilikeInfo
-                        globalData.chance--
+                        globalData.nexusInfo.chance--
                         that.setData({
                             likeTag: '已感兴趣'
                         })
@@ -542,8 +542,23 @@ Component({
                 // 来自页面内转发按钮
                 console.log(res.target)
             }
+            // generate description
+            const basic_info = this.data.userInfo.basic_info
+            var loc = basic_info.location[0]
+            if(loc.indexOf("黑龙江")!=-1 || loc.indexOf("内蒙古")!=-1) loc = loc.substring(0,3)
+            else loc = loc.substring(0,2)
+            var home = basic_info.hometown[0]
+            if(home.indexOf("黑龙江")!=-1 || home.indexOf("内蒙古")!=-1) home = home.substring(0,3)
+            else home = home.substring(0,2)
+            var job = basic_info.job_title
+            job = job ? job : ''
+            var age = basic_info.birthday.substring(2,4)
+            var desc = "「" + loc + "」" + age + "年 身高" + basic_info.height + " " + 
+                job + (basic_info.gender=='male'?'小哥哥':'小姐姐,') + 
+                home + "人," + basic_info.education + "学位"
             return {
-                title: "from:" + globalData.userInfo._openid + ",user:" + this.data.userInfo._openid,
+                //title: "from:" + globalData.userInfo._openid + ",user:" + this.data.userInfo._openid,
+                title: desc,
                 //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
                 path: '/pages/member/detail/detail?sopenid=' + globalData.userInfo._openid + '&topenid=' + this.data.userInfo._openid
             }

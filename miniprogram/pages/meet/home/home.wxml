@@ -26,7 +26,7 @@
   </view>
 </scroll-view>
 
-<zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
+<!--zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/-->
 
 <memberlist class="{{0==tabCur? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{seekers.relativeCandidates}}"></memberlist>
 

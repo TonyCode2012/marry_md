@@ -1,6 +1,9 @@
 // miniprogram/pages/meet/authorize/authorize.js
 const { stringHash } = require("../../../utils/util.js")
-const { aboutme } = require("../../../utils/data.js");
+const { 
+    aboutme,
+    nexusTemplate,
+} = require("../../../utils/data.js");
 const listItem = aboutme.listItem;
 
 const app = getApp()
@@ -91,12 +94,14 @@ Page({
                 photos: []
             }
         }
+        // userInfo template
         var userInfo = {
             _openid: that.data.openid,
             auth_info: {
                 company_auth: {
                     authed: false,
-                    company: ""
+                    company: "",
+                    job_title: ""
                 },
                 personal_auth: false,
             },
@@ -117,6 +122,10 @@ Page({
             photos: [],
             wechat_info: wechat_info
         }
+        wx.showLoading({
+            title: '请稍等',
+        })
+        // nexusInfo template
         var nexusInfo = {
             _openid: that.data.openid,
             adjCompanies: {},
@@ -128,9 +137,6 @@ Page({
             gender: gender,
             name: nickName,
         }
-        wx.showLoading({
-            title: '请稍等',
-        })
         wx.cloud.callFunction({
             name: 'addUser',
             data: {
@@ -142,6 +148,7 @@ Page({
             success: function (res) {
                 globalData.isLogin = true
                 globalData.userInfo = userInfo;
+                globalData.nexusInfo = nexusInfo;
                 globalData.userInfoHash = stringHash(JSON.stringify(userInfo));
                 wx.reLaunch({
                     url: that.data.redirectPath
@@ -153,31 +160,5 @@ Page({
                 wx.hideLoading()
             }
         })
-        /*
-    db.collection('users').where({
-      _openid: globalData.openid
-    }).get().then(res => {
-      if (res.data.length > 0) {
-        return
-      }
-      db.collection('users').add({
-        data: {
-          wechat_info: e.detail.userInfo
-        },
-        complete: function(res){
-          console.log('users add', res)
-        }
-      })    
-      if(this.data.redirectPath == "") {
-        wx.reLaunch({
-          url: '/pages/index/index',
-        })
-      } else {
-        wx.reLaunch({
-          url: this.data.redirectPath,
-        })
-      }
-    });
-    */
     }
 })

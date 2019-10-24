@@ -33,19 +33,19 @@ var matchMap = {
         '都可以': 0,
         '本科': 1,
         '硕士': 2,
-        '博士': 3
+        '博士': 3,
     },
     hometown: {
         '都可以': 0,
-        '同省优先': 1
+        '同省': 1,
     },
     location: {
-        '都可以': 0,
-        '同城优先': 1
+        '同城优先': 0,
+        '只要同城': 1,
     },
     marryStatus: {
         '离异': 0,
-        '未婚': 1
+        '未婚': 1,
     }
 }
 
@@ -170,9 +170,9 @@ var getColleague = function (openid) {
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-    // console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
-    //}
+    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+     console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
+    }
 }
 
 var getEmployee = function (openid) {
@@ -185,9 +185,9 @@ var getEmployee = function (openid) {
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-    //   console.log("find Emma's employee data:" + JSON.stringify(employees))
-    //}
+    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+       console.log("find Emma's employee data:" + JSON.stringify(employees))
+    }
 }
 
 // select candidates according to seeker's expect
