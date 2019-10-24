@@ -17,17 +17,19 @@ Page({
         imgList: [],
         TabCur: 0,
         scrollLeft: 0,
-        corp: ['思科'],
+        corp: ['思科','宣伟'],
         // corp: ['思科', '腾讯', '阿里巴巴'],
         emailSuffixMap: {
             '思科': '@cisco.com',
             '腾讯': '@tencent.com',
             '阿里巴巴': '@alibaba.com',
+            '宣伟': '@sherwin.com',
         },
         corpMap: {
             '思科': 'cisco',
             '腾讯': 'tencent',
-            '阿里巴巴': 'alibaba'
+            '阿里巴巴': 'alibaba',
+            '宣伟': 'Sherwin-Willinms',
         },
         index_corp: 0,
         email: '',
@@ -99,6 +101,61 @@ Page({
             }
         })
 
+        wx.cloud.callFunction({
+            name: 'authCompany',
+            data: {
+                _openid: auth._openid,
+                usersData: {
+                    auth_info: {
+                        company_auth: {
+                            authed: true,
+                            company: corp,
+                            job_title: jobTitle
+                        }
+                    }
+                },
+                nexusData: {
+                    authed: true,
+                    company: corp,
+                },
+                authedEmailData: {
+                    _openid: auth._openid,
+                    email: email,
+                    auth_date: new Date()
+                }
+            },
+            success: function(res) {
+                if(res.result.statusCode != 200) {
+                    if(res.result.statusCode == 401) {
+                        wx.showToast({
+                            title: '该邮箱已经认证!',
+                            icon: 'none',
+                            duration: 2000
+                        })
+                    }
+                    console.log("Auth failed!" + JSON.stringify(res))
+                } else {
+                    wx.showToast({
+                        title: '认证成功',
+                        icon: 'success',
+                        duration: 2000
+                    })
+                    globalData.userInfo.auth_info.company_auth = {
+                        authed: true,
+                        company: corp,
+                        job_title: jobTitle
+                    }
+                    globalData.authed = true
+                    that.setData({
+                        authed: globalData.authed
+                    })
+                }
+            },
+            fail: function(err) {
+                console.log("Auth failed!" + JSON.stringify(err))
+            }
+        })
+        /*
         // update users info
         wx.cloud.callFunction({
             name: 'dbupdate',
@@ -153,6 +210,7 @@ Page({
                 console.log("update nexus table failed!" + err)
             }
         })
+        */
     },
 
     getAuthCode: async function () {
@@ -170,24 +228,41 @@ Page({
             title: '校验码发送中...',
             icon: 'loading'
         })
-        wx.cloud.callFunction({
-            name: "sendmail",
-            data: {
-                email: email
+        db.collection('authedEmail').where({
+            email: email
+        }).get().then(
+            function(res) {
+                if(res.data.length == 0) {
+                    wx.cloud.callFunction({
+                        name: "sendmail",
+                        data: {
+                            email: email
+                        }
+                    }).then(res => {
+                        wx.showToast({
+                            title: '校验码已发送',
+                            icon: 'success'
+                        })
+                        console.log(res)
+                    }, res => {
+                        wx.showToast({
+                            title: '校验码发送失败',
+                            icon: 'success'
+                        })
+                        console.log(res)
+                    })
+                } else {
+                    wx.showToast({
+                        title: '该邮箱已经认证!',
+                        icon: 'none',
+                        duration: 2000,
+                    })
+                }
+            },
+            function(err) {
+                console.log("网络问题，请重试")
             }
-        }).then(res => {
-            wx.showToast({
-                title: '校验码已发送',
-                icon: 'success'
-            })
-            console.log(res)
-        }, res => {
-            wx.showToast({
-                title: '校验码发送失败',
-                icon: 'success'
-            })
-            console.log(res)
-        })
+        )
     },
     corpPickerChange: function (e) {
         let corp = this.data.corp[e.detail.value]

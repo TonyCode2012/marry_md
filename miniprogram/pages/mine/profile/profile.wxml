@@ -130,7 +130,7 @@
       <text class="text-df text-bold">工作认证*</text>
     </view>
     <view class="action bg-gradual-orange round">
-      <text class="text-white text-sm padding-sm">{{authed ? basic_info.company+' 已认证' : '未认证'}}</text>
+      <text class="text-white text-sm padding-sm">{{authed ? corpMap[basic_info.company]+' 已认证' : '未认证'}}</text>
     </view>
   </view>
 </view>

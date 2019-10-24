@@ -27,7 +27,12 @@ Page({
      */
     data: {
 
-        now: formatDate(new Date()),
+        corpMap: {
+            'cisco': '思科',
+            'tencent': '腾讯',
+            'alibaba': '阿里巴巴',
+            'Sherwin-Willinms': '宣伟',
+        },
 
         canSave: true,
         canShare: false,
