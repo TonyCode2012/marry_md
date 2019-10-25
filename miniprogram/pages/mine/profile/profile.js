@@ -529,8 +529,8 @@ Page({
             job + (basic_info.gender=='male'?'小哥哥,':'小姐姐,') + 
             home + "人," + basic_info.education + "学位"
         return {
-            //title: "from:" + openid + ",user:" + openid,
-            title: desc,
+            title: "from:" + openid + ",user:" + openid,
+            //title: desc,
             imageUrl: imageUrl,
             //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
             path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid

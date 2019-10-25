@@ -216,7 +216,7 @@ Component({
             var userInfo = null
             // enter from share mini card
             if (options.sopenid != undefined) {
-                console.log("enter from mini card")
+                console.log("enter from mini card,scene is",globalData.scene)
                 // show user info by clicking mini card
                 // if get the mini card from group, assume not a friend
                 if (!that.data.getFromGroup) {
@@ -227,13 +227,11 @@ Component({
                             success: function (res) {
                                 var friends = res.data[0].friends
                                 var loginID = globalData.userInfo._openid
-                                if (loginID != undefined && friends.hasOwnProperty(loginID)) {
-                                    that.setData({
-                                        relationship: true
-                                    })
-                                } else {
+                                if (loginID == undefined) {
+                                    console.log("Error!Login ID is undefined!")
+                                } else if(!friends.hasOwnProperty(loginID)) {
                                     that.chooseRelations(options.sopenid)
-                                }
+                                } 
                             },
                             fail: function (res) {
                                 console.log(res)
@@ -302,7 +300,8 @@ Component({
             for (var i = 0; i < loginLikeMe.length; i++) {
                 if (loginLikeMe[i]._openid == userInfo._openid) {
                     this.setData({
-                        likeTag: "对你感兴趣"
+                        //likeTag: "对你感兴趣",
+                        likeTag: "想认识你",
                     })
                     break
                 }
@@ -342,8 +341,8 @@ Component({
             console.log('user detail', options, this.properties);
             this.setData({
                 userInfo: userInfo,
-                source: source,
-                isLogin: globalData.isLogin
+                //source: source,
+                isLogin: globalData.isLogin,
             })
         },
         toHomePage: function () {
