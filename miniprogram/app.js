@@ -1,6 +1,10 @@
 App({
     onLaunch: function (opt) {
 
+        wx.showShareMenu({
+            withShareTicket: true
+        })
+
         if (!wx.cloud) {
             console.error('请使用 2.2.3 或以上的基础库以使用云能力')
         } else {
@@ -34,23 +38,8 @@ App({
                 ilike: 0,
                 likeme: 0
             },
+            getFromGroup: true,
         };
-
-        //wx.login({
-        //  success (res) {
-        //    if (res.code) {
-        //      //发起网络请求
-        //      wx.request({
-        //          url: 'https://tcb-api.tencentcloudapi.com',
-        //        data: {
-        //          code: res.code
-        //        }
-        //      })
-        //    } else {
-        //      console.log('登录失败！' + res.errMsg)
-        //    }
-        //  }
-        //})
 
         wx.getSystemInfo({
             success: e => {
@@ -61,6 +50,7 @@ App({
                 const isiOS = e.system.indexOf('iOS') > -1;
                 const navHeight = isiOS ? (32 + 6 * 2) : (32 + 8 * 2);
                 this.globalData.CustomBar = e.statusBarHeight + navHeight;
+                this.globalData.CustomHeight = e.screenHeight - this.globalData.Custom.bottom + this.globalData.CustomBar
                 console.log('getMenuButtonBoundingClientRect', this.globalData, e);
             }
         })
@@ -87,5 +77,20 @@ App({
                 return val;
             }
         })
-    }
+    },
+
+    onShow: function(options) {
+        const that = this
+        wx.getShareInfo({
+            shareTicket: options.shareTicket,
+            success: function(res) {
+                that.globalData.getFromGroup = true
+                console.log("+++++++++ Get from group")
+            },
+            fail: function(err) {
+                that.globalData.getFromGroup = false
+                console.log("+++++++++ Get from person")
+            }
+        })
+    },
 })

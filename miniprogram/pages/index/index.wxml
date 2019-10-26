@@ -1,4 +1,12 @@
 <view wx:if="{{isLogin}}">
+  <!-- <view class="cu-bar bg-white margin-top">
+    <view class='action'>
+        <text class='cuIcon-title text-blue'></text>加载状态
+    </view>
+    <view class='action'>
+        <switch class='sm' bindchange='isLoading'></switch>
+    </view>
+  </view> -->
   <scroll-view scroll-y class="scrollPage">
     <meet style="display:{{PageCur=='meet'?'block':'none'}}" authed="{{authed}}" seekers="{{seekers}}" id="meetCom" userIDs="{{userIDs}}" bind:selectUser="selectUser"></meet>
     <like style="display:{{PageCur=='like'?'block':'none'}}" bind:userInfoChange="updateUserInfo" bind:globalDataChange="updateGlobalData" userInfo="{{userInfo}}"></like>

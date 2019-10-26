@@ -76,23 +76,11 @@ var getRelative = async function (data) {
         var relations = [].concat(data.relations)
         // set last relation's relationship
         relations[relations.length - 1].relationship = friend.relationship
-        // get portraitURL
-        // var lastOpenid = relations[relations.length - 1]._openid
-        // var curuser = await _getUserInfo(lastOpenid)
-        // if (curuser != undefined) {
-        //     var portraitURL = ""
-        //     if (curuser.photos.length != 0) {
-        //         portraitURL = curuser.photos[0]
-        //     } else {
-        //         portraitURL = curuser.wechat_info.avatarUrl
-        //     }
-        //     relations[relations.length - 1].portraitURL = portraitURL
-        // }
         relations.push({ _openid: friendOid, name: friend.name })
         //============== get friends company authed and completed resource ==============//
-        if(friend.authed) {
+        if (friend.authed) {
             var fColleagueACUsers = company2ACUser.get(friend.company)
-            if(friend.company != data.orgCompany && !searchCompanySet.has(friend.company)) {
+            if (friend.company != data.orgCompany && !searchCompanySet.has(friend.company)) {
                 searchCompanySet.add(friend.company)
                 for (var acUser of fColleagueACUsers) {
                     var acOid = acUser._openid
@@ -116,19 +104,6 @@ var getRelative = async function (data) {
             // if person info completed, authed and not contains this person yet 
             if (friend.completed && friend.authed && friend.gender != data.orgGender
                 && !candidatesIDSet.has(friendOid) && !searchFriendSet.has(friendOid)) {
-                // var portraitURL = relations[relations.length - 1].portraitURL
-                // if (portraitURL == undefined || portraitURL == '') {
-                //     curuser = await _getUserInfo(friendOid)
-                //     if (curuser != undefined) {
-                //         var portraitURL = ""
-                //         if (curuser.photos.length != 0) {
-                //             portraitURL = curuser.photos[0]
-                //         } else {
-                //             portraitURL = curuser.wechat_info.avatarUrl
-                //         }
-                //         relations[relations.length - 1].portraitURL = portraitURL
-                //     }
-                // }
                 candidates[friendOid] = { relation: relations }
                 candidatesIDSet.add(friendOid)
             }
@@ -138,19 +113,6 @@ var getRelative = async function (data) {
             continue
         }
         var nexusInfo = allNexus.get(friendOid)
-        // await db.collection('nexus').where({
-        //     _openid: friendOid
-        // }).get().then(
-        //     function (res) {
-        //         // console.log('get network info:'+JSON.stringify(res.data))
-        //         if (res.data.length != 0) nexusInfo = res.data[0]
-        //     },
-        //     function (err) {
-        //         console.log(err)
-        //     }
-        // )
-        // recurse searching next friend info
-        // searchFriendSet.add(curNexus._openid)
         await getRelative({
             nexusInfo: nexusInfo,
             level: level + 1,
@@ -164,14 +126,17 @@ var getRelative = async function (data) {
 var getColleague = function (openid) {
     // var cuser = acUsers.get(openid)
     var cNexus = allNexus.get(openid)
-    for (var user of company2ACUser.get(cNexus.company)) {
-        if (user._openid != openid) {
-            colleagues[user._openid] = null
+    var acUsers = company2ACUser.get(cNexus.company)
+    if (acUsers != undefined) {
+        for (var user of acUsers) {
+            if (user._openid != openid) {
+                colleagues[user._openid] = null
+            }
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
     if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-     console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
+        console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
     }
 }
 
@@ -186,7 +151,7 @@ var getEmployee = function (openid) {
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
     if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-       console.log("find Emma's employee data:" + JSON.stringify(employees))
+        console.log("find Emma's employee data:" + JSON.stringify(employees))
     }
 }
 
@@ -204,20 +169,20 @@ var seleteCandidates = async function (openid) {
         await db.collection('users').where({
             _openid: openid
         }).get().then(
-            function(res) {
-                if(res.data.length > 0) {
+            function (res) {
+                if (res.data.length > 0) {
                     seeker = res.data[0]
                 } else {
                     statusCode = 400
                     console.log("Get seeker:" + openid + " expect info failed!400")
                 }
             },
-            function(err) {
+            function (err) {
                 statusCode = 500
-                console.log("Get seeker:"+openid+" expect info failed!500")
+                console.log("Get seeker:" + openid + " expect info failed!500")
             }
         )
-        if(statusCode != 200) return
+        if (statusCode != 200) return
     }
     var seekerExpectInfo = seeker.expect_info
     var seekerBasicInfo = seeker.basic_info
@@ -248,7 +213,7 @@ var seleteCandidates = async function (openid) {
 }
 
 // do match
-var matchExpect = function (data,openid) {
+var matchExpect = function (data, openid) {
     const { seekerExpect, seekerBasic, candidateBasic } = data
     var property = 'education'
     // deal with education and marrayStatus
@@ -280,8 +245,8 @@ var matchExpect = function (data,openid) {
         seekerBasic[property][1] != candidateBasic[property][1]) {
         return false
     }
-    var candidateAge = (new Date()).getFullYear() - candidateBasic.birthday
-    if(seekerExpect.startAge == undefined || seekerExpect.endAge == undefined) return true
+    var candidateAge = (new Date()).getFullYear() - candidateBasic.birthday.substring(0, 4)
+    if (seekerExpect.startAge == undefined || seekerExpect.endAge == undefined) return true
     if (seekerExpect.startHeight == undefined || seekerExpect.endHeight == undefined) return true
     if (candidateAge < seekerExpect.startAge || candidateAge > seekerExpect.endAge) return false
     if (candidateBasic.height < seekerExpect.startHeight || candidateBasic.height > seekerExpect.endHeight) return false
@@ -355,6 +320,9 @@ exports.main = async (event, context) => {
             }).get().then(
                 async function (res) {
                     await seleteCandidates(nexus._openid)
+                    var dt = new Date()
+                    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+                    var timeStr = dt.toLocaleString()
                     if (res.data.length == 0) {
                         // if not find nexus's network, add one
                         db.collection('network').add({
@@ -364,7 +332,8 @@ exports.main = async (event, context) => {
                                 recommended: [],
                                 nt_company: rEmployees,
                                 nt_colleague: rColleagues,
-                                nt_relative: rCandidates
+                                nt_relative: rCandidates,
+                                time: timeStr,
                             }
                         }).then(
                             function (res) {
@@ -379,9 +348,9 @@ exports.main = async (event, context) => {
                     } else {
                         // if find, exclude deletes and recommended
                         // if (nexus._openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-                        //if (nexus._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+                        // if (nexus._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
                         //  console.log("find Emma's meta data:" + JSON.stringify(res.data[0]))
-                        //}
+                        // }
                         const networkInfo = res.data[0]
                         const deletesSet = new Set(networkInfo.deletes)
                         const recommendedSet = new Set(networkInfo.recommended)
@@ -390,16 +359,17 @@ exports.main = async (event, context) => {
                                 delete candidates[openid]
                             }
                         }
-                        const updateKeys = ['nt_company','nt_colleague','nt_relative']
-                        const updateValues = [rEmployees,rColleagues,rCandidates]
+                        const updateKeys = ['nt_company', 'nt_colleague', 'nt_relative']
+                        const updateValues = [rEmployees, rColleagues, rCandidates]
                         var updateData = {}
-                        for(var i in updateKeys) {
+                        for (var i in updateKeys) {
                             var key = updateKeys[i]
-                            if(Object.keys(updateValues[i]).length != 0) {
+                            if (Object.keys(updateValues[i]).length != 0) {
                                 updateData[key] = updateValues[i]
                             }
                         }
-                        if(Object.keys(updateData).length != 0) {
+                        if (Object.keys(updateData).length != 0) {
+                            updateData['time'] = timeStr
                             db.collection('network').where({
                                 _openid: nexus._openid
                             }).update({

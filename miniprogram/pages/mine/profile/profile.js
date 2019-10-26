@@ -374,6 +374,9 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
+        wx.showShareMenu({
+            withShareTicket: true,
+        })
         // get basic info
         let basic_info = globalData.userInfo.basic_info
         basic_info.company = globalData.userInfo.auth_info.company_auth.company

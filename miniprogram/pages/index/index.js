@@ -45,8 +45,8 @@ Page({
 
     getRelativeCandidates: function () {
         const that = this
-        console.log(globalData)
-        if (globalData.userInfo._openid == undefined) return
+        // if not authed, return
+        if(!globalData.nexusInfo.authed) return
         db.collection('network').where({
             _openid: globalData.userInfo._openid
         }).get({

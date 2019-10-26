@@ -27,13 +27,21 @@ Component({
         // move control
         ListTouchStartPosX: 0,
         ListTouchStartPosY: 0,
-        ListTouchDirection: '',
+        ListTouchHDirection: '', 
+        ListTouchVDirection: '',
+        shiftDisY: 0,
 
         isAuth: false,
         tabCur: 0,
         TabCurMax: 2,
         CustomBar: globalData.CustomBar,
-        userIdx: 0
+        CustomHeight: globalData.CustomHeight,
+        scrollToTop: true,
+        userIdx: 0,
+
+        // control update data
+        showTip: false,
+        tipContent: '',
     },
 
     observers: {
@@ -62,6 +70,93 @@ Component({
      * 组件的方法列表
      */
     methods: {
+
+        getRelativeCandidates: function () {
+            const that = this
+            // if not authed, return
+            if (!globalData.nexusInfo.authed) return
+            db.collection('network').where({
+                _openid: globalData.userInfo._openid
+            }).get({
+                success: res => {
+                    if (res.data.length == 0) {
+                        return
+                    }
+                    var paths = res.data[0]
+                    var nt_relative = paths.nt_relative
+                    var nt_colleague = paths.nt_colleague
+                    var nt_company = paths.nt_company
+                    var candidate2DArry = [nt_relative, nt_colleague, nt_company]
+                    var ids = []
+                    // generate request ids
+                    for (var i in candidate2DArry) {
+                        for (var openid of Object.keys(candidate2DArry[i])) {
+                            ids.push({
+                                _openid: openid
+                            })
+                        }
+                    }
+                    // deal with relations
+                    for (var openid of Object.keys(nt_relative)) {
+                        var relative = nt_relative[openid]
+                        relative.relation.reverse()
+                        for (var relation of relative.relation) {
+                            relation.relationship = that.data.relationMap[relation.relationship]
+                        }
+                    }
+                    // get users from database
+                    wx.cloud.callFunction({
+                        name: 'getUserLInfo',
+                        data: {
+                            ids: ids
+                        },
+                        success: res => {
+                            var users = res.result.data
+                            var relativeCandidates = []
+                            var colleagueCandidates = []
+                            var companyCandidates = []
+                            var userMap = new Map()
+                            for (var user of users) {
+                                if (nt_relative.hasOwnProperty(user._openid)) {
+                                    user.relativeInfo = nt_relative[user._openid]
+                                    relativeCandidates.push(user)
+                                }
+                                if (nt_colleague.hasOwnProperty(user._openid)) {
+                                    colleagueCandidates.push(user)
+                                }
+                                if (nt_company.hasOwnProperty(user._openid)) {
+                                    companyCandidates.push(user)
+                                }
+                                userMap.set(user._openid, user)
+                            }
+                            var data = {
+                                relativeCandidates: relativeCandidates,
+                                colleagueCandidates: colleagueCandidates,
+                                companyCandidates: companyCandidates
+                            }
+                            that.setData({
+                                seekers: data
+                            })
+                            globalData.seekers = data
+                            globalData.userMap = userMap
+                        },
+                        fail: err => {
+                            console.log(err)
+                        },
+                        complete: res => {
+                            that.setData({
+                                showTip: false,
+                            })
+                        },
+                    })
+                },
+                fail: err => {
+                    console.log(err)
+                }
+            })
+        },
+
+
         tabSelect(e) {
             this.setData({
                 tabCur: e.currentTarget.dataset.id,
@@ -89,33 +184,82 @@ Component({
         ListTouchMove(e) {
             var shiftDisX = e.touches[0].pageX - this.data.ListTouchStartPosX
             var shiftDisY = e.touches[0].pageY - this.data.ListTouchStartPosY
-            if (Math.abs(shiftDisX) < 50 || Math.abs(shiftDisY) > 50) return
             this.setData({
-                ListTouchDirection: shiftDisX < 0 ? 'right' : 'left'
+                ListTouchHDirection: shiftDisX < 0 ? 'right' : 'left',
+                ListTouchVDirection: shiftDisY < 0 ? 'up' : 'down',
+                shiftDisX: Math.abs(shiftDisX),
+                shiftDisY: Math.abs(shiftDisY),
             })
+            // show tip if top and pull down
+            if (this.data.shiftDisY > 70 && this.data.scrollToTop 
+                && this.data.ListTouchVDirection == 'down') {
+                this.setData({
+                    showTip: true,
+                    tipContent: 'hold',
+                })
+            } else {
+                this.setData({
+                    showTip: false,
+                })
+            }
         },
         // ListTouch计算滚动
         ListTouchEnd(e) {
-            var direction = this.data.ListTouchDirection
-            if (direction == '') return
-            var tabCur = this.data.tabCur
-            if (direction == 'right') {
-                if(tabCur < this.data.TabCurMax) {
-                    tabCur++
+            var shiftDisY = this.data.shiftDisY
+            var shiftDisX = this.data.shiftDisX
+            var scrollToTop = this.data.scrollToTop
+            var ListTouchVDirection = this.data.ListTouchVDirection
+            if (shiftDisY < 50 && shiftDisX > 50) {
+                var hDirection = this.data.ListTouchHDirection
+                var tabCur = this.data.tabCur
+                if (hDirection == 'right') {
+                    if (tabCur < this.data.TabCurMax) {
+                        tabCur++
+                    } else {
+                        tabCur = this.data.TabCurMax
+                    }
                 } else {
-                    tabCur = this.data.TabCurMax
+                    if (tabCur > 0) {
+                        tabCur--
+                    } else {
+                        tabCur = 0
+                    }
                 }
+                this.setData({
+                    tabCur: tabCur,
+                })
             } else {
-                if (tabCur > 0) {
-                    tabCur--
-                } else {
-                    tabCur = 0
+                if (shiftDisY > 70 && scrollToTop && ListTouchVDirection == 'down') {
+                    this.setData({
+                        showTip: true,
+                        tipContent: 'loading',
+                    })
+                    this.getRelativeCandidates()
                 }
             }
             this.setData({
-                tabCur: tabCur,
-                ListTouchDirection: '',
+                ListTouchHDirection: '',
+                ListTouchVDirection: '',
+                shiftDisX: 0,
+                shiftDisY: 0,
             })
+        },
+
+        // scroll to top and update
+        // scrollTopUpdate(e) {
+        //     if(this.data.shiftDisY > 100) {
+        //         this.setData({
+        //             isLoading: true,
+        //             shiftDisY: 0,
+        //         })
+        //         this.getRelativeCandidates()
+        //     }
+        // },
+        scrollChange(e) {
+            this.setData({
+                scrollToTop: e.detail.scrollTop == 0 ? true : false
+            })
+            // console.log("move to ",this.data.scrollToTop ? "up" : "down")
         },
     }
 })

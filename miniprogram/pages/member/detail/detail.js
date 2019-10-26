@@ -28,7 +28,6 @@ Component({
     data: {
         redirectPath: '/pages/member/detail/detail',
         source: 'meet',
-        getFromGroup: globalData.scene == 1008 ? true : false,
         isLogin: globalData.isLogin,
         canLike: false,
         relationship: "",
@@ -200,6 +199,9 @@ Component({
         },
 
         onLoad: async function (options) {
+            wx.showShareMenu({
+                withShareTicket: true,
+            })
             const that = this
             if (!globalData.isLogin) {
                 if (options.sopenid == undefined || options.topenid == undefined) {
@@ -217,9 +219,10 @@ Component({
             // enter from share mini card
             if (options.sopenid != undefined) {
                 console.log("enter from mini card,scene is",globalData.scene)
+                console.log("is got from group:",globalData.getFromGroup?'yes':'no')
                 // show user info by clicking mini card
                 // if get the mini card from group, assume not a friend
-                if (!that.data.getFromGroup) {
+                if (!globalData.getFromGroup) {
                     if (options.sopenid != globalData.userInfo._openid) {
                         db.collection('nexus').where({
                             _openid: options.sopenid
@@ -536,11 +539,12 @@ Component({
                 current: e.currentTarget.dataset.url
             });
         },
-        onShareAppMessage: function (res) {
-            if (res.from === 'button') {
+        onShareAppMessage: function (opt) {
+            if (opt.from === 'button') {
                 // 来自页面内转发按钮
-                console.log(res.target)
+                console.log(opt.target)
             }
+            console.log("Share ================")
             // generate description
             const basic_info = this.data.userInfo.basic_info
             var loc = basic_info.location[0]
@@ -558,8 +562,7 @@ Component({
             return {
                 //title: "from:" + globalData.userInfo._openid + ",user:" + this.data.userInfo._openid,
                 title: desc,
-                //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
-                path: '/pages/member/detail/detail?sopenid=' + globalData.userInfo._openid + '&topenid=' + this.data.userInfo._openid
+                path: '/pages/member/detail/detail?sopenid=' + globalData.userInfo._openid + '&topenid=' + this.data.userInfo._openid,
             }
         }
     },
