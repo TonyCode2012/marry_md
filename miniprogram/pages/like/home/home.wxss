@@ -22,3 +22,11 @@
 .cuIcon-copy{
   font-size:50rpx;
 }
+
+.cu-load.neterr::after {
+	content: "网络错误";
+}
+
+.cu-load.hold::after {
+	content: "松开刷新";
+}

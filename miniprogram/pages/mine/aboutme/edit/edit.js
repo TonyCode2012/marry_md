@@ -69,6 +69,9 @@ Page({
   },
   updateLoveInfo: function() {
     const that = this
+    var dt = new Date()
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+    var timeStr = dt.toLocaleString()
     console.log(that.data.loveDetail)
 
     that.data.loveDetail.photos = that.data.imgList
@@ -78,7 +81,8 @@ Page({
         table: 'users',
         _openid: globalData.userInfo._openid,
         data: {
-          ['love_info.'+that.data.type]: that.data.loveDetail
+            ['love_info.'+that.data.type]: that.data.loveDetail,
+            time: timeStr,
         }
       },
       success: function (res) {

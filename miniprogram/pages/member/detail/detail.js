@@ -199,9 +199,9 @@ Component({
         },
 
         onLoad: async function (options) {
-            wx.showShareMenu({
-                withShareTicket: true,
-            })
+            //wx.showShareMenu({
+            //    withShareTicket: true,
+            //})
             const that = this
             if (!globalData.isLogin) {
                 if (options.sopenid == undefined || options.topenid == undefined) {
@@ -534,8 +534,12 @@ Component({
         //   })
         // },
         ViewImage(e) {
+            var photos = this.data.userInfo.photos
+            if(photos.length == 0) {
+                photos = [this.data.userInfo.wechat_info.avatarUrl]
+            }
             wx.previewImage({
-                urls: this.data.album,
+                urls: photos,
                 current: e.currentTarget.dataset.url
             });
         },
@@ -544,7 +548,6 @@ Component({
                 // 来自页面内转发按钮
                 console.log(opt.target)
             }
-            console.log("Share ================")
             // generate description
             const basic_info = this.data.userInfo.basic_info
             var loc = basic_info.location[0]

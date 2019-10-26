@@ -15,6 +15,10 @@ exports.main = async (event, context) => {
   try {
     var statusCode = 200
     var resMsg = "like action successfully"
+    var dt = new Date()
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+    var timeStr = dt.toLocaleString()
+
     await db.collection('nexus').where({
         _openid: event.likefrom.openid
     }).get().then(
@@ -66,7 +70,8 @@ exports.main = async (event, context) => {
       _openid: event.likefrom.openid
     }).update({
       data: {
-        "match_info.ilike": event.likefrom.ilike
+          "match_info.ilike": event.likefrom.ilike,
+          time: timeStr,
       },
     }).then(
         function(res) {
@@ -106,7 +111,8 @@ exports.main = async (event, context) => {
           _openid: event.liketo.openid
         }).update({
           data: {
-            "match_info.likeme": likeme
+              "match_info.likeme": likeme,
+              time: timeStr,
           },
           success: res => {
             console.log(res)

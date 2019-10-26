@@ -3,6 +3,7 @@
   <view slot="content" class="text-bold"></view>
 </cu-custom>
 
-<view class="flex justify-center foot padding-bottom-xl">
+<view class="flex justify-center padding-bottom-xl">
   <button bindgetuserinfo='bindGetUserInfo' open-type='getUserInfo' class="cu-btn round xxl bg-gradual-red">微信授权</button>
+  <button bindtap='loginAsTourist' class="cu-btn round xxl bg-gradual-grey">暂不登录</button>
 </view>

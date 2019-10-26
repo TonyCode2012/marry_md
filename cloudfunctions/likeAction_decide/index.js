@@ -15,6 +15,10 @@ exports.main = async (event, context) => {
   try {
     var likefromPromise = ''
     var liketoPromise = ''
+    var dt = new Date()
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+    var timeStr = dt.toLocaleString()
+
     await db.collection(event.table).where({
       _openid: event.likefrom_openid
     }).get().then(
@@ -27,7 +31,8 @@ exports.main = async (event, context) => {
               _openid: event.likefrom_openid
             }).update({
               data: {
-                'match_info.ilike': ilike
+                  'match_info.ilike': ilike,
+                  time: timeStr,
               }
             })
             console.log(likefromPromise)
@@ -58,7 +63,8 @@ exports.main = async (event, context) => {
               _openid: event.liketo_openid
             }).update({
               data: {
-                'match_info.likeme': likeme
+                'match_info.likeme': likeme,
+                time: timeStr,
               }
             })
           }

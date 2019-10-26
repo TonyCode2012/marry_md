@@ -29,14 +29,15 @@ Component({
         ListTouchStartPosY: 0,
         ListTouchHDirection: '', 
         ListTouchVDirection: '',
+        shiftDisX: 0,
         shiftDisY: 0,
+        scrollToTop: true,
 
         isAuth: false,
         tabCur: 0,
         TabCurMax: 2,
         CustomBar: globalData.CustomBar,
         CustomHeight: globalData.CustomHeight,
-        scrollToTop: true,
         userIdx: 0,
 
         // control update data
@@ -73,13 +74,27 @@ Component({
 
         getRelativeCandidates: function () {
             const that = this
-            // if not authed, return
-            if (!globalData.nexusInfo.authed) return
             db.collection('network').where({
                 _openid: globalData.userInfo._openid
             }).get({
                 success: res => {
-                    if (res.data.length == 0) {
+                    if(res.data.length == 0 || res.data[0].time == globalData.relativeGetTime) {
+                        that.setData({
+                            tipContent: 'over',
+                        })
+                        setTimeout(()=>{
+                            that.setData({
+                                showTip: false,
+                            })
+                        },1500)
+                        // clear data
+                        if(res.data.length == 0) {
+                            that.setData({
+                                seekers: [],
+                            })
+                            globalData.seekers = []
+                            globalData.userMap = []
+                        }
                         return
                     }
                     var paths = res.data[0]
@@ -139,20 +154,35 @@ Component({
                             })
                             globalData.seekers = data
                             globalData.userMap = userMap
-                        },
-                        fail: err => {
-                            console.log(err)
-                        },
-                        complete: res => {
+                            globalData.relativeGetTime = paths.time
                             that.setData({
                                 showTip: false,
                             })
                         },
+                        fail: err => {
+                            that.setData({
+                                tipContent: 'neterr',
+                            })
+                            setTimeout(()=>{
+                                that.setData({
+                                    showTip: false,
+                                })
+                            },1500)
+                            console.log(err)
+                        },
                     })
                 },
                 fail: err => {
+                    that.setData({
+                        tipContent: 'neterr',
+                    })
+                    setTimeout(()=>{
+                        that.setData({
+                            showTip: false,
+                        })
+                    },1500)
                     console.log(err)
-                }
+                },
             })
         },
 
@@ -245,16 +275,6 @@ Component({
             })
         },
 
-        // scroll to top and update
-        // scrollTopUpdate(e) {
-        //     if(this.data.shiftDisY > 100) {
-        //         this.setData({
-        //             isLoading: true,
-        //             shiftDisY: 0,
-        //         })
-        //         this.getRelativeCandidates()
-        //     }
-        // },
         scrollChange(e) {
             this.setData({
                 scrollToTop: e.detail.scrollTop == 0 ? true : false

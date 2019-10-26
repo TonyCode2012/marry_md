@@ -3,6 +3,7 @@
   <view slot="content" class='text-bold'>感兴趣</view>
 </cu-custom>
 
+<view hidden="{{!showTip}}" class="cu-load bg-grey {{tipContent}}" style="background-color:white;color:grey"></view>
 <scroll-view scroll-x class="bg-white nav text-center">
   <view class="cu-item {{0==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
     我想认识
@@ -196,9 +197,6 @@
     </view> -->
   </view>
 </view>
-
-
-  <!--button wx:if="{{userInfo._openid=='o7-nX5cr9anN9KzPJkVMBPBWKxTo'}}" bindtap="getRelation" class='cu-btn block bg-red lg'>更新关系网</button-->
 
 <view class="cu-tabbar-height"></view>
 </view>

@@ -82,6 +82,11 @@ Page({
 
     },
 
+    loginAsTourist: function() {
+        wx.reLaunch({
+            url: '/pages/index/index'
+        })
+    },
     bindGetUserInfo(e) {
         const that = this
         var wechat_info = e.detail.userInfo
@@ -95,6 +100,10 @@ Page({
             }
         }
         // userInfo template
+        // FIXME be careful about timezone
+        var dt = new Date()
+        dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+        var timeStr = dt.toLocaleString()
         var userInfo = {
             _openid: that.data.openid,
             auth_info: {
@@ -120,7 +129,8 @@ Page({
                 deletes: []
             },
             photos: [],
-            wechat_info: wechat_info
+            wechat_info: wechat_info,
+            time: timeStr,
         }
         wx.showLoading({
             title: '请稍等',

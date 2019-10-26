@@ -37,8 +37,14 @@ Component({
         ListTouchDirection: '',
         mainTouchStartPosX: 0,
         mainTouchStartPosY: 0,
-        mainTouchDirection: '',
+        mainTouchHDirection: '', 
+        mainTouchVDirection: '',
         mainTabCurMax: 1,
+        mainShiftDisX: 0,
+        mainShiftDisY: 0,
+        scrollToTop: true,
+        showTip: false,
+        tipContent: 'hold',
         disableMainTab: false,
         // tab set
         tabs: {
@@ -365,6 +371,141 @@ Component({
                 disableMainTab: false,
             })
         },
+
+
+        // ListTouch触摸开始
+        mainTouchStart(e) {
+            if(this.data.disableMainTab) return
+            this.setData({
+                ListTouchStartPosX: e.touches[0].pageX,
+                ListTouchStartPosY: e.touches[0].pageY,
+            })
+        },
+        // ListTouch计算方向
+        mainTouchMove(e) {
+            if(this.data.disableMainTab) return
+            var mainShiftDisX = e.touches[0].pageX - this.data.ListTouchStartPosX
+            var mainShiftDisY = e.touches[0].pageY - this.data.ListTouchStartPosY
+            this.setData({
+                mainTouchHDirection: mainShiftDisX < 0 ? 'right' : 'left',
+                mainTouchVDirection: mainShiftDisY < 0 ? 'up' : 'down',
+                mainShiftDisX: Math.abs(mainShiftDisX),
+                mainShiftDisY: Math.abs(mainShiftDisY),
+            })
+            // show tip if top and pull down
+            if (this.data.mainShiftDisY > 70 && this.data.scrollToTop 
+                && this.data.mainTouchVDirection == 'down') {
+                this.setData({
+                    showTip: true,
+                    tipContent: 'hold',
+                })
+            } else {
+                this.setData({
+                    showTip: false,
+                })
+            }
+        },
+        // ListTouch计算滚动
+        mainTouchEnd: async function(e) {
+            if(this.data.disableMainTab) return
+            const that = this
+            var mainShiftDisY = this.data.mainShiftDisY
+            var mainShiftDisX = this.data.mainShiftDisX
+            var scrollToTop = this.data.scrollToTop
+            var mainTouchVDirection = this.data.mainTouchVDirection
+            if (mainShiftDisY < 50 && mainShiftDisX > 50) {
+                var hDirection = this.data.mainTouchHDirection
+                var tabCur = this.data.tabCur
+                if (hDirection == 'right') {
+                    if (tabCur < this.data.mainTabCurMax) {
+                        tabCur++
+                    } else {
+                        tabCur = this.data.mainTabCurMax
+                    }
+                } else {
+                    if (tabCur > 0) {
+                        tabCur--
+                    } else {
+                        tabCur = 0
+                    }
+                }
+                this.setData({
+                    tabCur: tabCur,
+                })
+            } else {
+                if (mainShiftDisY > 70 && scrollToTop && mainTouchVDirection == 'down') {
+                    var tipContent = "loading"
+                    this.setData({
+                        showTip: true,
+                        tipContent: tipContent,
+                    })
+                    // get new nexus info
+                    await db.collection('nexus').where({
+                        _openid: globalData.userInfo._openid
+                    }).get().then(
+                        async function(res) {
+                            if(res.data.length != 0) {
+                                globalData.nexusInfo = res.data[0]
+                                console.log("Get nexus info successfully!",res)
+                            } else {
+                                tipContent = "over"
+                                console.log("Get nexus info failed!")
+                            }
+                            that.setData({
+                                tipContent: tipContent,
+                            })
+                            // check userInfo update
+                            db.collection('users').where({
+                                _openid: globalData.userInfo._openid
+                            }).get().then(
+                                function(res) {
+                                    if(res.data.length != 0 && res.data[0].time != globalData.userInfo.time) {
+                                        globalData.userInfo = res.data[0]
+                                        that.setData({
+                                            userInfo: globalData.userInfo,
+                                        })
+                                        console.log("Get userinfo successfully!",globalData.userInfo)
+                                    } else {
+                                        tipContent = "over"
+                                        console.log("Get userInfo failed!")
+                                    }
+                                },
+                                function(err) {
+                                    tipContent = "neterr"
+                                    console.log("Get userInfo failed! Internal error",err)
+                                },
+                            )
+                        },
+                        function(err) {
+                            tipContent = "neterr"
+                            console.log("Get nexus info failed!Internal error!",err)
+                        },
+                    )
+                    that.setData({
+                        tipContent: tipContent,
+                    })
+                    setTimeout(()=>{
+                        that.setData({
+                            showTip: false,
+                        })
+                    },1500)
+                }
+            }
+            this.setData({
+                mainTouchHDirection: '',
+                mainTouchVDirection: '',
+                mainShiftDisX: 0,
+                mainShiftDisY: 0,
+            })
+        },
+
+        scrollChange(e) {
+            this.setData({
+                scrollToTop: e.detail.scrollTop == 0 ? true : false
+            })
+            // console.log("move to ",this.data.scrollToTop ? "up" : "down")
+        },
+        /*
         // ListTouch触摸开始
         mainTouchStart(e) {
             if (this.data.disableMainTab) return
@@ -376,11 +517,11 @@ Component({
         // ListTouch计算方向
         mainTouchMove(e) {
             if (this.data.disableMainTab) return
-            var shiftDisX = e.touches[0].pageX - this.data.mainTouchStartPosX
-            var shiftDisY = e.touches[0].pageY - this.data.mainTouchStartPosY
-            if (Math.abs(shiftDisX) < 50 || Math.abs(shiftDisY) > 50) return
+            var mainShiftDisX = e.touches[0].pageX - this.data.mainTouchStartPosX
+            var mainShiftDisY = e.touches[0].pageY - this.data.mainTouchStartPosY
+            if (Math.abs(mainShiftDisX) < 50 || Math.abs(mainShiftDisY) > 50) return
             this.setData({
-                mainTouchDirection: shiftDisX < 0 ? 'right' : 'left'
+                mainTouchDirection: mainShiftDisX < 0 ? 'right' : 'left'
             })
         },
         // ListTouch计算滚动
@@ -407,6 +548,7 @@ Component({
                 mainTouchDirection: '',
             })
         },
+        */
 
         // get relation
         getRelation(e) {

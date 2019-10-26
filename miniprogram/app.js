@@ -27,12 +27,11 @@ App({
             userInfo: {},
             nexusInfo: {},
             userInfoHash: "", // used to check if userInfo changed
+            relativeGetTime: "",
             seekers: {},
             userIDs: [],
             userMap: null,
-            //openid: null,
             isLogin: false,
-            //chance: 0,
             scene: opt.scene,
             tags: {
                 ilike: 0,
@@ -85,12 +84,36 @@ App({
             shareTicket: options.shareTicket,
             success: function(res) {
                 that.globalData.getFromGroup = true
-                console.log("+++++++++ Get from group")
             },
             fail: function(err) {
                 that.globalData.getFromGroup = false
-                console.log("+++++++++ Get from person")
             }
         })
+        // auto update userInfo
+        if(that.globalData.userInfo._openid != undefined) {
+            wx.cloud.callFunction({
+                name: 'getUpdate',
+                data: {
+                    table: 'users',
+                    _openid: that.globalData.userInfo._openid,
+                },
+                success: function(res) {
+                    if(res.data && res.data.length != 0) {
+                        var resData = res.data[0]
+                        if(resData.time && resData.time != that.globalData.userInfo.time) {
+                            that.globalData.userInfo = res.data
+                            console.log("Update user info successfully!",res)
+                        } else {
+                            console.log("No new update")
+                        }
+                    } else {
+                        console.log("Update user info failed!",res)
+                    }
+                },
+                fail: function(err) {
+                    console.log('Update user info failed!Internal error!',err)
+                },
+            })
+        }
     },
 })

@@ -269,6 +269,10 @@ Page({
     },
     updateBasicInfo: function () {
         const that = this
+        var dt = new Date()
+        dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+        var timeStr = dt.toLocaleString()
+
         console.log(that.data.basic_info)
 
         // update parent page data
@@ -284,7 +288,8 @@ Page({
                     _openid: globalData.userInfo._openid,
                     data: {
                         basic_info: that.data.basic_info,
-                        photos: that.data.imgList
+                        photos: that.data.imgList,
+                        time: timeStr,
                     }
                 },
                 success: function (res) {
@@ -298,6 +303,24 @@ Page({
                         title: '成功',
                         icon: 'success',
                         duration: 2000
+                    })
+                    // update related neuxs info
+                    wx.cloud.callFunction({
+                        name: 'dbupdate',
+                        data: {
+                            table: 'nexus',
+                            _openid: globalData.userInfo._openid,
+                            data: {
+                                gender: globalData.userInfo.basic_info.gender,
+                                name: globalData.userInfo.basic_info.nickName,
+                            }
+                        },
+                        success: function(res) {
+                            console.log("Update related nexus info successfully!",res)
+                        },
+                        fail: function(err) {
+                            console.log("Update related nexus info failed!",err)
+                        },
                     })
                 },
                 fail: function (res) {
@@ -532,11 +555,10 @@ Page({
             job + (basic_info.gender=='male'?'小哥哥,':'小姐姐,') + 
             home + "人," + basic_info.education + "学位"
         return {
-            title: "from:" + openid + ",user:" + openid,
-            //title: desc,
+            //title: "from:" + openid + ",user:" + openid,
+            title: desc,
             imageUrl: imageUrl,
-            //path: `/pages/member/detail/detail?sopenid=${globalData.userInfo._openid}&topenid=${this.data.userInfo._openid}`
-            path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid
+            path: '/pages/member/detail/detail?sopenid=' + openid + '&topenid=' + openid,
         }
     }
 })

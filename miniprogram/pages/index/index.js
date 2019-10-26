@@ -46,7 +46,7 @@ Page({
     getRelativeCandidates: function () {
         const that = this
         // if not authed, return
-        if(!globalData.nexusInfo.authed) return
+        //if(!globalData.nexusInfo.authed) return
         db.collection('network').where({
             _openid: globalData.userInfo._openid
         }).get({
@@ -59,6 +59,7 @@ Page({
                 var nt_relative = paths.nt_relative
                 var nt_colleague = paths.nt_colleague
                 var nt_company = paths.nt_company
+                var relativeGetTime = paths.time
                 var candidate2DArry = [nt_relative, nt_colleague, nt_company]
                 var ids = []
                 // generate request ids
@@ -113,6 +114,7 @@ Page({
                         })
                         globalData.seekers = data
                         globalData.userMap = userMap
+                        globalData.relativeGetTime = relativeGetTime
                     },
                     fail: err => {
                         console.log(err)

@@ -48,8 +48,11 @@
         </view>
       </view>
       <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-        <swiper-item wx:for="{{userInfo.photos}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{userInfo.photos[index]}}">
+        <swiper-item wx:if="{{userInfo.photos.length!=0}}" wx:for="{{userInfo.photos}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{userInfo.photos[index]}}">
           <image class='response' src="{{item}}" mode="aspectFill"></image>
+        </swiper-item>
+        <swiper-item wx:if="{{userInfo.photos.length==0}}" bindtap="ViewImage" data-url="{{userInfo.wechat_info.avatarUrl}}">
+          <image class='response' src="{{userInfo.wechat_info.avatarUrl}}" mode="aspectFill"></image>
         </swiper-item>
       </swiper>
       <view class='padding'>

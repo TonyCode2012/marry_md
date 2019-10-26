@@ -135,9 +135,9 @@ var getColleague = function (openid) {
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-        console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
-    }
+    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+    //    console.log("find Emma's colleague data:" + JSON.stringify(colleagues))
+    //}
 }
 
 var getEmployee = function (openid) {
@@ -150,16 +150,16 @@ var getEmployee = function (openid) {
         }
     }
     // if (openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-        console.log("find Emma's employee data:" + JSON.stringify(employees))
-    }
+    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+    //    console.log("find Emma's employee data:" + JSON.stringify(employees))
+    //}
 }
 
 // select candidates according to seeker's expect
 var seleteCandidates = async function (openid) {
-    if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-        console.log("find Emma's start select rRelative data:" + JSON.stringify(candidates))
-    }
+    //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+    //    console.log("find Emma's start select rRelative data:" + JSON.stringify(candidates))
+    //}
     var categories = [candidates, colleagues, employees]
     var rCategory = [{}, {}, {}]
     // var rCategory = [rCandidates, rColleagues, rEmployees]
@@ -220,14 +220,14 @@ var matchExpect = function (data, openid) {
     if (seekerExpect[property] != undefined &&
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
-        matchMap[property][seekerBasic[property]] > matchMap[property][candidateBasic[property]]) {
+        matchMap[property][seekerExpect[property]] > matchMap[property][candidateBasic[property]]) {
         return false
     }
     property = 'marryStatus'
     if (seekerExpect[property] != undefined &&
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
-        matchMap[property][seekerBasic[property]] > matchMap[property][candidateBasic[property]]) {
+        matchMap[property][seekerExpect[property]] > matchMap[property][candidateBasic[property]]) {
         return false
     }
     // deal with hometown and location
@@ -243,6 +243,9 @@ var matchExpect = function (data, openid) {
         matchMap[property][seekerExpect[property]] != 0 &&
         seekerBasic[property] != undefined &&
         seekerBasic[property][1] != candidateBasic[property][1]) {
+        //if (openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+        //    console.log("find Emma's not match:"+property+" seeker:"+seekerBasic[property]+" candi:"+candidateBasic[property])
+        //}
         return false
     }
     var candidateAge = (new Date()).getFullYear() - candidateBasic.birthday.substring(0, 4)
@@ -348,9 +351,12 @@ exports.main = async (event, context) => {
                     } else {
                         // if find, exclude deletes and recommended
                         // if (nexus._openid == 'o7-nX5bCjrCcp7zI90EmjMxRamPM') {
-                        // if (nexus._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
-                        //  console.log("find Emma's meta data:" + JSON.stringify(res.data[0]))
-                        // }
+                        //if (nexus._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+                        //    console.log("find Emma's meta data:" + JSON.stringify(res.data[0]))
+                        //    console.log("find Emma's selected colleague data:" + JSON.stringify(rColleagues))
+                        //    console.log("find Emma's selected company data:" + JSON.stringify(rEmployees))
+                        //}
+                        // adjust if data changed
                         const networkInfo = res.data[0]
                         const deletesSet = new Set(networkInfo.deletes)
                         const recommendedSet = new Set(networkInfo.recommended)
@@ -361,19 +367,30 @@ exports.main = async (event, context) => {
                         }
                         const updateKeys = ['nt_company', 'nt_colleague', 'nt_relative']
                         const updateValues = [rEmployees, rColleagues, rCandidates]
-                        var updateData = {}
+                        var changed = false
                         for (var i in updateKeys) {
                             var key = updateKeys[i]
                             if (Object.keys(updateValues[i]).length != 0) {
-                                updateData[key] = updateValues[i]
+                                var orgArry = (networkInfo[key]!=undefined?Object.keys(networkInfo[key]):[])
+                                var curArry = (updateValues[i]!=undefined?Object.keys(updateValues[i]):[])
+                                var orgStr = JSON.stringify(orgArry.sort())
+                                var curStr = JSON.stringify(curArry.sort())
+                                //if (nexus._openid == 'o7-nX5cr9anN9KzPJkVMBPBWKxTo') {
+                                //    console.log("find Emma's hash org data:" + orgStr)
+                                //    console.log("find Emma's hash cur data:" + curStr)
+                                //}
+                                if(orgStr != curStr) {
+                                    networkInfo[key] = updateValues[i]
+                                    changed = true
+                                }
                             }
                         }
-                        if (Object.keys(updateData).length != 0) {
-                            updateData['time'] = timeStr
-                            db.collection('network').where({
-                                _openid: nexus._openid
-                            }).update({
-                                data: updateData
+                        if (changed) {
+                            networkInfo['time'] = timeStr
+                            var _id  = networkInfo['_id']
+                            delete networkInfo['_id']
+                            db.collection('network').doc(_id).set({
+                                data: networkInfo
                             }).then(
                                 function (res) {
                                     console.log('update ' + nexus._openid +

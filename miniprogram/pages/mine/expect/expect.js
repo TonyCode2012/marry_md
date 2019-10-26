@@ -82,6 +82,10 @@ Page({
 
   Save: function() {
     const that = this
+    var dt = new Date()
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+    var timeStr = dt.toLocaleString()
+
     wx.showLoading({
       title: '正在保存',
     })
@@ -91,7 +95,8 @@ Page({
         table: 'users',
         _openid: app.globalData.userInfo._openid,
         data: {
-          expect_info: that.data.expect_info
+            expect_info: that.data.expect_info,
+            time: timeStr,
         }
       },
       success: function (res) {
