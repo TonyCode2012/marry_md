@@ -83,8 +83,10 @@ Page({
     },
 
     loginAsTourist: function() {
+        const that = this
+        globalData.loginAsTourist  = true
         wx.reLaunch({
-            url: '/pages/index/index'
+            url: that.data.redirectPath
         })
     },
     bindGetUserInfo(e) {
@@ -156,7 +158,7 @@ Page({
                 nexusInfo: nexusInfo
             },
             success: function (res) {
-                globalData.isLogin = true
+                globalData.loginAsTourist = false
                 globalData.userInfo = userInfo;
                 globalData.nexusInfo = nexusInfo;
                 globalData.userInfoHash = stringHash(JSON.stringify(userInfo));

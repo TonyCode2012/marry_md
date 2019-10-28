@@ -26,7 +26,8 @@
       <text>编辑资料</text>
       <text class='cuIcon-right'></text>
     </view>
-    <view class="text-black text-xl">{{userInfo.basic_info.nickName}}</view>
+    <view wx:if="{{!loginAsTourist}}" class="text-black text-xl">{{userInfo.basic_info.nickName}}</view>
+    <view wx:else bindtap="go2CheckAuth" class="text-black text-xl">点我登录</view>
     <view class="text-gray text-sm flex align-center margin-top-sm">
       <text class='cuIcon-safe lg text-gray margin-right-xs'> </text>
       <text class='text-xs text-orange'>{{authed ? '已认证' : '未认证'}}</text>

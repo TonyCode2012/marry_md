@@ -68,7 +68,7 @@
 <view style="min-height:600px" bindtouchstart="mainTouchStart" bindtouchmove="mainTouchMove" bindtouchend="mainTouchEnd">
 <view wx:if="{{tabCur==0}}" style="z-index:9999">
   <view class="cu-list menu-avatar">
-    <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-index="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}" data-tag="ilike">
+    <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-index="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" bindtap="touchInfo" data-target="move-box-{{index}}" data-tag="ilike">
 
       <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">
         <view hidden="{{item.checked}}" class="cu-tag badge"></view></view>

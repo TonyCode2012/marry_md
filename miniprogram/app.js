@@ -31,8 +31,8 @@ App({
             seekers: {},
             userIDs: [],
             userMap: null,
-            isLogin: false,
             scene: opt.scene,
+            loginAsTourist: true,
             tags: {
                 ilike: 0,
                 likeme: 0

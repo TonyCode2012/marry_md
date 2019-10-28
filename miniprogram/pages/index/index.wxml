@@ -1,4 +1,4 @@
-<view wx:if="{{isLogin}}">
+<view wx:if="{{loginAsTourist}}">
   <!-- <view class="cu-bar bg-white margin-top">
     <view class='action'>
         <text class='cuIcon-title text-blue'></text>加载状态

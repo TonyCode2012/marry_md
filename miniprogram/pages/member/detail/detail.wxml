@@ -32,7 +32,7 @@
 <!--view wx:if="{{getFromGroup}}">
   <view style="position: absolute;top:50%;left:50%">您无权查看此简历!!!</view>
 </view-->
-<view wx:if="{{isLogin}}">
+<view wx:if="{{loginAsTourist}}">
 <view class="section">
   <view class="section__title"></view>
   <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" disabled="{{ship}}">

@@ -28,7 +28,7 @@ Component({
     data: {
         redirectPath: '/pages/member/detail/detail',
         source: 'meet',
-        isLogin: globalData.isLogin,
+        loginAsTourist: globalData.loginAsTourist,
         canLike: false,
         relationship: "",
         relations: false,
@@ -203,7 +203,7 @@ Component({
             //    withShareTicket: true,
             //})
             const that = this
-            if (!globalData.isLogin) {
+            if (!globalData.loginAsTourist) {
                 if (options.sopenid == undefined || options.topenid == undefined) {
                     console.log("shared parameter error!")
                 } else {
@@ -216,13 +216,14 @@ Component({
             const { source } = options;
             const _ = db.command
             var userInfo = null
+            var userOID = null
             // enter from share mini card
             if (options.sopenid != undefined) {
                 console.log("enter from mini card,scene is",globalData.scene)
                 console.log("is got from group:",globalData.getFromGroup?'yes':'no')
                 // show user info by clicking mini card
                 // if get the mini card from group, assume not a friend
-                if (!globalData.getFromGroup) {
+                if (!globalData.getFromGroup && !globalData.loginAsTourist) {
                     if (options.sopenid != globalData.userInfo._openid) {
                         db.collection('nexus').where({
                             _openid: options.sopenid
@@ -242,9 +243,23 @@ Component({
                         })
                     }
                 }
+                userOID = options.topenid
+            } else {
+                console.log("enter from main port")
+                // show user info by clicking mini card
+                if (!globalData.loginAsTourist) {
+                    userInfo = globalData.userMap.get(options.openid)
+                }
+                userOID = options.openid
+                // get user information
+                that.setData({
+                    userIDs: globalData.userIDs
+                })
+            }
+            if (userInfo == undefined) {
                 // get user info
                 await db.collection('users').where({
-                    _openid: options.topenid
+                    _openid: userOID
                 }).get().then(
                     function (res) {
                         if (res.data.length > 0) {
@@ -257,58 +272,35 @@ Component({
                         console.log("Get user info failed!" + err)
                     }
                 )
-            } else {
-                console.log("enter from main port")
-                // show user info by clicking mini card
-                userInfo = globalData.userMap.get(options.openid)
-                if(userInfo == undefined) {
-                    // get user info
-                    await db.collection('users').where({
-                        _openid: options.openid
-                    }).get().then(
-                        function (res) {
-                            if (res.data.length > 0) {
-                                userInfo = res.data[0]
-                            } else {
-                                console.log("Get user info failed! no user found!")
-                            }
-                        },
-                        function (err) {
-                            console.log("Get user info failed!" + err)
-                        }
-                    )
-                }
-                // get user information
-                that.setData({
-                    userIDs: globalData.userIDs
-                })
             }
-            // set show like tag
-            if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
-                that.setData({
-                    showLike: false
-                })
-            }
-            // check if this user info has been existed on the match list
-            var loginILike = app.globalData.userInfo.match_info.ilike
-            var loginLikeMe = app.globalData.userInfo.match_info.likeme
-            for (var i = 0; i < loginILike.length; i++) {
-                if (loginILike[i]._openid == userInfo._openid) {
-                    this.setData({
-                        likeTag: "已感兴趣"
+            if(!globalData.loginAsTourist) {
+                // set show like tag
+                if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
+                    that.setData({
+                        showLike: false
                     })
-                    break
                 }
-            }
-            for (var i = 0; i < loginLikeMe.length; i++) {
-                if (loginLikeMe[i]._openid == userInfo._openid) {
-                    this.setData({
-                        //likeTag: "对你感兴趣",
-                        likeTag: "想认识你",
-                    })
-                    break
+                // check if this user info has been existed on the match list
+                var loginILike = globalData.userInfo.match_info.ilike
+                var loginLikeMe = globalData.userInfo.match_info.likeme
+                for (var i = 0; i < loginILike.length; i++) {
+                    if (loginILike[i]._openid == userInfo._openid) {
+                        this.setData({
+                            likeTag: "已感兴趣"
+                        })
+                        break
+                    }
                 }
-            }
+                for (var i = 0; i < loginLikeMe.length; i++) {
+                    if (loginLikeMe[i]._openid == userInfo._openid) {
+                        this.setData({
+                            //likeTag: "对你感兴趣",
+                            likeTag: "想认识你",
+                        })
+                        break
+                    }
+                }
+            } 
             // set relative portrait, async get
             if(userInfo.relativeInfo != undefined) {
                 var relativeIDs = []
@@ -342,10 +334,11 @@ Component({
             }
 
             console.log('user detail', options, this.properties);
+            console.log('userInfo', userInfo);
             this.setData({
                 userInfo: userInfo,
                 //source: source,
-                isLogin: globalData.isLogin,
+                loginAsTourist: globalData.loginAsTourist,
             })
         },
         toHomePage: function () {
@@ -361,10 +354,24 @@ Component({
                 }
             })
         },
-        bindLike: function () {
+        bindLike: async function () {
             const that = this
             if (this.data.likeTag != "感兴趣") return
-            if (globalData.nexusInfo.chance == 0) {
+            var latestNexus = await db.collection('nexus').where({
+                _openid: globalData.userInfo._openid
+            }).get().then(
+                function(res) {
+                    if(res.data.length != 0) {
+                        return res.data[0]
+                    } else {
+                        console.log("Get nexus info failed!",res)
+                    }
+                },
+                function(err) {
+                    console.log(err)
+                }
+            )
+            if (latestNexus && latestNexus.chance == 0) {
                 wx.showToast({
                     title: '每天只有一次喜欢机会',
                     icon: 'none',
@@ -384,7 +391,8 @@ Component({
                             console.log('完善认证')
                             wx.navigateTo({
                                 //url: '/pages/index/index?cur=mine',
-                                url: '/pages/mine/profile/profile',
+                                // url: '/pages/mine/profile/profile',
+                                url: '/pages/mine/home/home',
                             })
                         } else if (res.cancel) {
                             console.log('取消')
@@ -405,7 +413,6 @@ Component({
                     }
                 }
             })
-            // TODO: create like event
         },
         _doLike() {
             const that = this
@@ -510,29 +517,6 @@ Component({
                 }
             })
         },
-        // bindPickerChange: function (e) {
-        //   console.log('picker发送选择改变，携带值为', e.detail.value)
-        //   if(e.detail.value != 0) {
-        //     this.setData({
-        //       relationship: true
-        //     })
-        //     var newRelation = JSON.parse(JSON.stringify(relationData))
-        //     delete newRelation._id
-        //     newRelation.rear = "zhaoyao2"
-        //     newRelation.path.push("zhaoyao2")
-        //     newRelation.relationship.push(this.data.array[e.detail.value])
-        //     db.collection('transmition').add({
-        //       data: newRelation,
-        //       success: function(res) {
-        //         console.log(res)
-        //       },
-        //       fail: console.error
-        //     })
-        //   }
-        //   this.setData({
-        //     index: e.detail.value
-        //   })
-        // },
         ViewImage(e) {
             var photos = this.data.userInfo.photos
             if(photos.length == 0) {
@@ -549,6 +533,7 @@ Component({
                 console.log(opt.target)
             }
             // generate description
+            var sopenid = globalData.loginAsTourist ? 'tourist' : globalData.userInfo._openid
             const basic_info = this.data.userInfo.basic_info
             var loc = basic_info.location[0]
             if(loc.indexOf("黑龙江")!=-1 || loc.indexOf("内蒙古")!=-1) loc = loc.substring(0,3)
@@ -565,7 +550,7 @@ Component({
             return {
                 //title: "from:" + globalData.userInfo._openid + ",user:" + this.data.userInfo._openid,
                 title: desc,
-                path: '/pages/member/detail/detail?sopenid=' + globalData.userInfo._openid + '&topenid=' + this.data.userInfo._openid,
+                path: '/pages/member/detail/detail?sopenid=' + sopenid + '&topenid=' + this.data.userInfo._openid,
             }
         }
     },

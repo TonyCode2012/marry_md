@@ -23,7 +23,7 @@ Component({
 
     },
     ready() {
-        if (!globalData.isLogin) {
+        if (globalData.loginAsTourist) {
             this.checkAuthorize()
         }
     },
@@ -37,18 +37,18 @@ Component({
             var redirectPath = that.data.redirectPath
             this.getOpenId().then(openid => {
                 db.collection('users').where({
-                    _openid: globalData.userInfo.openid
+                    _openid: globalData.userInfo._openid
                 }).get().then(
                     function (res) {
                         if (res.data.length === 0) {
                             redirectPath = escape(redirectPath)
                             wx.reLaunch({
-                                url: `/pages/index/authorize/authorize?openid=${globalData.userInfo.openid}&path=${redirectPath}`,
+                                url: `/pages/index/authorize/authorize?openid=${globalData.userInfo._openid}&path=${redirectPath}`,
                             })
                         } else {
                             globalData.userInfo = res.data[0]
                             globalData.userInfoHash = stringHash(JSON.stringify(res.data[0]))
-                            globalData.isLogin = true;
+                            globalData.loginAsTourist = false;
                             db.collection('nexus').where({
                                 _openid: globalData.userInfo._openid
                             }).get().then(
@@ -77,7 +77,7 @@ Component({
             const openid = wx.getStorageSync('openid')
             if (openid) {
                 console.log('openid from storage: ', openid)
-                globalData.userInfo.openid = openid;
+                globalData.userInfo._openid = openid;
                 return Promise.resolve(openid)
             }
             return wx.cloud.callFunction({
@@ -85,7 +85,7 @@ Component({
             }).then(res => {
                 console.log('openid from cloud: ', res)
                 const openid = res.result.openid;
-                globalData.userInfo.openid = openid;
+                globalData.userInfo._openid = openid;
                 wx.setStorage({
                     key: "openid",
                     data: openid

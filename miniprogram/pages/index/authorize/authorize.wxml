@@ -3,7 +3,17 @@
   <view slot="content" class="text-bold"></view>
 </cu-custom>
 
-<view class="flex justify-center padding-bottom-xl">
-  <button bindgetuserinfo='bindGetUserInfo' open-type='getUserInfo' class="cu-btn round xxl bg-gradual-red">微信授权</button>
-  <button bindtap='loginAsTourist' class="cu-btn round xxl bg-gradual-grey">暂不登录</button>
+<!-- <view class="flex justify-center padding-bottom-xl">
+</view> -->
+
+<view class="flex padding align-center justify-center" style="position:absolute;top:40%">
+
+    <!-- <view class="flex">
+      <view class="flex-sub bg-grey padding-sm margin-xs radius">1</view>
+      <view class="flex-sub bg-grey padding-sm margin-xs radius">1</view>
+    </view> -->
+    <!-- <view class="bg-grey padding-lg margin-xs radius">ColorUi</view>
+    <view class="bg-grey padding-sm margin-xs radius">center</view> -->
+    <button bindgetuserinfo='bindGetUserInfo' open-type='getUserInfo' class="cu-btn block xxl lg round bg-gradual-red">微信授权</button>
+    <button bindtap='loginAsTourist' class="cu-btn block xxl lg round bg-brown light">暂不登录</button>
 </view>

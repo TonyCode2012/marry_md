@@ -17,7 +17,7 @@ Page({
     data: {
         PageCur: 'meet',
         query: null,
-        isLogin: false,
+        loginAsTourist: globalData.loginAsTourist,
         userInfo: globalData.userInfo,
         seekers: {},
         userIDs: [],
@@ -274,10 +274,10 @@ Page({
     */
 
     onLoad(query) {
-        if (!globalData.isLogin) return false
-
         const that = this
-        if (query.update && query.update == 'true' || query.update == undefined) {
+        if(globalData.loginAsTourist) {
+            console.log("you should authorized app")
+        } else if (query.update && query.update == 'true' || query.update == undefined) {
             // if back from other pages
             // get network relation
             this.getRelativeCandidates()
@@ -304,8 +304,8 @@ Page({
         // these data wouldn't change after login
         this.setData({
             query: query,
-            isLogin: globalData.isLogin,
-            userInfo: globalData.userInfo
+            loginAsTourist: globalData.loginAsTourist,
+            userInfo: globalData.userInfo,
         })
         // set completed info
         //this.setCompleteAndAuthd(globalData.userInfo)
