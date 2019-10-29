@@ -314,7 +314,11 @@ Component({
             this._deleteLike(para)
         },
 
-        touchInfo(e) {
+        // ListTouch触摸开始
+        ListTouchStart(e) {
+            this.setData({
+                ListTouchStartPosX: e.touches[0].pageX,
+            })
             var index = e.currentTarget.dataset.index
             var tag = e.currentTarget.dataset.tag
             var item = globalData.userInfo.match_info[tag][index]
@@ -346,12 +350,6 @@ Component({
                 var param = { key: 'tags' }
                 this.triggerEvent('globalDataChange', param)
             }
-        },
-        // ListTouch触摸开始
-        ListTouchStart(e) {
-            this.setData({
-                ListTouchStartPosX: e.touches[0].pageX,
-            })
         },
         // ListTouch计算方向
         ListTouchMove(e) {
