@@ -4,7 +4,7 @@ const cloud = require('wx-server-sdk')
 cloud.init()
 
 const db = cloud.database({
-  env: 'dev-2019-xe6cj'
+  env: 'prod-env-2019'
 });
 const _ = db.command;
 

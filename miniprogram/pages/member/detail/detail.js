@@ -5,11 +5,6 @@ let {
     globalData
 } = app
 let relationData = []
-// const db = wx.cloud.database({
-//   env: 'test-t2od1'
-// })
-// const db = wx.cloud.database()
-// const transColl = db.collection('transmition')
 
 Component({
     options: {

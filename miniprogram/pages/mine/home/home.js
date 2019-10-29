@@ -6,11 +6,9 @@ const {
 } = require("../../../utils/util.js");
 const app = getApp()
 const {
+    db,
     globalData
 } = app
-const db = wx.cloud.database({
-    env: 'dev-2019-xe6cj'
-})
 
 Component({
     options: {
