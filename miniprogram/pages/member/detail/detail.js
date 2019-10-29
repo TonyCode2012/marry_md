@@ -29,7 +29,11 @@ Component({
         redirectPath: '/pages/member/detail/detail',
         source: 'meet',
         loginAsTourist: globalData.loginAsTourist,
+        showWAuthed: globalData.showWAuthed,
         canLike: false,
+        // relation related
+        _openid: '',
+        showModal: '',
         relationship: "",
         relations: false,
         relationArry: ['请选择你和介绍人的关系', '亲戚', '同事', '朋友', '同学', '其他'],
@@ -130,63 +134,32 @@ Component({
      * 组件的方法列表
      */
     methods: {
-        chooseRelations: function (openid) {
+        chooseRelation: function (e) {
             const that = this
-            wx.showActionSheet({
-                itemList: that.data.relationArry,
-                complete(res) {
-                    if (res.tapIndex != undefined && res.tapIndex != 0) {
-                        that.data.relationIndex = res.tapIndex
-                        console.log("relationship is:" + that.data.relationArry[that.data.relationIndex])
-                        wx.showLoading({
-                            title: '正在分享',
-                        })
-                        wx.cloud.callFunction({
-                            name: 'updateRelation',
-                            data: {
-                                to_openid: openid,
-                                from_openid: globalData.userInfo._openid,
-                                relationship: that.data.relationRArry[that.data.relationIndex],
-                            },
-                            success: res => {
-                                console.log(res)
-                                wx.hideLoading()
-                                wx.showToast({
-                                    title: '分享成功',
-                                    icon: 'success',
-                                    duration: 1500
-                                })
-                            },
-                            fail: err => {
-                                console.log(err)
-                                wx.hideLoading()
-                                wx.showToast({
-                                    title: '分享失败',
-                                    icon: 'none',
-                                    duration: 1500
-                                })
-                            }
-                        })
-                    } else if (res.tapIndex == undefined || res.tapIndex == 0 ||
-                        (res.errMsg != undefined && res.errMsg.indexOf("cancel") != -1)) {
-                        wx.showModal({
-                            title: '提示',
-                            content: '不选择与介绍人的关系将无法查看该简历',
-                            confirmText: '返回首页',
-                            cancelText: '选择关系',
-                            success(res) {
-                                if (res.confirm) {
-                                    console.log('返回首页')
-                                    wx.redirectTo({
-                                        url: '/pages/index/index',
-                                    })
-                                } else if (res.cancel) {
-                                    console.log('选择关系')
-                                    that.chooseRelations(openid)
-                                }
-                            }
-                        })
+            var index = e.currentTarget.dataset.index
+            var relationship = that.data.relationRArry[index]
+            if(index == 0) return
+            that.setData({
+                showModal: '',
+            })
+            wx.cloud.callFunction({
+                name: 'updateRelation',
+                data: {
+                    to_openid: that.data._openid,
+                    from_openid: globalData.userInfo._openid,
+                    relationship: relationship,
+                },
+                success: res => {
+                    var resData = res.result
+                    if (resData.statusCode == 200) {
+                        globalData.nexusInfo.friends = resData.friends
+                        console.log("update relation successfully!", res)
+                    } else {
+                        console.log("Update relation failed!", res)
                     }
+                },
+                fail: err => {
+                    console.log("update relation failed!Internal error!", err)
                 }
             })
         },
@@ -195,20 +168,21 @@ Component({
             var openid = e.detail.index
             openid = this.data.userIDs[openid]
             openid = openid.substring(openid.indexOf(':') + 1, openid.length)
-            this.chooseRelations(openid)
+            // this.chooseRelation(openid)
         },
 
         onLoad: async function (options) {
-            //wx.showShareMenu({
-            //    withShareTicket: true,
-            //})
             const that = this
-            if (!globalData.loginAsTourist) {
+            // check if login and show the wechat authorized page
+            // if not redirect to authorized page
+            if (globalData.loginAsTourist && !globalData.showWAuthed) {
                 if (options.sopenid == undefined || options.topenid == undefined) {
                     console.log("shared parameter error!")
                 } else {
-                    this.setData({
-                        redirectPath: that.data.redirectPath + '?sopenid=' + options.sopenid + '&topenid=' + options.topenid
+                    var redirectPath = that.data.redirectPath + '?sopenid=' + options.sopenid + '&topenid=' + options.topenid
+                    redirectPath = escape(redirectPath)
+                    wx.reLaunch({
+                        url: `/pages/index/loading/loading?redirectPath=${redirectPath}`,
                     })
                 }
                 return
@@ -219,31 +193,21 @@ Component({
             var userOID = null
             // enter from share mini card
             if (options.sopenid != undefined) {
+                userOID = options.topenid
+                that.data._openid = userOID
                 console.log("enter from mini card,scene is",globalData.scene)
                 console.log("is got from group:",globalData.getFromGroup?'yes':'no')
                 // show user info by clicking mini card
                 // if get the mini card from group, assume not a friend
-                if (!globalData.getFromGroup && !globalData.loginAsTourist) {
-                    if (options.sopenid != globalData.userInfo._openid) {
-                        db.collection('nexus').where({
-                            _openid: options.sopenid
-                        }).get({
-                            success: function (res) {
-                                var friends = res.data[0].friends
-                                var loginID = globalData.userInfo._openid
-                                if (loginID == undefined) {
-                                    console.log("Error!Login ID is undefined!")
-                                } else if(!friends.hasOwnProperty(loginID)) {
-                                    that.chooseRelations(options.sopenid)
-                                } 
-                            },
-                            fail: function (res) {
-                                console.log(res)
-                            }
-                        })
-                    }
+                if (!globalData.getFromGroup && !globalData.loginAsTourist 
+                    && options.sopenid != globalData.userInfo._openid 
+                    && !globalData.nexusInfo.friends.hasOwnProperty(userOID)) {
+                    that.setData({
+                        showModal: 'show',
+                    })
+                    console.log("loginastourist", globalData.loginAsTourist ? 'true' : 'false')
+                    console.log("sopenid:", options.sopenid, "_openid:", globalData.userInfo._openid)
                 }
-                userOID = options.topenid
             } else {
                 console.log("enter from main port")
                 // show user info by clicking mini card
@@ -273,64 +237,69 @@ Component({
                     }
                 )
             }
-            if(!globalData.loginAsTourist) {
-                // set show like tag
-                if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
-                    that.setData({
-                        showLike: false
-                    })
-                }
-                // check if this user info has been existed on the match list
-                var loginILike = globalData.userInfo.match_info.ilike
-                var loginLikeMe = globalData.userInfo.match_info.likeme
-                for (var i = 0; i < loginILike.length; i++) {
-                    if (loginILike[i]._openid == userInfo._openid) {
-                        this.setData({
-                            likeTag: "已感兴趣"
-                        })
-                        break
-                    }
-                }
-                for (var i = 0; i < loginLikeMe.length; i++) {
-                    if (loginLikeMe[i]._openid == userInfo._openid) {
-                        this.setData({
-                            //likeTag: "对你感兴趣",
-                            likeTag: "想认识你",
-                        })
-                        break
-                    }
-                }
-            } 
-            // set relative portrait, async get
-            if(userInfo.relativeInfo != undefined) {
-                var relativeIDs = []
-                for(var item of userInfo.relativeInfo.relation) {
-                    relativeIDs.push({
-                        _openid: item._openid
-                    })
-                }
-                db.collection('users').where(_.or(relativeIDs)).get({
-                    success: function(res) {
-                        var tmpMap = new Map()
-                        for(var user of res.data) {
-                            tmpMap.set(user._openid,user)
-                        }
-                        for(var item of userInfo.relativeInfo.relation) {
-                            var user = tmpMap.get(item._openid)
-                            var portraitUrl = user.wechat_info.avatarUrl
-                            if(user.photos.length != 0) {
-                                portraitUrl = user.photos[0]
-                            }
-                            item.portraitURL = portraitUrl
-                        }
+            if (userInfo) {
+                // if authorize wechage login
+                if(!globalData.loginAsTourist) {
+                    // set show like tag
+                    if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
                         that.setData({
-                            'userInfo.relativeInfo.relation': userInfo.relativeInfo.relation
+                            showLike: false
                         })
-                    },
-                    fail: function(err) {
-                        console.log("Set relative portraitUrl failed!")
                     }
-                })
+                    // check if this user info has been existed on the match list
+                    var loginILike = globalData.userInfo.match_info.ilike
+                    var loginLikeMe = globalData.userInfo.match_info.likeme
+                    for (var i = 0; i < loginILike.length; i++) {
+                        if (loginILike[i]._openid == userInfo._openid) {
+                            this.setData({
+                                likeTag: "已感兴趣"
+                            })
+                            break
+                        }
+                    }
+                    for (var i = 0; i < loginLikeMe.length; i++) {
+                        if (loginLikeMe[i]._openid == userInfo._openid) {
+                            this.setData({
+                                //likeTag: "对你感兴趣",
+                                likeTag: "想认识你",
+                            })
+                            break
+                        }
+                    }
+                }
+                // set relative portrait, async get
+                if (userInfo.relativeInfo != undefined) {
+                    var relativeIDs = []
+                    for (var item of userInfo.relativeInfo.relation) {
+                        relativeIDs.push({
+                            _openid: item._openid
+                        })
+                    }
+                    db.collection('users').where(_.or(relativeIDs)).get({
+                        success: function (res) {
+                            var tmpMap = new Map()
+                            for (var user of res.data) {
+                                tmpMap.set(user._openid, user)
+                            }
+                            for (var item of userInfo.relativeInfo.relation) {
+                                var user = tmpMap.get(item._openid)
+                                var portraitUrl = user.wechat_info.avatarUrl
+                                if (user.photos.length != 0) {
+                                    portraitUrl = user.photos[0]
+                                }
+                                item.portraitURL = portraitUrl
+                            }
+                            that.setData({
+                                'userInfo.relativeInfo.relation': userInfo.relativeInfo.relation
+                            })
+                        },
+                        fail: function (err) {
+                            console.log("Set relative portraitUrl failed!")
+                        }
+                    })
+                }
+            } else {
+                console.log("Get resume failed!Please check!")
             }
 
             console.log('user detail', options, this.properties);
@@ -339,6 +308,7 @@ Component({
                 userInfo: userInfo,
                 //source: source,
                 loginAsTourist: globalData.loginAsTourist,
+                showWAuthed: globalData.showWAuthed,
             })
         },
         toHomePage: function () {
@@ -396,7 +366,7 @@ Component({
                             })
                         } else if (res.cancel) {
                             console.log('取消')
-                            that.chooseRelations(openid)
+                            that.chooseRelation(openid)
                         }
                     }
                 })

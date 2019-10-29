@@ -133,9 +133,9 @@
 				},
 				{
 					"id": 12,
-					"name": "enter_mini_card",
+					"name": "pages/member/detail/detail",
 					"pathName": "pages/member/detail/detail",
-					"query": "sopenid=alibaba0&topenid=o7-nX5cr9anN9KzPJkVMBPBWKxTo",
+					"query": "sopenid=o7-nX5b7YLQCTvdruA7-m_zkDej4&topenid=o7-nX5b7YLQCTvdruA7-m_zkDej4",
 					"scene": 1007
 				},
 				{

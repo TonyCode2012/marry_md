@@ -16,7 +16,8 @@ exports.main = async (event, context) => {
     var relationship = event.relationship
     var resObj = {
         statusCode: 200,
-        resMsg: "Update relation successfully!"
+        resMsg: "Update relation successfully!",
+        friends: null,
     }
     var ids = [{ _openid: to_openid }, { _openid: from_openid }]
     console.log("ids:" + JSON.stringify(ids))
@@ -50,11 +51,12 @@ exports.main = async (event, context) => {
                         }).then(
                             function (res) {
                                 console.log(res)
+                                resObj.friends = ownNexus['friends']
                             },
                             function (err) {
                                 resObj = {
                                     statusCode: 500,
-                                    resMsg: "Update own relation failed!"
+                                    resMsg: "Update own relation failed!",
                                 }
                                 console.log(err)
                             }
@@ -141,8 +143,8 @@ exports.main = async (event, context) => {
                         console.log(err)
                     }
                 )
-                resObj = {
-                    statusCode: 200,
+                if(resObj.statusCode == 200) {
+                    resObj.friends = fromNexus['friends']
                 }
             },
             function (err) {

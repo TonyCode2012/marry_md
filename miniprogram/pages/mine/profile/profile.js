@@ -473,19 +473,19 @@ Page({
         var basicInfoHash = stringHash(JSON.stringify(basic_info))
         if(basicInfoHash != that.data.basicInfoHash) {
             that.data.basicInfoHash = basicInfoHash
-            if(globalData.nexusInfo.authed) {
-                var checkedUserInfo = {
-                    basic_info: that.data.basic_info,
-                    love_info: love_info,
-                }
-                that.setData({
-                    //'basic_info.company': globalData.userInfo.auth_info.company_auth.company,
-                    //'basic_info.job_title': globalData.userInfo.auth_info.company_auth.job_title,
-                    basic_info: basic_info,
-                    authed: globalData.nexusInfo.authed,
-                    canShare: checkComplete(checkedUserInfo),
-                })
+            that.setData({
+                basic_info: basic_info
+            })
+        }
+        if (globalData.nexusInfo.authed) {
+            var checkedUserInfo = {
+                basic_info: that.data.basic_info,
+                love_info: love_info,
             }
+            that.setData({
+                authed: globalData.nexusInfo.authed,
+                canShare: checkComplete(checkedUserInfo),
+            })
         }
     },
 

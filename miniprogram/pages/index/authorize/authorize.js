@@ -82,9 +82,8 @@ Page({
 
     },
 
-    loginAsTourist: function() {
+    loginType: function() {
         const that = this
-        globalData.loginAsTourist  = true
         wx.reLaunch({
             url: that.data.redirectPath
         })

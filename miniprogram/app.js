@@ -33,6 +33,7 @@ App({
             userMap: null,
             scene: opt.scene,
             loginAsTourist: true,
+            showWAuthed: false,
             tags: {
                 ilike: 0,
                 likeme: 0
@@ -98,10 +99,13 @@ App({
                     _openid: that.globalData.userInfo._openid,
                 },
                 success: function(res) {
-                    if(res.data && res.data.length != 0) {
-                        var resData = res.data[0]
-                        if(resData.time && resData.time != that.globalData.userInfo.time) {
-                            that.globalData.userInfo = res.data
+                    var resData = res.result
+                    console.log("Get updated userInfo:",resData)
+                    if(resData) {
+                        if(!that.globalData.userInfo.time) {
+                            that.globalData.userInfo = resData
+                        } else if(resData.time && resData.time != that.globalData.userInfo.time) {
+                            that.globalData.userInfo = resData
                             console.log("Update user info successfully!",res)
                         } else {
                             console.log("No new update")

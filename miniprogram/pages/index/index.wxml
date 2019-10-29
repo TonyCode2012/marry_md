@@ -1,4 +1,4 @@
-<view wx:if="{{loginAsTourist}}">
+<view wx:if="{{showWAuthed}}">
   <!-- <view class="cu-bar bg-white margin-top">
     <view class='action'>
         <text class='cuIcon-title text-blue'></text>加载状态
@@ -49,4 +49,4 @@
   </view>
 
 </view>
-<loading wx:else> </loading>
+<!-- <loading wx:else> </loading> -->

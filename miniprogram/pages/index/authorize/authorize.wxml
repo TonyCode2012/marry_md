@@ -15,5 +15,5 @@
     <!-- <view class="bg-grey padding-lg margin-xs radius">ColorUi</view>
     <view class="bg-grey padding-sm margin-xs radius">center</view> -->
     <button bindgetuserinfo='bindGetUserInfo' open-type='getUserInfo' class="cu-btn block xxl lg round bg-gradual-red">微信授权</button>
-    <button bindtap='loginAsTourist' class="cu-btn block xxl lg round bg-brown light">暂不登录</button>
+    <button bindtap='loginType' class="cu-btn block xxl lg round bg-brown light">暂不登录</button>
 </view>

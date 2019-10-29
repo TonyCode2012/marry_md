@@ -18,6 +18,7 @@ Page({
         PageCur: 'meet',
         query: null,
         loginAsTourist: globalData.loginAsTourist,
+        showWAuthed: globalData.showWAuthed,
         userInfo: globalData.userInfo,
         seekers: {},
         userIDs: [],
@@ -275,9 +276,12 @@ Page({
 
     onLoad(query) {
         const that = this
-        if(globalData.loginAsTourist) {
+        if (globalData.loginAsTourist && !globalData.showWAuthed) {
             console.log("you should authorized app")
-        } else if (query.update && query.update == 'true' || query.update == undefined) {
+            wx.navigateTo({
+                url: '/pages/index/loading/loading',
+            })
+        } else if (query.update && query.update == 'true' || !query.update) {
             // if back from other pages
             // get network relation
             this.getRelativeCandidates()
@@ -305,6 +309,7 @@ Page({
         this.setData({
             query: query,
             loginAsTourist: globalData.loginAsTourist,
+            showWAuthed: globalData.showWAuthed,
             userInfo: globalData.userInfo,
         })
         // set completed info

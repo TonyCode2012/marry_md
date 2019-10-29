@@ -1,6 +1,9 @@
 // pages/mine/home/home.js
 const { aboutme } = require("../../../utils/data.js");
-const { stringHash } = require("../../../utils/util.js");
+const { 
+    stringHash,
+    showWechatAuthInfo,
+} = require("../../../utils/util.js");
 const app = getApp()
 const {
     globalData
@@ -159,19 +162,20 @@ Component({
         },
         gotoProfile() {
             if (globalData.loginAsTourist) {
-                wx.showModal({
-                    title: '提示',
-                    content: '不授权微信登录将无法建立账号编辑信息',
-                    confirmText: '前去授权',
-                    cancelText: '暂不登录',
-                    success(res) {
-                        if (res.confirm) {
-                            wx.redirectTo({
-                                url: '/pages/index/loading/loading',
-                            })
-                        }
-                    }
-                })
+                showWechatAuthInfo()
+                // wx.showModal({
+                //     title: '提示',
+                //     content: '不授权微信登录将无法建立账号编辑信息',
+                //     confirmText: '前去授权',
+                //     cancelText: '暂不登录',
+                //     success(res) {
+                //         if (res.confirm) {
+                //             wx.redirectTo({
+                //                 url: '/pages/index/loading/loading',
+                //             })
+                //         }
+                //     }
+                // })
             } else {
                 wx.navigateTo({
                     url: '/pages/mine/profile/profile',
@@ -179,20 +183,21 @@ Component({
             }
         },
         gotoExpect() {
-            if(globalData.loginAsTourist) {
-                wx.showModal({
-                    title: '提示',
-                    content: '不授权微信登录将无法建立账号编辑信息',
-                    confirmText: '前去授权',
-                    cancelText: '暂不登录',
-                    success(res) {
-                        if (res.confirm) {
-                            wx.redirectTo({
-                                url: '/pages/index/loading/loading',
-                            })
-                        }
-                    }
-                })
+            if (globalData.loginAsTourist) {
+                showWechatAuthInfo()
+                // wx.showModal({
+                //     title: '提示',
+                //     content: '不授权微信登录将无法建立账号编辑信息',
+                //     confirmText: '前去授权',
+                //     cancelText: '暂不登录',
+                //     success(res) {
+                //         if (res.confirm) {
+                //             wx.redirectTo({
+                //                 url: '/pages/index/loading/loading',
+                //             })
+                //         }
+                //     }
+                // })
             } else {
                 wx.navigateTo({
                     url: '/pages/mine/expect/expect',

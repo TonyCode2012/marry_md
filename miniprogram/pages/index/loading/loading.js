@@ -20,9 +20,10 @@ Component({
      * 组件的初始数据
      */
     data: {
-
+        redirectPath: '',
     },
     ready() {
+        globalData.showWAuthed = true;
         if (globalData.loginAsTourist) {
             this.checkAuthorize()
         }
@@ -32,6 +33,13 @@ Component({
      * 组件的方法列表
      */
     methods: {
+        onLoad(option) {
+            if (option.redirectPath) {
+                this.setData({
+                    redirectPath: unescape(option.redirectPath),
+                })
+            }
+        },
         checkAuthorize() {
             const that = this
             var redirectPath = that.data.redirectPath

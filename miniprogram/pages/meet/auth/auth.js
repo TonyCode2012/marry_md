@@ -1,5 +1,14 @@
 
 const observer = require("../../../utils/observer.js");
+const {
+    showWechatAuthInfo,
+} = require("../../../utils/util.js");
+const app = getApp();
+
+const {
+    db,
+    globalData
+} = app
 
 Component({
   options: {
@@ -49,10 +58,13 @@ Component({
       //     console.error("send mail failed!")
       //   }
       // })
-
-      wx.navigateTo({
-        url: '/pages/authcorp/authcorp',
-      })
+      if(globalData.loginAsTourist) {
+          showWechatAuthInfo()
+      } else {
+          wx.navigateTo({
+              url: '/pages/authcorp/authcorp',
+          })
+      }
     }
   }
 })
