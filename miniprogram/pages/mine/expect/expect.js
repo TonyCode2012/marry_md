@@ -131,13 +131,13 @@ Page({
       expect_info.startAge = this.data.minAge
     }
     if(expect_info.endAge == undefined) {
-      expect_info.endAge = this.data.minAge
+      expect_info.endAge = this.data.maxAge
     }
     if(expect_info.startHeight == undefined) {
       expect_info.startHeight = this.data.minHeight
     }
     if(expect_info.endHeight == undefined) {
-      expect_info.endHeight = this.data.minHeight
+      expect_info.endHeight = this.data.maxHeight
     }
     this.setData({
       expect_info: expect_info,

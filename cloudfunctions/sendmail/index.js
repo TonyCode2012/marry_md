@@ -3,7 +3,7 @@ const cloud = require('wx-server-sdk')
 const nodemailer = require("nodemailer");
 
 cloud.init({
-  env: 'dev-2019-xe6cj'
+  env: 'prod-env-2019'
 })
 const db = cloud.database()
 const _ = db.command

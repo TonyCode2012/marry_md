@@ -30,6 +30,7 @@ Component({
         source: 'meet',
         loginAsTourist: globalData.loginAsTourist,
         showWAuthed: globalData.showWAuthed,
+        existed: true,
         canLike: false,
         // relation related
         _openid: '',
@@ -305,7 +306,8 @@ Component({
             console.log('user detail', options, this.properties);
             console.log('userInfo', userInfo);
             this.setData({
-                userInfo: userInfo,
+                existed: userInfo ? true : false,
+                userInfo: userInfo ? userInfo : {},
                 //source: source,
                 loginAsTourist: globalData.loginAsTourist,
                 showWAuthed: globalData.showWAuthed,
