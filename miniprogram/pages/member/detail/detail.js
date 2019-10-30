@@ -300,7 +300,7 @@ Component({
             console.log('user detail', options, this.properties);
             console.log('userInfo', userInfo);
             this.setData({
-                userInfo: userInfo,
+                userInfo: userInfo ? userInfo : {},
                 //source: source,
                 loginAsTourist: globalData.loginAsTourist,
                 showWAuthed: globalData.showWAuthed,
