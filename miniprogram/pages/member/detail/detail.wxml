@@ -32,7 +32,7 @@
 <!--view wx:if="{{getFromGroup}}">
   <view style="position: absolute;top:50%;left:50%">您无权查看此简历!!!</view>
 </view-->
-<view wx:if="{{showWAuthed}}">
+<view wx:if="{{showWAuthed && existed}}">
 <view class="section">
   <view class="section__title"></view>
   <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" disabled="{{ship}}">
@@ -225,4 +225,18 @@
   </picker>
 </view>
 </view>
-<!-- <loading wx:else redirectPath="{{redirectPath}}"> </loading> -->
+<view wx:else>
+  <view class="padding-xs flex align-center" style="position:relative;margin-top:70%">
+    <!-- <view class="padding">18</view> -->
+    <view class="flex-sub text-center">
+      <view class="text-xl padding">
+        <text class="text-shadow text-gray">用户不存在</text>
+      </view>
+        <!-- <view class="padding">页面大标题，用于结果页等单一信息页</view> -->
+    </view>
+  </view>
+  <view class='foot padding-lr flex flex-direction'>
+    <!-- <button class="cu-btn bg-grey lg">玄灰</button> -->
+    <button class="cu-btn bg-blue margin-tb-sm lg" bindtap="toHomePage">返回首页</button>
+  </view>
+</view>

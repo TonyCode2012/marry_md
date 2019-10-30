@@ -22,7 +22,7 @@
         同事资源
     </view>
     <view class="cu-item {{2==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="2">
-        名企白领
+        单身广场
     </view>
     </scroll-view>
 

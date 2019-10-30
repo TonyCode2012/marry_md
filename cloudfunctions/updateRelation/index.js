@@ -1,11 +1,10 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
-
-const db = cloud.database({
+cloud.init({
     env: 'prod-env-2019'
-});
+})
+const db = cloud.database();
 const _ = db.command;
 
 
