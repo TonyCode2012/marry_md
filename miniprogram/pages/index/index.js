@@ -77,7 +77,9 @@ Page({
                     relative.relation.reverse()
                     // relative.relation.reverse()
                     for (var relation of relative.relation) {
-                        relation.relationship = that.data.relationMap[relation.relationship]
+                        if (relation.relationship) {
+                            relation.relationship = that.data.relationMap[relation.relationship]
+                        }
                     }
                 }
                 // get users from database

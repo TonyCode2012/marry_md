@@ -39,25 +39,29 @@ const stringHash = str => {
 }
 
 const checkComplete = function (userInfo) {
-    if (!userInfo.love_info || !userInfo.basic_info) return false
+    var allItemNum = Object.keys(infoData.requiredInfo).length + 1
+    var acc = 0
     // compute complete
-    var allNum = Object.keys(userInfo.love_info).length
-    var completeNum = allNum
-    for (var key of Object.keys(userInfo.love_info)) {
-        var item = userInfo.love_info[key]
-        if (item.content == undefined || item.content == "") {
-            completeNum--
+    if (userInfo.love_info) {
+        var allNum = Object.keys(userInfo.love_info).length
+        var completeNum = allNum
+        for (var key of Object.keys(userInfo.love_info)) {
+            var item = userInfo.love_info[key]
+            if (item.content == undefined || item.content == "") {
+                completeNum--
+            }
+        }
+        if (completeNum / allNum >= infoData.loveInfoCompletePer) acc++
+    }
+    if (userInfo.basic_info) {
+        for (var key of infoData.requiredInfo) {
+            var value = userInfo.basic_info[key]
+            if (value && value != '') {
+                acc++
+            }
         }
     }
-    if (completeNum / allNum < infoData.loveInfoCompletePer) return false
-
-    for (var key of infoData.requiredInfo) {
-        var value = userInfo.basic_info[key]
-        if (!value || value == '') {
-            return false
-        }
-    }
-    return true
+    return parseInt(acc / allItemNum * 100)
 }
 
 const showWechatAuthInfo = function () {

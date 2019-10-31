@@ -3,9 +3,14 @@
   <view slot="content" class="text-bold"></view>
 </cu-custom>
 
-<view class="">
+<view>
   <view class="padding flex justify-between align-center">
     <text class='text-sm block text-red'>* 完成资料，找到对的人。带*为必填项</text>
+  </view>
+  <view style="position:fixed;top:{{CustomBar-2}}px;z-index:1024;width:100%">
+    <view class="cu-progress round margin-bottom-xs">
+        <view class="bg-{{completePer==100? 'blue' : 'red'}}" style="width:{{completePer}}%;">完善度: {{completePer}}%</view>
+    </view>
   </view>
 </view>
 
@@ -151,7 +156,7 @@
 <view class="padding">
   <view class='padding-tb-xs text-sm block text-gray'>* 完整的自我介绍更容易吸引ta哦，完善度低于80%无法发起喜欢</view>
 </view>
-<view class="cu-bar bg-white solid-bottom margin-top">
+<view class="cu-bar bg-white solid-bottom">
   <view class="action">
     <text class="cuIcon-titles text-pink"></text>
     <text class="text-df text-bold">关于我*</text>

@@ -169,7 +169,7 @@
         </view>
     </view>
     <view slot="button" class="i-swipeout-demo-button-group">
-        <view class="i-swipeout-demo-button" bindtap="deleteILike">删除</view>
+        <view class="i-swipeout-demo-button" bindtap="deleteLikeMe">删除</view>
     </view>
   </i-swipeout>
 </view>

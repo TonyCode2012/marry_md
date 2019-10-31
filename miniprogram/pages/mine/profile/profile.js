@@ -25,6 +25,9 @@ Page({
      */
     data: {
 
+        // show property
+        CustomBar: globalData.CustomBar,
+
         corpMap: {
             'cisco': '思科',
             'tencent': '腾讯',
@@ -34,6 +37,7 @@ Page({
 
         canSave: true,
         canShare: false,
+        completePer: 0,
 
         basic_info: {},
         love_info: {},
@@ -101,16 +105,18 @@ Page({
     setDataChanged() {
         var allHash = this.calOrgAllHash()
         var dataChanged = false
-        var canShare = checkComplete({
+        var completePer = checkComplete({
             basic_info: this.data.basic_info,
             love_info: this.data.love_info,
         })
+        var canShare = completePer == 100
         if(allHash != this.data.orgAllHash) {
             dataChanged = true
         }
         this.setData({
             dataChanged: dataChanged,
             canShare: canShare,
+            completePer: completePer,
         })
     },
 
@@ -163,7 +169,7 @@ Page({
         const that = this
         this.data.basic_info.company = globalData.userInfo.auth_info.company_auth.company
         globalData.userInfo.basic_info = this.data.basic_info
-        globalData.nexusInfo.completed = checkComplete(globalData.userInfo)
+        globalData.nexusInfo.completed = checkComplete(globalData.userInfo) == 100
         //if (!globalData.nexusInfo.completed) {
         //    wx.showModal({
         //        title: '提示',
@@ -428,6 +434,7 @@ Page({
             photoDir: globalData.userInfo._openid,
             authed: globalData.nexusInfo.authed,
             canShare: globalData.nexusInfo.authed && globalData.nexusInfo.completed,
+            completePer: checkComplete(globalData.userInfo),
         })
         this.data.orgAllHash = this.calOrgAllHash()
 
@@ -480,9 +487,11 @@ Page({
                 basic_info: that.data.basic_info,
                 love_info: love_info,
             }
+            var completePer = checkComplete(checkedUserInfo)
             that.setData({
                 authed: globalData.nexusInfo.authed,
-                canShare: checkComplete(checkedUserInfo),
+                canShare: completePer == 100,
+                completePer: completePer,
             })
         }
     },
