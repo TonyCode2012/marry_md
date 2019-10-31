@@ -234,7 +234,10 @@ Component({
                 )
             }
             if (userInfo) {
-                // if authorize wechage login
+                this.setData({
+                    userInfo: userInfo,
+                })
+                // if authorize wechat login
                 if(!globalData.loginAsTourist) {
                     // set show like tag
                     if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {

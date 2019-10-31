@@ -129,7 +129,7 @@ var getColleague = function (openid) {
     var acUsers = company2ACUser.get(cNexus.company)
     if (acUsers != undefined) {
         for (var user of acUsers) {
-            if (user._openid != openid) {
+            if (user._openid != openid && user.basic_info.gender != cNexus.gender) {
                 colleagues[user._openid] = null
             }
         }

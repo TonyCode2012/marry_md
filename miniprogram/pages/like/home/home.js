@@ -42,6 +42,7 @@ Component({
         mainTabCurMax: 1,
         mainShiftDisX: 0,
         mainShiftDisY: 0,
+        disableMainTouch: false,
         scrollToTop: true,
         showTip: false,
         tipContent: 'hold',
@@ -61,6 +62,25 @@ Component({
             ilike: 0,
             likeme: 0
         },
+
+        // right item options
+        // actions: [
+        //     {
+        //         name: '删除',
+        //         color: '#fff',
+        //         fontsize: '20',
+        //         width: 100,
+        //         icon: 'like',
+        //         background: '#ed3f14'
+        //     },
+        //     {
+        //         name: '返回',
+        //         width: 100,
+        //         color: '#80848f',
+        //         fontsize: '20',
+        //         icon: 'undo'
+        //     }
+        // ],
     },
 
     observers: {
@@ -205,6 +225,39 @@ Component({
                 }
             })
         },
+        checkItem(e) {
+            var index = e.currentTarget.dataset.index
+            var tag = e.currentTarget.dataset.tag
+            var item = this.data.userInfo.match_info[tag][index]
+            item.checked = true
+            if (globalData.tags[tag] > 0) {
+                globalData.tags[tag]--
+            }
+            globalData.userInfo.match_info[tag][index] = item
+            wx.cloud.callFunction({
+                name: 'dbupdate',
+                data: {
+                    table: 'users',
+                    _openid: globalData.userInfo._openid,
+                    data: {
+                        ['match_info.' + tag]: globalData.userInfo.match_info[tag],
+                    }
+                },
+                success: res => {
+                    console.log("Update check successfully!")
+                },
+                fail: err => {
+                    console.log("Update check failed!")
+                }
+            })
+            this.setData({
+                ['tags.' + tag]: globalData.tags[tag],
+                ['userInfo.match_info.' + tag + '[' + index + ']']: item,
+            })
+            // update father page data
+            var param = { key: 'tags' }
+            this.triggerEvent('globalDataChange', param)
+        },
 
         decide(e) {
             const that = this
@@ -315,6 +368,7 @@ Component({
         },
 
         // ListTouch触摸开始
+        /*
         ListTouchStart(e) {
             this.setData({
                 ListTouchStartPosX: e.touches[0].pageX,
@@ -367,7 +421,18 @@ Component({
                 likeTouchDirection: '',
                 modalName: modalName,
             })
+        },*/
+
+        ListTouchStart(e) {
+            this.setData({
+                disableMainTouch: true,
+            })
         },
+        // ListTouchEnd(e) {
+        //     this.setData({
+        //         disableMainTouch: false,
+        //     })
+        // },
 
 
         // ListTouch触摸开始
@@ -401,13 +466,14 @@ Component({
             }
         },
         // ListTouch计算滚动
-        mainTouchEnd: async function(e) {
+        mainTouchEnd: async function (e) {
             const that = this
             var mainShiftDisY = this.data.mainShiftDisY
             var mainShiftDisX = this.data.mainShiftDisX
             var scrollToTop = this.data.scrollToTop
             var mainTouchVDirection = this.data.mainTouchVDirection
-            if (!this.data.modalName && mainShiftDisY < 50 && mainShiftDisX > 50) {
+            if (!this.data.disableMainTouch && mainShiftDisY < 50 && mainShiftDisX > 50
+                && !this.data.modalName) {
                 var hDirection = this.data.mainTouchHDirection
                 var tabCur = this.data.tabCur
                 if (hDirection == 'right') {
@@ -468,6 +534,7 @@ Component({
                 mainTouchVDirection: '',
                 mainShiftDisX: 0,
                 mainShiftDisY: 0,
+                disableMainTouch: false,
             })
         },
 
