@@ -70,7 +70,7 @@ Page({
         authed: false,
 
         // aboutme info variable 
-        completePercent: 0,
+        loveInfoCompletePer: 0,
         isExpand: false,
         loveInfoHash: "",
         basicInfoHash: "",
@@ -459,46 +459,44 @@ Page({
      */
     onShow: function () {
         const that = this
-        // check if love info changed
         const love_info = globalData.userInfo.love_info
         var loveInfoHash = stringHash(JSON.stringify(love_info))
+        const basic_info = globalData.userInfo.basic_info
+        var basicInfoHash = stringHash(JSON.stringify(basic_info))
         // if love_info hashcode is changed, update
-        if (loveInfoHash != this.data.loveInfoHash) {
-            let completePercent = 0
+        if (loveInfoHash != that.data.loveInfoHash) {
+            that.data.loveInfoHash = loveInfoHash
+            let loveInfoCompletePer = 0
             for (let i = 0; i < aboutme.listItem.length; i++) {
                 var loveInfo_item = love_info[aboutme.listItem[i].type]
                 if (loveInfo_item != undefined && loveInfo_item.content != '') {
-                    completePercent++
+                    loveInfoCompletePer++
                 }
             }
-            completePercent = parseInt(completePercent / aboutme.listItem.length * 100)
-            this.setData({
-                completePercent: completePercent,
-                loveInfoHash: loveInfoHash,
+            loveInfoCompletePer = parseInt(loveInfoCompletePer / aboutme.listItem.length * 100)
+            that.setData({
+                loveInfoCompletePer: loveInfoCompletePer,
                 love_info: love_info
             })
         }
-        // if authed info changed, update
-        const basic_info = globalData.userInfo.basic_info
-        var basicInfoHash = stringHash(JSON.stringify(basic_info))
-        if(basicInfoHash != that.data.basicInfoHash) {
+        // if basic info changed, update
+        if (basicInfoHash != that.data.basicInfoHash) {
             that.data.basicInfoHash = basicInfoHash
             that.setData({
                 basic_info: basic_info
             })
         }
-        if (globalData.nexusInfo.authed) {
-            var checkedUserInfo = {
-                basic_info: that.data.basic_info,
-                love_info: love_info,
-            }
-            var completePer = checkComplete(checkedUserInfo)
-            that.setData({
-                authed: globalData.nexusInfo.authed,
-                canShare: completePer == 100,
-                completePer: completePer,
-            })
+        // check if complete authentication
+        var checkedUserInfo = {
+            basic_info: that.data.basic_info,
+            love_info: love_info,
         }
+        var completePer = checkComplete(checkedUserInfo)
+        that.setData({
+            authed: globalData.nexusInfo.authed,
+            canShare: completePer == 100,
+            completePer: completePer,
+        })
     },
 
     /**

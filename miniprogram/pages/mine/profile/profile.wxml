@@ -161,7 +161,7 @@
   <view class="action">
     <text class="cuIcon-titles text-pink"></text>
     <text class="text-df text-bold">关于我*</text>
-    <text class="margin-left-xs text-df text-pink">(完善度 {{completePercent}}%)</text>
+    <text class="margin-left-xs text-df text-pink">(完善度 {{loveInfoCompletePer}}%)</text>
   </view>
   <button wx:if="{{!isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>展开</button>
   <button wx:if="{{isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>收起</button>
@@ -175,7 +175,7 @@
   <view class='padding-tb-xs text-sm block text-gray'>* 只有你同意后才能看到对方微信号</view>
   <view class='padding-tb-xs text-sm block text-gray'>* 确认微信号可被搜索</view>
   <view class='padding-tb-xs text-sm block text-gray'>* 微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
-  <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view>
+  <!-- <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view> -->
 </view>
 
 
