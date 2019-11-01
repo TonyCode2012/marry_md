@@ -187,6 +187,7 @@ Component({
             const _ = db.command
             var userInfo = null
             var userOID = null
+
             // enter from share mini card
             if (options.sopenid != undefined) {
                 userOID = options.topenid
@@ -216,95 +217,116 @@ Component({
                     userIDs: globalData.userIDs
                 })
             }
-            if (userInfo == undefined) {
-                // get user info
-                await db.collection('users').where({
-                    _openid: userOID
-                }).get().then(
-                    function (res) {
-                        if (res.data.length > 0) {
-                            userInfo = res.data[0]
-                        } else {
-                            console.log("Get user info failed! no user found!")
-                        }
-                    },
-                    function (err) {
-                        console.log("Get user info failed!" + err)
-                    }
-                )
-            }
-            if (userInfo) {
-                this.setData({
-                    userInfo: userInfo,
-                })
-                // if authorize wechat login
-                if(!globalData.loginAsTourist) {
-                    // set show like tag
-                    if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
-                        that.setData({
-                            showLike: false
-                        })
-                    }
-                    // check if this user info has been existed on the match list
-                    var loginILike = globalData.userInfo.match_info.ilike
-                    var loginLikeMe = globalData.userInfo.match_info.likeme
-                    for (var i = 0; i < loginILike.length; i++) {
-                        if (loginILike[i]._openid == userInfo._openid) {
-                            this.setData({
-                                likeTag: "已感兴趣"
-                            })
-                            break
+            // check if resume is valid
+            var isResumValid = await db.collection('nexus').where({
+                _openid: userOID
+            }).get().then(
+                function(res) {
+                    if(res.data.length != 0) {
+                        var nexusInfo = res.data[0]
+                        if(nexusInfo.authed && nexusInfo.completed) {
+                            return true
                         }
                     }
-                    for (var i = 0; i < loginLikeMe.length; i++) {
-                        if (loginLikeMe[i]._openid == userInfo._openid) {
-                            this.setData({
-                                //likeTag: "对你感兴趣",
-                                likeTag: "想认识你",
-                            })
-                            break
-                        }
-                    }
+                    console.log("Invalid resume!",res)
+                    return false
+                },
+                function(err) {
+                    console.log("Get resume nexus info failed!",err)
+                    return false
                 }
-                // set relative portrait, async get
-                if (userInfo.relativeInfo != undefined) {
-                    var relativeIDs = []
-                    for (var item of userInfo.relativeInfo.relation) {
-                        relativeIDs.push({
-                            _openid: item._openid
-                        })
-                    }
-                    db.collection('users').where(_.or(relativeIDs)).get({
-                        success: function (res) {
-                            var tmpMap = new Map()
-                            for (var user of res.data) {
-                                tmpMap.set(user._openid, user)
+            )
+            // get user info
+            if(isResumValid) {
+                if (userInfo == undefined) {
+                    await db.collection('users').where({
+                        _openid: userOID
+                    }).get().then(
+                        function (res) {
+                            if (res.data.length > 0) {
+                                userInfo = res.data[0]
+                            } else {
+                                console.log("Get user info failed! no user found!")
                             }
-                            for (var item of userInfo.relativeInfo.relation) {
-                                var user = tmpMap.get(item._openid)
-                                var portraitUrl = user.wechat_info.avatarUrl
-                                if (user.photos.length != 0) {
-                                    portraitUrl = user.photos[0]
-                                }
-                                item.portraitURL = portraitUrl
-                            }
-                            that.setData({
-                                'userInfo.relativeInfo.relation': userInfo.relativeInfo.relation
-                            })
                         },
-                        fail: function (err) {
-                            console.log("Set relative portraitUrl failed!")
+                        function (err) {
+                            console.log("Get user info failed!" + err)
                         }
-                    })
+                    )
                 }
-            } else {
-                console.log("Get resume failed!Please check!")
+                if (userInfo) {
+                    this.setData({
+                        userInfo: userInfo,
+                    })
+                    // if authorize wechat login
+                    if(!globalData.loginAsTourist) {
+                        // set show like tag
+                        if (userInfo.basic_info.gender == globalData.userInfo.basic_info.gender) {
+                            that.setData({
+                                showLike: false
+                            })
+                        }
+                        // check if this user info has been existed on the match list
+                        var loginILike = globalData.userInfo.match_info.ilike
+                        var loginLikeMe = globalData.userInfo.match_info.likeme
+                        for (var i = 0; i < loginILike.length; i++) {
+                            if (loginILike[i]._openid == userInfo._openid) {
+                                this.setData({
+                                    likeTag: "已感兴趣"
+                                })
+                                break
+                            }
+                        }
+                        for (var i = 0; i < loginLikeMe.length; i++) {
+                            if (loginLikeMe[i]._openid == userInfo._openid) {
+                                this.setData({
+                                    //likeTag: "对你感兴趣",
+                                    likeTag: "想认识你",
+                                })
+                                break
+                            }
+                        }
+                    }
+                    // set relative portrait, async get
+                    if (userInfo.relativeInfo != undefined) {
+                        var relativeIDs = []
+                        for (var item of userInfo.relativeInfo.relation) {
+                            relativeIDs.push({
+                                _openid: item._openid
+                            })
+                        }
+                        db.collection('users').where(_.or(relativeIDs)).get({
+                            success: function (res) {
+                                var tmpMap = new Map()
+                                for (var user of res.data) {
+                                    tmpMap.set(user._openid, user)
+                                }
+                                for (var item of userInfo.relativeInfo.relation) {
+                                    var user = tmpMap.get(item._openid)
+                                    var portraitUrl = user.wechat_info.avatarUrl
+                                    if (user.photos.length != 0) {
+                                        portraitUrl = user.photos[0]
+                                    }
+                                    item.portraitURL = portraitUrl
+                                }
+                                that.setData({
+                                    'userInfo.relativeInfo.relation': userInfo.relativeInfo.relation
+                                })
+                            },
+                            fail: function (err) {
+                                console.log("Set relative portraitUrl failed!")
+                            }
+                        })
+                    }
+                } else {
+                    console.log("Get resume failed!Please check!")
+                }
             }
 
             console.log('user detail', options, this.properties);
             console.log('userInfo', userInfo);
             this.setData({
-                existed: userInfo ? true : false,
+                existed: (userInfo ? true : false) && isResumValid,
                 userInfo: userInfo ? userInfo : {},
                 //source: source,
                 loginAsTourist: globalData.loginAsTourist,

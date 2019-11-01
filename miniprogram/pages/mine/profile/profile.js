@@ -396,6 +396,11 @@ Page({
         url: '/pages/authcorp/authcorp',
       })
     },
+    go2Privacy() {
+        wx.navigateTo({
+            url: '/pages/privacy/privacy',
+        })
+    },
 
     /**
      * 生命周期函数--监听页面加载
