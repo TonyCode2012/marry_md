@@ -366,6 +366,18 @@ Component({
             //this.data.methods._deleteLike(data)
             this._deleteLike(para)
         },
+        go2ChatBox(e) {
+            var index = e.currentTarget.dataset.index
+            var tag = e.currentTarget.dataset.tag
+            var matchInfoItem = this.data.userInfo.match_info[tag][index]
+            matchInfoItem = JSON.stringify({
+                _openid: matchInfoItem._openid,
+                portraitURL: matchInfoItem.portraitURL,
+            })
+            wx.navigateTo({
+                url: `/pages/chat/chat?likeInfo=${matchInfoItem}`
+            })
+        },
 
         // ListTouch触摸开始
         /*

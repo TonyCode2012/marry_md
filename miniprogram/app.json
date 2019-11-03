@@ -12,7 +12,8 @@
         "pages/mine/profile/aboutme/edit/edit",
         "pages/authcorp/authcorp",
         "pages/index/authorize/authorize",
-        "pages/privacy/privacy"
+        "pages/privacy/privacy",
+        "pages/chat/chat"
     ],
     "window": {
         "navigationBarBackgroundColor": "#39b54a",

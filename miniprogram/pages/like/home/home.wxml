@@ -68,7 +68,7 @@
 <view style="min-height:600px" bindtouchstart="mainTouchStart" bindtouchmove="mainTouchMove" bindtouchend="mainTouchEnd">
 <!-- <view style="min-height:600px"> -->
 <view wx:if="{{tabCur==0}}" style="z-index:9999" bindtouchstart="ListTouchStart" bindtouchend="ListTouchEnd">
-    <i-swipeout wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" i-class="i-swipeout-demo-item" operateWidth="{{100}}" actions="{{actions}}" bindtap="checkItem" data-tag="ilike" data-index="{{index}}">
+    <i-swipeout wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" i-class="i-swipeout-demo-item" operateWidth="{{100}}" actions="{{actions}}" bindtap="checkItem" data-tag="ilike" data-index="{{index}}" bindtap="go2ChatBox">
     <view slot="content">
         <view class="i-swipeout-image">
             <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">
@@ -135,7 +135,7 @@
 </view> -->
 
 <view wx:if="{{tabCur==1}}" style="z-index:9999" bindtouchstart="ListTouchStart" bindtouchend="ListTouchEnd">
-  <i-swipeout wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}" i-class="i-swipeout-demo-item" operateWidth="{{100}}" actions="{{actions}}" bindtap="checkItem" data-tag="likeme" data-index="{{index}}">
+  <i-swipeout wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}" i-class="i-swipeout-demo-item" operateWidth="{{100}}" actions="{{actions}}" bindtap="checkItem" data-tag="likeme" data-index="{{index}}" bindtap="go2ChatBox">
     <view slot="content">
         <view class="i-swipeout-image">
             <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">

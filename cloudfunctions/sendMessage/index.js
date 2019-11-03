@@ -2,25 +2,25 @@
 const cloud = require('wx-server-sdk')
 
 cloud.init({
-  env: 'dev-2019-xe6cj'
+    env: 'dev-2019-xe6cj'
 })
 const db = cloud.database();
 const _ = db.command;
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-    return await db.collection('nexus').where({
-        chance: 0
+    return await db.collection('chat').where({
+        _chatid: event._chatid
     }).update({
         data: {
-            chance: 1
+            messages: _.push([event.message])
         }
     }).then(
         function(res) {
-            console.log("Update chance successfully"+JSON.stringify(res))
+            console.log("Push message successfully!",res)
         },
         function(err) {
-            console.log("Update chance failed!"+JSON.stringify(err))
+            console.log("Push message failed!Internal error!",err)
         }
     )
 }

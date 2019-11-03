@@ -69,26 +69,6 @@ Component({
             that.setData({
                 authed: globalData.nexusInfo.authed
             })
-            /*
-            db.collection('nexus').where({
-                _openid: userInfo._openid
-            }).get().then(
-                function(res) {
-                    if(res.data.length < 0) return
-                    var authed = false
-                    var nexusInfo = res.data[0]
-                    if(nexusInfo.authed!=undefined && nexusInfo.authed) {
-                        authed = true
-                    }
-                    that.setData({
-                      authed: authed
-                    })
-                },
-                function(err) {
-                    console.log("get nexus info failed!")
-                }
-            )
-            */
             // add user head portrait
             var portraitURL = ""
             if (userInfo.photos.length != 0) {
@@ -103,6 +83,7 @@ Component({
                         //    maxAge: 120 * 60 * 1000, // 有效期
                         // }]
                         portraitURL = res.fileList[0].tempFileURL
+                        globalData.userInfo.portraitURL = portraitURL
                         that.setData({
                             portraitURL: portraitURL
                         })
@@ -112,6 +93,7 @@ Component({
                 })
             } else if (userInfo.wechat_info.avatarUrl != undefined) {
                 portraitURL = userInfo.wechat_info.avatarUrl
+                globalData.userInfo.portraitURL = portraitURL
                 that.setData({
                     portraitURL: portraitURL
                 })

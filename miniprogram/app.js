@@ -8,7 +8,7 @@ App({
         if (!wx.cloud) {
             console.error('请使用 2.2.3 或以上的基础库以使用云能力')
         } else {
-            let env = 'prod-env-2019'
+            let env = 'dev-2019-xe6cj'
             wx.cloud.init({
                 env: {
                     database: env,
@@ -29,6 +29,7 @@ App({
             seekers: {},
             userIDs: [],
             userMap: null,
+            chatMap: new Map(),
             scene: opt.scene,
             loginAsTourist: true,
             showWAuthed: false,
@@ -37,6 +38,11 @@ App({
                 likeme: 0
             },
             getFromGroup: true,
+            // rect
+            Custom: null,
+            CustomBar: 0,
+            CustomHeight: 0,
+            StatusBar: 0,
         };
 
         wx.getSystemInfo({
