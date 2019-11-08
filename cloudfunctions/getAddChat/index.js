@@ -14,14 +14,81 @@ exports.main = async (event, context) => {
         resMsg: "",
         data: {},
     }
+    var talkOID = event.talkOID
+    var selfOID = event.selfOID
+    var chatid = event._chatid
+    var chatLimit = event.limit
+    var startPos = event.startPos
+    var endPos = event.endPos
     await db.collection('chat').where({
-        _chatid: event._chatid
+        _chatid: chatid
     }).get().then(
         async function(res) {
             if (res.data.length != 0) {
-                chatInfo.data = res.data[0]
-                chatInfo.resMsg = "Get chatInfo successfully!"
-                console.log(chatInfo.resMsg)
+                var result = res.data[0]
+                var messages = result.messages
+                var cLen = messages.length
+                if(startPos != -1) {
+                    if (cLen < startPos) {
+                        chatInfo.resMsg = "Last position larger current length!"
+                        chatInfo.statusCode = 500
+                        console.log(chatInfo.resMsg)
+                        return
+                    }
+                    var oldMessages = []
+                    var fetchEPos = startPos
+                    var fetchSPos = startPos - chatLimit
+                    if (fetchSPos < 0) fetchSPos = 0
+                    oldMessages = messages.slice(fetchSPos, fetchEPos)
+                    result.startPos = fetchSPos
+                    result.endPos = endPos
+                    result.messages = oldMessages
+                    chatInfo.data = result
+                } else {
+                    var getShow = false
+                    var showedMsg = []
+                    var uncheckedMsg = []
+                    for (var msg of messages) {
+                        if(!msg.checked && msg._openid == talkOID) {
+                            uncheckedMsg.push(msg)
+                            getShow = true
+                        }
+                        if (getShow) {
+                            showedMsg.push(JSON.parse(JSON.stringify(msg)))
+                            msg.checked = true
+                        }
+                    }
+                    if (showedMsg.length < chatLimit) {
+                        var fetchSPos = cLen - chatLimit
+                        var fetchEPos = cLen
+                        if (fetchSPos < 0) fetchSPos = 0
+                        showedMsg = messages.slice(fetchSPos,fetchEPos)
+                    }
+                    result.messages = showedMsg
+                    result.startPos = cLen - showedMsg.length
+                    result.endPos = cLen
+                    chatInfo.data = result
+                    chatInfo.resMsg = "Get chatInfo successfully!"
+                    console.log(chatInfo.resMsg)
+                    // set check status to checked
+                    if(uncheckedMsg.length > 0) {
+                        console.log("coming into update")
+                        await db.collection('chat').where({
+                            _chatid: chatid
+                        }).update({
+                            data: {
+                                messages: messages
+                            },
+                        }).then(
+                            function (res) {
+                                console.log("Update check status successfully!", res)
+                            },
+                            function (err) {
+                                console.log("Update check status failed!", err)
+                            }
+                        )
+                    }
+                }
             } else {
                 var data = {
                     _chatid: event._chatid,
@@ -31,6 +98,8 @@ exports.main = async (event, context) => {
                     data: data
                 }).then(
                     function(res) {
+                        data.startPos = 0
+                        data.endPos = 0
                         chatInfo.data = data
                         chatInfo.resMsg = "Add chatInfo successfully!"
                         console.log(chatInfo.resMsg)

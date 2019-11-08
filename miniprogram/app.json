@@ -19,10 +19,12 @@
         "navigationBarBackgroundColor": "#39b54a",
         "navigationBarTitleText": "",
         "navigationStyle": "custom",
-        "navigationBarTextStyle": "white"
+        "navigationBarTextStyle": "white",
+        "enablePullDownRefresh": false
     },
     "usingComponents": {
-        "cu-custom": "/colorui/components/cu-custom"
+        "cu-custom": "/colorui/components/cu-custom",
+        "zy-custom": "/colorui/components/zy-custom/zy-custom"
     },
     "sitemapLocation": "sitemap.json"
 }

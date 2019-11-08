@@ -373,6 +373,7 @@ Component({
             matchInfoItem = JSON.stringify({
                 _openid: matchInfoItem._openid,
                 portraitURL: matchInfoItem.portraitURL,
+                nickName: matchInfoItem.basic_info.nickName,
             })
             wx.navigateTo({
                 url: `/pages/chat/chat?likeInfo=${matchInfoItem}`

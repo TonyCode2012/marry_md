@@ -1,4 +1,12 @@
-<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}"><view slot="backText">返回</view><view slot="content">聊天</view></cu-custom>
+<!-- <cu-custom style="top:{{InputBottom}}px" bgColor="bg-gradual-pink" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">聊天</view>
+</cu-custom> -->
+<zy-custom bgColor="bg-gradual-red" inputBottom="{{InputBottom}}" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content" class="text-bold">{{talkName}}</view>
+</zy-custom>
+<!-- <view slot="backText" style="position:{{InputBottom==0?'relative':'fixed'}};top:{{InputBottom}}px">聊天聊天聊天聊天聊天聊天聊天聊天聊天聊天聊天聊天</view> -->
 <!-- <view class="cu-chat">
   <view class="cu-item self">
     <view class="main">
@@ -70,29 +78,33 @@
     <view class="date">13:23</view>
   </view>
 </view> -->
-<!-- <view style="display:block"> -->
-<view style="position:relative;bottom:{{InputBottom}}px">
-<view class="cu-chat" id="chatBox" style="position:relative;">
-  <view wx:for="{{chatInfo.messages}}" wx:key="{{index}}" class="cu-item {{item._openid==talkOID?'':'self'}}">
-    <view hidden="{{item._openid!=talkOID}}" class="cu-avatar radius" style="background-image:url({{item._openid==talkOID?talkPortraitURL:selfPortraitURL}});"></view>
-    <view class="main">
-      <view class="content {{item._openid==talkOID?'':'bg-green'}} shadow">
-        <text>{{item.text}}</text>
+<!-- <view style=""> -->
+<!-- <view style="position:relative;bottom:{{InputBottom}}px"> -->
+<!-- <scroll-view scroll-y="true" scroll-into-view="{{toView}}" scroll-with-animation="true" style="height:{{scrollHeight}}px; -webkit-overflow-scrolling:touch;" id="chatScroll"> -->
+<view hidden="{{!showTip}}" class="cu-load bg-grey {{tipContent}}" style="background-color:white;color:grey"></view>
+  <view class="cu-chat" id="chatBox" style="position:relative;bottom:{{chatPos}}px;" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" bindtap="touchMsgBox">
+    <view wx:for="{{chatInfo.messages}}" wx:key="{{index}}" class="cu-item {{item._openid==talkOID?'':'self'}}" id="chatid{{index}}">
+      <view hidden="{{item._openid!=talkOID}}" class="cu-avatar radius" style="background-image:url({{item._openid==talkOID?talkPortraitURL:selfPortraitURL}});" bindtap="go2UserDetail" data-openid="{{item._openid}}"></view>
+      <view class="main">
+        <view class="content {{item._openid==talkOID?'':'bg-green'}} shadow">
+          <text>{{item.text}}</text>
+        </view>
       </view>
+      <view hidden="{{item._openid==talkOID}}" class="cu-avatar radius" style="background-image:url({{item._openid==talkOID?talkPortraitURL:selfPortraitURL}});" bindtap="go2UserDetail" data-openid="{{item._openid}}"></view>
+        <!-- <view class="date">2018年3月23日 13:23</view> -->
     </view>
-    <view hidden="{{item._openid==talkOID}}" class="cu-avatar radius" style="background-image:url({{item._openid==talkOID?talkPortraitURL:selfPortraitURL}});"></view>
-    <!-- <view class="date">2018年3月23日 13:23</view> -->
+    <!-- <view style="height:150px" id="thelast"></view> -->
   </view>
-</view>
+<!-- </scroll-view> -->
 
-<view class="cu-bar foot input {{InputBottom!=0?'cur':''}}" style="position:relative;">
+<view class="cu-bar foot input {{InputBottom!=0?'cur':''}}" id="inputBox">
   <!-- <view class="action">
     <text class="cuIcon-sound text-grey"></text>
   </view> -->
-  <input class="solid-bottom" bindfocus="InputFocus" bindblur="InputBlur" adjust-position="{{false}}" focus="{{focusOnInput}}" hold-keyboard="{{holdKeyBoard}}" confirm-hold="true" bindconfirm="sendMessage" bindinput="inputMessage" value="{{text}}" maxlength="300" cursor-spacing="10"></input>
+  <input class="solid-bottom" bindfocus="InputFocus" bindblur="InputBlur" adjust-position="{{true}}" focus="{{focusOnInput}}" hold-keyboard="{{holdKeyBoard}}" confirm-hold="true" bindconfirm="sendMessage" bindinput="inputMessage" value="{{text}}" maxlength="300" cursor-spacing="10"></input>
   <!-- <view class="action">
     <text class="cuIcon-emojifill text-grey"></text>
   </view> -->
   <button class="cu-btn bg-green shadow" bindtap="sendMessage">发送</button>
 </view>
-</view>
+<!-- </view> -->

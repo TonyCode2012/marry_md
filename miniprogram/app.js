@@ -43,6 +43,9 @@ App({
             CustomBar: 0,
             CustomHeight: 0,
             StatusBar: 0,
+            // chat related
+            chatNumMap: new Map(),
+            chatLimit: 20,
         };
 
         wx.getSystemInfo({
