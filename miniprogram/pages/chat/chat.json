@@ -1,1 +1,7 @@
-{}
+{
+    "component": true,
+    "usingComponents": {
+        "i-swipeout": "../iviewui/swipeout/index",
+        "i-cell": "../iviewui/cell/index"
+    }
+}

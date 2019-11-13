@@ -80,6 +80,28 @@ const showWechatAuthInfo = function () {
     })
 }
 
+const getChatID = function(ids) {
+    var { talkOID, selfOID } = ids
+    var idLen = Math.max(talkOID.length, selfOID.length) / 2
+    var chatid = ''
+    if (talkOID > selfOID) {
+        chatid = talkOID.substring(0, idLen) + selfOID.substring(0, idLen)
+    } else {
+        chatid = selfOID.substring(0, idLen) + talkOID.substring(0, idLen)
+    }
+    return chatid
+}
+
+const delay = function(milSec) {
+
+    return new Promise(resolve => {
+
+        setTimeout(resolve, milSec)
+
+    })
+
+}
+
 
 module.exports = {
     formatTime: formatTime,
@@ -87,4 +109,6 @@ module.exports = {
     stringHash: stringHash,
     checkComplete: checkComplete,
     showWechatAuthInfo: showWechatAuthInfo,
+    getChatID: getChatID,
+    delay: delay,
 }

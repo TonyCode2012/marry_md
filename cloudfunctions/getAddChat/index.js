@@ -28,7 +28,8 @@ exports.main = async (event, context) => {
                 var result = res.data[0]
                 var messages = result.messages
                 var cLen = messages.length
-                if(startPos != -1) {
+                if (startPos != -1) {
+                    // check if there is update
                     if (cLen < startPos) {
                         chatInfo.resMsg = "Last position larger current length!"
                         chatInfo.statusCode = 500
@@ -45,6 +46,7 @@ exports.main = async (event, context) => {
                     result.messages = oldMessages
                     chatInfo.data = result
                 } else {
+                    // initial fetch
                     var getShow = false
                     var showedMsg = []
                     var uncheckedMsg = []

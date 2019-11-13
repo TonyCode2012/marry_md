@@ -86,8 +86,9 @@ Page({
         wx.cloud.callFunction({
             name: 'dbupdate',
             data: {
-                _openid: auth._openid,
                 table: 'auth',
+                idKey: '_openid',
+                idVal: auth._openid,
                 data: {
                     is_active: false,
                     status: 'success'

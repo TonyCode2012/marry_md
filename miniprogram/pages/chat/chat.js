@@ -3,33 +3,36 @@ const {
     db,
     globalData
 } = app
+const { 
+    getChatID,
+    delay,
+} = require("../../utils/util.js");
 const _ = db.command
 
 Page({
     data: {
-        // InputBottom: -globalData.Custom.bottom,
-        InputBottom: 0,
-        CustomBar: globalData.CustomBar,
+        // basic info
         orgChatInfo: {},
         chatInfo: {},
         talkOID: '',
-        talkName: '',
         talkPortraitURL: '',
         selfPortraitURL: '',
         text: '',
         chatid: '',
         chatIntervalID: 0,
-        footHeight: 55,
-        inputPos: 0,
-        chatPos: 0,
+        chatBoxPosVal: 0,
         chatMsgHeight: 0,
         scrollTop: 1,
-        scrollHeight: globalData.CustomHeight,
+        likeInfo: {},
+        // position control
+        InputBottom: 0,
+        CustomBar: globalData.CustomBar,
         focusOnInput: false,
         holdKeyBoard: true,
-        // indicate current loaded messages length
-        toView: 'thelast',
-        // diplayed message number
+        chatBoxTop: 0,
+        chatBoxPos: 'bottom',
+        showedScreen: 0,
+        displayScreen: 0,
         // move control
         ListTouchStartPosX: 0,
         ListTouchStartPosY: 0,
@@ -42,25 +45,63 @@ Page({
         showTip: false,
         tipContent: '',
     },
+
+
+    watch: {
+        chatInfo: function (data, that) {
+            if(that.data.chatMsgHeight >0) return
+            if (that.data.chatInfo.messages.length > 0) {
+                setTimeout(res => {
+                wx.createSelectorQuery().select('#chatid0').boundingClientRect(rect => {
+                    that.setData({
+                        chatMsgHeight: rect.height
+                    })
+                }).exec()},500)
+            }
+        },
+    },
+
     InputFocus(e) {
         const that = this
         console.log("changed:", e.detail.height)
+        var InputBottom = e.detail.height
         that.setData({
-            InputBottom: e.detail.height,
+            InputBottom: InputBottom,
         }, function (res) {
                 setTimeout(res=>{
-                    that.scrollToBottom()
-                    that.setData({
-                        focusOnInput: true
-                    })
+                    var allMsgHeight = that.data.chatInfo.messages.length * 
+                                        that.data.chatMsgHeight
+                    var showedScreen = that.data.showedScreen - InputBottom
+                    if (allMsgHeight > showedScreen + InputBottom) {
+                        // show top
+                        that.scrollToBottom()
+                        that.setData({
+                            chatBoxPos: 'bottom',
+                            chatBoxPosVal: 0,
+                            focusOnInput: true,
+                            showedScreen: showedScreen,
+                        })
+                    } else {
+                        // show bottom
+                        that.setData({
+                            chatBoxPos: 'top',
+                            chatBoxPosVal: InputBottom,
+                            focusOnInput: true,
+                            showedScreen: showedScreen,
+                        })
+                    }
                 },500)
             }
         )
     },
     InputBlur(e) {
+        var showedScreen = this.data.showedScreen + this.data.InputBottom
         this.setData({
             InputBottom: 0,
-            chatPos: 0,
+            chatBoxPos: 'bottom',
+            chatBoxPosVal: 0,
+            chatBoxTop: 0,
+            showedScreen: showedScreen,
             // holdKeyBoard: false,
         })
         this.scrollToBottom()
@@ -98,26 +139,40 @@ Page({
             text: that.data.text,
         }
         var messages = that.data.chatInfo.messages
+        if(!messages) messages = []
         messages.push(message)
         that.data.chatInfo.endPos++
         globalData.chatMap.set(that.data.chatid,that.data.chatInfo)
-        // get chat item height
-        if (that.data.chatMsgHeight == 0 && messages.length > 0) {
-            wx.createSelectorQuery().select('#chatid0').boundingClientRect(rect => {
-                that.data.chatMsgHeight = rect.height
-                that.setData({
-                    'chatInfo.messages': messages,
-                    text: '',
-                    chatPos: that.data.chatPos + that.data.chatMsgHeight,
-                })
-            }).exec()
-        } else {
+        that.setData({
+            chatInfo: that.data.chatInfo,
+            text: '',
+        },function (res) {
+            var waitTime = 600
+            if(that.data.chatMsgHeight > 0) waitTime = 0
+            setTimeout(res => {
+            var chatMsgHeight = that.data.chatMsgHeight
+            var allMsgHeight = messages.length * chatMsgHeight
+            var chatBoxPos = that.data.chatBoxPos
+            var chatBoxPosVal = that.data.chatBoxPosVal
+            var showedScreen = that.data.showedScreen
+            var InputBottom = that.data.InputBottom
+            if (allMsgHeight > showedScreen + InputBottom) {
+                chatBoxPos = 'bottom'
+                chatBoxPosVal += chatMsgHeight
+            } else {
+                chatBoxPos = 'top'
+                if (allMsgHeight > showedScreen) {
+                    chatBoxPosVal -= chatMsgHeight
+                    if (chatBoxPosVal <= chatMsgHeight) chatBoxPosVal = 0
+                } else {
+                    chatBoxPosVal = InputBottom
+                }
+            }
             that.setData({
-                'chatInfo.messages': messages,
-                text: '',
-                chatPos: that.data.chatPos + that.data.chatMsgHeight,
-            })
-        }
+                chatBoxPos: chatBoxPos,
+                chatBoxPosVal: chatBoxPosVal,
+            })},waitTime)
+        })
         // sync messages to db
         wx.cloud.callFunction({
             name: 'sendMessage',
@@ -136,6 +191,35 @@ Page({
     go2UserDetail(e) {
         wx.navigateTo({
             url: `/pages/member/detail/detail?openid=${e.currentTarget.dataset.openid}`,
+        })
+    },
+    decide(e) {
+        const that = this
+        const decision = e.currentTarget.dataset.decision
+        var likeInfo = that.data.likeInfo
+        const index = likeInfo.index
+        const tag = likeInfo.tag
+        likeInfo.decision = decision
+        wx.cloud.callFunction({
+            name: 'likeAction_decide',
+            data: {
+                table: 'users',
+                likefrom_openid: likeInfo._openid,
+                liketo_openid: globalData.userInfo._openid,
+                decision: decision
+            },
+            success: res => {
+                if (res.result.statuscode == 200) {
+                    globalData.userInfo.match_info[tag][index] = likeInfo
+                    that.setData({
+                        'likeInfo.decision': decision,
+                    })
+                }
+                console.log(res)
+            },
+            fail: res => {
+                console.log(res)
+            }
         })
     },
 
@@ -187,7 +271,7 @@ Page({
                 showTip: true,
                 tipContent: 'loading',
             })
-            var messages = this.data.chatInfo.messages
+            // var messages = this.data.chatInfo.messages
             wx.cloud.callFunction({
                 name: 'getAddChat',
                 data: {
@@ -203,12 +287,19 @@ Page({
                         var nChatInfo = res.result.data
                         var chatInfo = that.data.chatInfo
                         var messages = chatInfo.messages
+                        if (nChatInfo.messages.length == 0) {
+                            that.setData({
+                                tipContent: 'over',
+                            })
+                            return
+                        }
                         chatInfo = nChatInfo
                         chatInfo.messages = nChatInfo.messages.concat(messages)
                         globalData.chatMap.set(that.data.chatid,chatInfo)
                         that.setData({
                             chatInfo: chatInfo,
                         })
+                        this.scrollToTop()
                     } else {
                         console.log("Get old messages failed!",res)
                     }
@@ -217,12 +308,12 @@ Page({
                     console.log("Get old messages failed!Internal error!",err)
                 },
                 complete: function(res) {
+                    setTimeout(res => {
                     that.setData({
                         showTip: false,
-                    })
+                    })},1000)
                 }
             })
-            this.scrollToTop()
         }
         this.setData({
             ListTouchHDirection: '',
@@ -234,18 +325,19 @@ Page({
 
     onLoad(option) {
         const that = this
-        var likeInfo = JSON.parse(option.likeInfo)
+        var dataInfo = JSON.parse(option.likeInfo)
+        var likeInfo = dataInfo.likeInfo
+        likeInfo.tag = dataInfo.tag
+        likeInfo.index = dataInfo.index
+        // set watcher
+        app.setWatcher(this.data, this.watch, this)
         // genereate chatid
-        var chatid = ''
         var talkOID = likeInfo._openid
-        var talkName = likeInfo.nickName
         var selfOID = globalData.userInfo._openid
-        var idLen = Math.max(talkOID.length,selfOID.length) / 2
-        if (talkOID > selfOID) {
-            chatid = talkOID.substring(0, idLen) + selfOID.substring(0, idLen)
-        } else {
-            chatid = selfOID.substring(0, idLen) + talkOID.substring(0, idLen)
-        }
+        var chatid = getChatID({
+            talkOID: talkOID,
+            selfOID: selfOID,
+        })
         var talkPortraitURL = likeInfo.portraitURL
         // get or add chatInfo to db
         var chatInfo = globalData.chatMap.get(chatid)
@@ -266,7 +358,6 @@ Page({
                         globalData.chatMap.set(chatid, chatInfo)
                         that.setData({
                             chatInfo: chatInfo,
-                            // orgChatInfo: orgChatInfo,
                         })
                         // scroll to page bottom
                         that.scrollToBottom()
@@ -296,30 +387,93 @@ Page({
                         var cChatInfo = that.data.chatInfo
                         var nEndPos = nChatInfo.messages.length
                         var cEndPos = cChatInfo.endPos
+                        var fMessaegs = cChatInfo.messages
+                        var talkOID = that.data.talkOID
+                        var needDBUpdate = false
+                        var needPGUpdate = false
+                        var messageChanged = false
+                        // update messages
                         if (nEndPos > cEndPos) {
+                            // if get new messages, update
                             var diffNum = nEndPos - cEndPos
-                            var nMessages = nChatInfo.messages.slice(nEndPos-diffNum+1,nEndPos+1)
-                            cChatInfo.messages.concat(nMessages)
+                            var nMessages = nChatInfo.messages.slice(nEndPos-diffNum,nEndPos)
+                            cChatInfo.messages = cChatInfo.messages.concat(nMessages)
                             cChatInfo.endPos = nEndPos
-                            // get chat item height
-                            if (that.data.chatMsgHeight == 0 && messages.length > 0) {
-                                wx.createSelectorQuery().select('#chatid0').boundingClientRect(rect => {
-                                    that.data.chatMsgHeight = rect.height
-                                    that.setData({
-                                        chatPos: that.data.chatPos + that.data.chatMsgHeight,
-                                    })
-                                }).exec()
-                            } else {
-                                that.setData({
-                                    chatPos: that.data.chatPos + that.data.chatMsgHeight,
-                                })
-                            }
                             globalData.chatMap.set(that.data.chatid,cChatInfo)
+                            fMessaegs = cChatInfo.messages
+                            messageChanged = true
+                        } else {
+                            fMessaegs = nChatInfo.messages
+                        }
+                        // update check status
+                        for(var msg of fMessaegs) {
+                            if(msg._openid == talkOID) {
+                                if (!msg.checked) {
+                                    msg.checked = true
+                                    needDBUpdate = true
+                                }
+                            } else if (!needPGUpdate && msg.checked) {
+                                needPGUpdate = true
+                            }
+                        }
+                        cChatInfo.messages = fMessaegs
+                        // update db check status
+                        if (needDBUpdate) {
+                            wx.cloud.callFunction({
+                                name: 'dbupdate',
+                                data: {
+                                    table: 'chat',
+                                    idKey: '_chatid',
+                                    idVal: that.data.chatid,
+                                    data: {
+                                        messages: fMessaegs,
+                                    }
+                                },
+                                success: function (res) {
+                                    console.log("Update read status succesfully!", res)
+                                },
+                                fail: function (err) {
+                                    console.log("Update read status failed!", err)
+                                }
+                            })
+                        }
+                        // update page messaget status
+                        if(needPGUpdate || messageChanged) {
                             that.setData({
                                 chatInfo: cChatInfo,
+                            },function(res) {
+                                if(messageChanged) {
+                                    if(that.data.InputBottom == 0) {
+                                        that.scrollToBottom()
+                                        return
+                                    }
+                                    var waitTime = 500
+                                    if(that.data.chatMsgHeight > 0) waitTime = 0
+                                    setTimeout(res => {
+                                    var chatMsgHeight = that.data.chatMsgHeight
+                                    var allMsgHeight = cChatInfo.messages.length * chatMsgHeight
+                                    var chatBoxPos = that.data.chatBoxPos
+                                    var chatBoxPosVal = that.data.chatBoxPosVal
+                                    var showedScreen = that.data.showedScreen
+                                    var InputBottom = that.data.InputBottom
+                                    if(allMsgHeight > showedScreen + InputBottom) {
+                                        chatBoxPos = 'bottom'
+                                        chatBoxPosVal += chatMsgHeight
+                                    } else {
+                                        chatBoxPos = 'top'
+                                        if (allMsgHeight > showedScreen) {
+                                            chatBoxPosVal -= chatMsgHeight
+                                            if (chatBoxPosVal <= chatMsgHeight) chatBoxPosVal = 0
+                                        } else {
+                                            chatBoxPosVal = InputBottom
+                                        }
+                                    }
+                                    that.setData({
+                                        chatBoxPos: chatBoxPos,
+                                        chatBoxPosVal: chatBoxPosVal,
+                                    })}, waitTime)
+                                }
                             })
-                            // scroll to page bottom
-                            // that.scrollToBottom()
                         }
                     } else {
                         console.log("Check chat update failed!",res)
@@ -329,16 +483,30 @@ Page({
                     console.log("Check chat update failed!Internal error!",err)
                 }
             })
-        }, 3000)
+        }, 2000)
         this.setData({
             selfOID: selfOID,
             talkOID: talkOID,
-            talkName: talkName,
             talkPortraitURL: talkPortraitURL,
             selfPortraitURL: globalData.userInfo.portraitURL,
             chatid: chatid,
             chatIntervalID: chatIntervalID,
+            likeInfo: likeInfo,
         })
+    },
+
+    onShow: function(e) {
+        // showedScreen
+        const that = this
+        var showedScreen = globalData.CustomHeight - globalData.CustomBar
+        wx.createSelectorQuery().select('#inputBox').boundingClientRect(rect => {
+            var displayScreen = showedScreen
+            showedScreen -= rect.height
+            that.setData({
+                showedScreen: showedScreen,
+                displayScreen: displayScreen,
+            })
+        }).exec()
     },
 
     onPageScroll: function(e) {

@@ -370,10 +370,11 @@ Component({
             var index = e.currentTarget.dataset.index
             var tag = e.currentTarget.dataset.tag
             var matchInfoItem = this.data.userInfo.match_info[tag][index]
+            if(matchInfoItem.decision != 'yes' && matchInfoItem.decision != 'pending') return
             matchInfoItem = JSON.stringify({
-                _openid: matchInfoItem._openid,
-                portraitURL: matchInfoItem.portraitURL,
-                nickName: matchInfoItem.basic_info.nickName,
+                likeInfo: matchInfoItem,
+                tag: tag,
+                index: index,
             })
             wx.navigateTo({
                 url: `/pages/chat/chat?likeInfo=${matchInfoItem}`
