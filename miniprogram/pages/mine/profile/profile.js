@@ -626,11 +626,10 @@ Page({
      */
     onShow: function () {
         const that = this
-        //const love_info = this.data.love_info
         const love_info = globalData.userInfo.love_info
-        let loveInfoHash = stringHash(JSON.stringify(love_info))
+        var loveInfoHash = stringHash(JSON.stringify(love_info))
         // if love_info hashcode is changed, update
-        if (loveInfoHash != this.data.loveInfoHash) {
+        if (loveInfoHash != that.data.loveInfoHash) {
             that.data.loveInfoHash = loveInfoHash
             let loveInfoCompletePer = 0
             for (let i = 0; i < aboutme.listItem.length; i++) {
