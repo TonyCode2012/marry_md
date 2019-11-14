@@ -9,3 +9,19 @@
 .memberlist {
   position: relative;
 }
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.cu-load.neterr::after {
+	content: "网络错误";
+}
+
+.cu-load.hold::after {
+	content: "松开刷新";
+}

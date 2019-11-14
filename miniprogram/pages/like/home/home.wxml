@@ -1,158 +1,116 @@
 <cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{false}}">
   <view slot="backText">返回</view>
-  <view slot="content" class='text-bold'>感兴趣</view>
+  <view slot="content" class='text-bold'>想认识</view>
 </cu-custom>
 
+<view hidden="{{!showTip}}" class="cu-load bg-grey {{tipContent}}" style="background-color:white;color:grey"></view>
 <scroll-view scroll-x class="bg-white nav text-center">
-  <view class="cu-item {{0==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
+  <view class="cu-item {{0==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
     我想认识
   </view>
-  <view class="cu-item {{1==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
+  <view hidden="{{tags['ilike']==0}}" class="cu-tag badge" style="position:relative;right:0px">{{tags['ilike']}}</view>
+  <view class="cu-item {{1==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
     想认识我
   </view>
+  <view hidden="{{tags['likeme']==0}}" class="cu-tag badge" style="position:relative;right:0px">{{tags['likeme']}}</view>
+  <!-- <view></view> -->
 </scroll-view>
 
-<!-- <view wx:if="{{TabCur==0}}">
-  <view class="cu-list menu-avatar">
-    <view wx:for="{{fromMe}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
-
-      <view bindtap="gotoUserDetail" class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
-      <view class="content">
-        <view  bindtap="gotoUserDetail" class="text-grey">{{item.name}}</view>
-        <view class="text-gray text-sm text-cut">
-          <text class='cuIcon-female text-pink margin-right-xs'></text>
-          <text>{{item.basic_profile}}</text>
-        </view>
-      </view>
-      <view class="btn-group-decision flex-direction flex align-start text-sm">
-        <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适{{item.date}}</text>
-        <text wx:if="{{item.decision=='pending'}}" class='text-grey'>待处理{{item.date}}</text>
-        <view catchtap='showModal' wx:if="{{item.decision=='yes'}}" class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text>
-          <text>查看</text>
-        </view>
-      </view>
-      <view class="move">
-        <view class="bg-red">删除</view>
-      </view>
-    </view>
-  </view>
-</view> -->
-
-<wxs module="ageModule">
-  var deal = function(data,start,len) {
-    if (typeof(data) == 'string') return data.slice(start,len)
+<wxs module="funcModule">
+  var dealProvince = function(data) {
+    if (typeof(data) == 'string') {
+        if(data.indexOf('内蒙古')!=-1 || data.indexOf('黑龙江')!=-1) {
+            return data.substring(0,3)
+        }
+        return data.substring(0,2)
+    }
+    else return ""
+  }
+  var dealLength = function(data,start,len) {
+    if (typeof(data) == 'string') {
+        return data.slice(start,len)
+    }
     else return ""
   }
   module.exports = {
-    deal : deal
+    dealLength : dealLength,
+    dealProvince : dealProvince,
   }
 </wxs>
 
-<view wx:if="{{TabCur==0}}">
-  <view class="cu-list menu-avatar">
-    <view wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+<view style="min-height:600px" bindtouchstart="mainTouchStart" bindtouchmove="mainTouchMove" bindtouchend="mainTouchEnd">
 
-      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});"></view>
-      <view class="content">
-        <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
-        <view class="text-gray text-sm text-cut">
-          <text class='cuIcon-female text-pink margin-right-xs'></text>
-          <text>{{ageModule.deal(item.basic_info.birthday,2,4)}} · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{ageModule.deal(item.basic_info.hometown[0],0,2)}}人 · 现居{{item.basic_info.location[1]}}</text>
+<!-- <view style="min-height:600px"> -->
+<view wx:if="{{tabCur==0}}" style="z-index:9999" bindtouchstart="ListTouchStart" bindtouchend="ListTouchEnd">
+    <i-swipeout wx:for="{{userInfo.match_info.ilike}}" wx:key="{{index}}" i-class="i-swipeout-demo-item" operateWidth="{{100}}" actions="{{actions}}" bindtap="checkItem" data-tag="ilike" data-index="{{index}}">
+    <view slot="content">
+        <view class="i-swipeout-image">
+            <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">
+                <view hidden="{{item.checked}}" class="cu-tag badge" style="margin-top:5px"></view>
+            </view>
         </view>
-      </view>
-      <view class="btn-group-decision flex-direction flex align-start text-sm">
-        <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适{{item.date}}</text>
-        <text wx:if="{{item.decision=='pending'}}" class='text-grey'>待处理{{item.date}}</text>
-        <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
-        <view catchtap='showModal' wx:if="{{item.decision=='yes'}}" data-wechat="{{item.basic_info.wechat}}" class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text>
-          <text>查看</text>
+        <view class="i-swipeout-des" bindtap="go2ChatBox" data-tag="ilike" data-index="{{index}}">
+            <view class="i-swipeout-des-h2">{{item.basic_info.nickName}}</view>
+            <view class="i-swipeout-des-detail">
+                <view class="text-gray text-sm text-cut">
+                    <text class="cuIcon-{{item.basic_info.gender}} text-{{item.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
+                    <text>{{funcModule.dealLength(item.basic_info.birthday,0,4)}}年 · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{funcModule.dealProvince(item.basic_info.hometown[0])}}人 · 现居{{item.basic_info.location[1]}}</text>
+                </view>
+                <view class="btn-group-decision flex-direction flex align-start text-sm" style="right:5%">
+                    <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适{{item.date}}</text>
+                    <text wx:if="{{item.decision=='pending'}}" class='text-grey'>待处理{{item.date}}</text>
+                    <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
+                    <!-- <view catchtap='showModal' wx:if="{{item.decision=='yes'}}" data-wechat="{{item.basic_info.wechat}}" class="cu-tag round text-green line-green text-sm">
+                        <text class='cuIcon-weixin text-green'></text>
+                        <text>查看</text>
+                    </view> -->
+                </view>
+            </view>
         </view>
-      </view>
-      <view class="move">
-        <view class="bg-red" bindtap="deleteILike" data-index="{{index}}">删除</view>
-      </view>
     </view>
-  </view>
+    <view slot="button" class="i-swipeout-demo-button-group">
+        <view class="i-swipeout-demo-button" bindtap="deleteILike" data-index="{{index}}">删除</view>
+    </view>
+    </i-swipeout>
 </view>
 
-<!-- <view wx:if="{{TabCur==1}}">
-  <view class="cu-list menu-avatar">
-    <view wx:for="{{toMe}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
-
-      <view bindtap="gotoUserDetail" class="cu-avatar round lg" style="background-image:url();"></view>
-      <view class="content">
-        <view  bindtap="gotoUserDetail" class="text-grey">{{item.name}}</view>
-        <view class="text-gray text-sm text-cut">
-
-          <text class='cuIcon-female text-pink margin-right-xs'></text>
-          <text>{{item.basic_profile}}</text>
+<view wx:if="{{tabCur==1}}" style="z-index:9999" bindtouchstart="ListTouchStart" bindtouchend="ListTouchEnd">
+  <i-swipeout wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}" i-class="i-swipeout-demo-item" operateWidth="{{100}}" actions="{{actions}}" bindtap="checkItem" data-tag="likeme" data-index="{{index}}">
+    <view slot="content">
+        <view class="i-swipeout-image">
+            <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});">
+                <view hidden="{{item.checked}}" class="cu-tag badge" style="margin-top:5px"></view>
+            </view>
         </view>
-
-      </view>
-      <view class="btn-group-decision text-sm">      
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
-          <text class='text-white'>不合适</text>
+        <view class="i-swipeout-des" data-tag="likeme" data-index="{{index}}" bindtap="go2ChatBox">
+            <view class="i-swipeout-des-h2">{{item.basic_info.nickName}}</view>
+            <view class="i-swipeout-des-detail">
+                <view class="text-gray text-sm text-cut">
+                    <text class="cuIcon-{{item.basic_info.gender}} text-{{item.basic_info.gender == 'male' ? 'blue' : 'red'}}"></text>
+                    <text>{{funcModule.dealLength(item.basic_info.birthday,0,4)}}年 · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{funcModule.dealProvince(item.basic_info.hometown[0])}}人 · 现居{{item.basic_info.location[1]}}</text>
+                </view>
+                <!-- <view class="btn-group-decision flex-direction flex align-start text-sm" style="right:5%;flex-direction:row;">
+                    <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
+                        <text class='text-white'>不合适</text>
+                    </view>
+                    <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
+                        <text class='text-white'>同意</text>
+                    </view>
+                    
+                    <text wx:if="{{item.decision=='no'}}" class='text-grey'>已拒绝</text>
+                    <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
+                    <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' data-wechat="{{item.basic_info.wechat}}" class="cu-tag round text-green line-green text-sm">
+                        <text class='cuIcon-weixin text-green'></text>
+                        <text>查看</text>
+                    </view>
+                </view> -->
+            </view>
         </view>
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
-          <text class='text-white'>同意</text>
-        </view>
-        <text wx:if="{{item.decision=='no'}}" class='text-grey'>不合适</text>
-        <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text>
-          <text>查看</text>
-        </view>
-      </view>
-      <view class="move">
-        <view class="bg-red">删除</view>
-      </view>
     </view>
-  </view>
-</view> -->
-
-<view wx:if="{{TabCur==1}}">
-  <view class="cu-list menu-avatar">
-    <view wx:for="{{userInfo.match_info.likeme}}" wx:key="{{index}}"  data-user="{{index}}" class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}} solid-bottom" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
-
-      <view bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="cu-avatar round lg" style="background-image:url({{item.portraitURL}});"></view>
-      <view class="content">
-        <view  bindtap="gotoUserDetail" data-openid="{{item._openid}}" class="text-grey">{{item.basic_info.nickName}}</view>
-        <view class="text-gray text-sm text-cut">
-
-          <text class='cuIcon-female text-pink margin-right-xs'></text>
-          <text>{{ageModule.deal(item.basic_info.birthday,2,4)}} · {{item.basic_info.education}} · {{item.basic_info.profession}} · {{ageModule.deal(item.basic_info.hometown[0],0,2)}}人 · 现居{{item.basic_info.location[1]}}</text>
-        </view>
-
-      </view>
-      <!-- pending request -->
-      <view class="btn-group-decision text-sm">      
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="no" class="cu-tag round bg-grey text-xs">
-          <text class='text-white'>不合适</text>
-        </view>
-        <view wx:if="{{item.decision == 'pending'}}" catchtap='decide' data-index="{{index}}" data-decision="yes" class="cu-tag round bg-pink text-sm">
-          <text class='text-white'>同意</text>
-        </view>
-        <!-- after clicking -->
-        <text wx:if="{{item.decision=='no'}}" class='text-grey'>已拒绝</text>
-        <text wx:if="{{item.decision=='delete'}}" class='text-grey'>对方已结束对话{{item.date}}</text>
-        <view wx:if="{{item.decision=='yes'}}" catchtap='showModal' data-wechat="{{item.basic_info.wechat}}" class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text>
-          <text>查看</text>
-        </view>
-      </view>
-      <!-- approved -->
-      <!--<view wx:if="{{item.decision == 'yes'}}" catchtap='showModal' class="btn-group-decision flex-direction flex align-start">
-        <view catchtap='showModal' class="cu-tag round text-green line-green text-sm">
-          <text class='cuIcon-weixin text-green'></text>
-          <text>查看</text>
-        </view>
-      </view>-->
-      <view class="move">
-        <view class="bg-red" bindtap="deleteLikeMe" data-index="{{index}}">删除</view>
-      </view>
+    <view slot="button" class="i-swipeout-demo-button-group">
+        <view class="i-swipeout-demo-button" bindtap="deleteLikeMe" data-index="{{index}}">删除</view>
     </view>
-  </view>
+  </i-swipeout>
 </view>
 
 
@@ -176,7 +134,6 @@
   </view>
 </view>
 
-
-  <button bindtap="getRelation" class='cu-btn block bg-red lg'>更新关系网</button>
-
 <view class="cu-tabbar-height"></view>
+
+</view>

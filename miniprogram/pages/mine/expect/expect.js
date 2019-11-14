@@ -82,6 +82,10 @@ Page({
 
   Save: function() {
     const that = this
+    var dt = new Date()
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+    var timeStr = dt.toLocaleString()
+
     wx.showLoading({
       title: '正在保存',
     })
@@ -89,9 +93,11 @@ Page({
       name: 'dbupdate',
       data: {
         table: 'users',
-        _openid: app.globalData.userInfo._openid,
+        idKey: '_openid',
+        idVal: app.globalData.userInfo._openid,
         data: {
-          expect_info: that.data.expect_info
+            expect_info: that.data.expect_info,
+            time: timeStr,
         }
       },
       success: function (res) {
@@ -126,13 +132,13 @@ Page({
       expect_info.startAge = this.data.minAge
     }
     if(expect_info.endAge == undefined) {
-      expect_info.endAge = this.data.minAge
+      expect_info.endAge = this.data.maxAge
     }
     if(expect_info.startHeight == undefined) {
       expect_info.startHeight = this.data.minHeight
     }
     if(expect_info.endHeight == undefined) {
-      expect_info.endHeight = this.data.minHeight
+      expect_info.endHeight = this.data.maxHeight
     }
     this.setData({
       expect_info: expect_info,

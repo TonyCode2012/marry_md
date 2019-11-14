@@ -3,9 +3,15 @@
   <view slot="content" class="text-bold"></view>
 </cu-custom>
 
-<view class="">
-  <view class="padding flex justify-between align-center">
-    <text class='text-sm block text-gray'>* 完成资料，找到对的人</text>
+<view>
+  <view class="padding justify-between align-center">
+    <text class='text-sm block text-red'>* 完成资料，找到对的人，带*为必填项，完善度达到100%才能获得推荐。您的资料仅用于交友，不会被它用，具体情况请参见</text>
+    <view class="flex justify-center" bindtap="go2Privacy"><text class='text-sm block text-blue'>《用户隐私协议》</text></view>
+  </view>
+  <view style="position:fixed;top:{{CustomBar-2}}px;z-index:1024;width:100%">
+    <view class="cu-progress round margin-bottom-xs">
+        <view class="bg-{{completePer==100? 'blue' : 'red'}}" style="width:{{completePer}}%;">完善度: {{completePer}}%</view>
+    </view>
   </view>
 </view>
 
@@ -56,14 +62,16 @@
 </view>
 <view class="cu-form-group" wx:if="{{getRealID}}">
   <view class="title">性别*</view>
-  <view>
-    <view class="cu-tag {{basic_info.gender=='male'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="male" bindtap="bindInfoChange">小哥哥</view>
-    <view class="cu-tag {{basic_info.gender=='female'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="female" bindtap="bindInfoChange">小姐姐</view>
+  <view bindtap="noChangeIDInfo">
+    <!-- <view class="cu-tag {{basic_info.gender=='male'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="male" bindtap="bindInfoChange">小哥哥</view>
+    <view class="cu-tag {{basic_info.gender=='female'?'bg':'line'}}-pink round padding-lr-sm" data-type="gender" data-value="female" bindtap="bindInfoChange">小姐姐</view> -->
+    <view class="cu-tag {{basic_info.gender=='male'?'bg':'line'}}-pink round padding-lr-sm">小哥哥</view>
+    <view class="cu-tag {{basic_info.gender=='female'?'bg':'line'}}-pink round padding-lr-sm">小姐姐</view>
   </view>
-  </view>
+</view>
 <view wx:if="{{getRealID}}" class="cu-form-group">
   <view class="title">生日*</view>
-  <picker disabled="true" data-type="birthday" bindchange="bindInfoInput" bindtap="noChangeBirth" mode="date" value="{{basic_info.birthday}}" start="1970-01-01" end="{{now}}">
+  <picker disabled="true" data-type="birthday" bindchange="bindInfoInput" bindtap="noChangeIDInfo" mode="date" value="{{basic_info.birthday}}" start="1970-01-01" end="{{now}}">
     <view class="picker">
       {{basic_info.birthday}}
     </view>
@@ -107,8 +115,8 @@
 <view class="cu-form-group">
   <view class="title">婚姻*</view>
   <view>
-    <view data-type="marryStatus" data-value="unmarried" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='unmarried'?'bg':'line'}}-pink round padding-lr-sm">未婚</view>
-    <view data-type="marryStatus" data-value="divorced" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='divorced'?'bg':'line'}}-pink round padding-lr-sm">离异</view>
+    <view data-type="marryStatus" data-value="未婚" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='未婚'?'bg':'line'}}-pink round padding-lr-sm">未婚</view>
+    <view data-type="marryStatus" data-value="离异" bindtap='bindInfoChange' class="cu-tag {{basic_info.marryStatus=='离异'?'bg':'line'}}-pink round padding-lr-sm">离异</view>
   </view>
 </view>
 
@@ -123,18 +131,35 @@
 </view>
 <view class="cu-form-group">
   <view class="title">毕业院校</view>
-  <input placeholder="" class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
+  <input placeholder="请填写您的毕业学校" class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
 </view>
 
 
 <!-- job -->
-<view class="cu-form-group margin-top">
-  <view class="title">职位/职业*</view>
-  <input placeholder="" class='text-right' value="{{basic_info.profession}}" data-type="profession" bindinput='bindInfoInput'></input>
-</view>
-<view class="cu-form-group">
+<!--view class="cu-form-group">
   <view class="title">公司*</view>
   <input placeholder="" class='text-right' value="{{basic_info.company}}" data-type="company" bindinput='bindInfoInput'></input>
+</view-->
+<view class="cu-form-group margin-top" style="min-height:0px">
+  <!-- <view class="title">职位/职业*</view>
+  <input placeholder="请填写您的职业" class='text-right' value="{{basic_info.profession}}" data-type="profession" bindinput='bindInfoInput'></input> -->
+</view>
+<view bindtap="gotoAuthCorp" class="cu-list menu solid-top">
+  <view class="cu-item arrow">
+    <view class="content flex">
+      <view class="text-xxl margin-right-sm">
+        <text class="cuIcon-group text-pink"></text>
+      </view>
+      <text class="text-df text-bold">工作认证*</text>
+    </view>
+    <view class="action bg-gradual-orange round">
+      <text class="text-white text-sm padding-sm">{{authed ? corpMap[basic_info.company]+' 已认证' : '未认证'}}</text>
+    </view>
+  </view>
+</view>
+<view class="cu-form-group">
+  <view class="title">职位/职业*</view>
+  <input disabled="true" placeholder="工作认证时确认" class='text-right' value="{{authed?basic_info.job_title:''}}" data-type="profession" bindinput='bindInfoInput'></input>
 </view>
 <view class="cu-form-group">
   <view class="title">年收入</view>
@@ -149,11 +174,11 @@
 <view class="padding">
   <view class='padding-tb-xs text-sm block text-gray'>* 完整的自我介绍更容易吸引ta哦，完善度低于80%无法发起喜欢</view>
 </view>
-<view class="cu-bar bg-white solid-bottom margin-top">
+<view class="cu-bar bg-white solid-bottom">
   <view class="action">
     <text class="cuIcon-titles text-pink"></text>
     <text class="text-df text-bold">关于我*</text>
-    <text class="margin-left-xs text-df text-pink">(完善度 {{completePercent}}%)</text>
+    <text class="margin-left-xs text-df text-pink">(完善度 {{completePer}}%)</text>
   </view>
   <button wx:if="{{!isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>展开</button>
   <button wx:if="{{isExpand}}" bindtap='toggleExpand' class='cu-btn round text-pink bg-white button-hover fr'>收起</button>
@@ -167,7 +192,7 @@
   <view class='padding-tb-xs text-sm block text-gray'>* 只有你同意后才能看到对方微信号</view>
   <view class='padding-tb-xs text-sm block text-gray'>* 确认微信号可被搜索</view>
   <view class='padding-tb-xs text-sm block text-gray'>* 微信中打开: 我->设置->隐私->添加我的方式->微信号</view>
-  <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view>
+  <!-- <view class='padding-tb-xs text-sm block text-gray'>* 手机号仅为紧急联系方式，不会暴露给任何用户</view> -->
 </view>
 
 
@@ -176,7 +201,7 @@
     <view class="content flex align-center">
       <!-- <text class="cuIcon-weixin text-green "></text> -->
       <text class="">微信号*</text>
-      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="" value="{{basic_info.wechat}}" data-type="wechat" bindinput='bindInfoInput'></input>
+      <input class='flex-sub text-right margin-left-sm padding-lr-xs' placeholder="请填写您的微信号" value="{{basic_info.wechat}}" data-type="wechat" bindinput='bindInfoInput'></input>
     </view>
   </view>
   <view class='divider solid-bottom'></view>
@@ -190,9 +215,12 @@
   </view>-->
 </view>
 
+<!--view bindtap="shareMyself">
+</view-->
+<button open-type="{{canShare?'share':''}}" bindtap="{{canShare?'':'checkShareStatus'}}" class="cu-btn round bg-pink" style="position:fixed;right:10px;bottom:30%;z-index:9999" role="button" aria-disabled="false"><text class="cuIcon-upload"></text> 分享</button>
 
 
 <view class="cu-tabbar-height lg"></view>
 <view class='foot padding-lr'>
-  <button bindtap="Save" disabled="{{!canSave}}" class='cu-btn block bg-red lg'>保 存</button>
+<button bindtap="Save" disabled="{{!canSave}}" class="cu-btn block bg-{{dataChanged?'red':'blue'}} lg">{{dataChanged?'有改动注意保存':'保 存'}}</button>
 </view>

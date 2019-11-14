@@ -1,24 +1,38 @@
 <!--pages/member/home/home.wxml-->
 <wxs module="funcModule">
-  var getAstro = function(date){
-    var m = parseInt(deal(date,5,2))
-    var d = parseInt(deal(date,8,2))
-    return "魔羯水瓶双鱼牡羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯".slice(m*2-(d<"102223444433".charAt(m-1)-19)*2,2);
+  var dealProvince = function(data) {
+    if (typeof(data) == 'string') {
+        if(data.indexOf('内蒙古')!=-1 || data.indexOf('黑龙江')!=-1) {
+            return data.substring(0,3)
+        }
+        return data.substring(0,2)
+    }
+    else return ""
   }
   var deal = function(data,start,len) {
-    if (typeof(data) == 'string') return data.slice(start,len)
-    else return ""
+    if (typeof(data) == 'string') return data.substring(start,len)
+    return ""
+  }
+  var getAstro = function(data) {
+    if (typeof(data) == 'string') {
+        var m = data.substring(5,7)
+        var d = data.substring(8,10)
+        var start = m*2-(d<"102223444433".charAt(m-1)- -19)*2
+        return "魔羯水瓶双鱼牡羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯".slice(start,start+2)
+     } 
+     return "error"
   }
   module.exports = {
     deal : deal,
-    getAstro : getAstro
+    getAstro : getAstro,
+    dealProvince : dealProvince,
   }
 </wxs>
 
 <!--view wx:if="{{getFromGroup}}">
   <view style="position: absolute;top:50%;left:50%">您无权查看此简历!!!</view>
 </view-->
-<view wx:if="{{isLogin}}">
+<view wx:if="{{existed}}">
 <view class="section">
   <view class="section__title"></view>
   <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" disabled="{{ship}}">
@@ -34,8 +48,11 @@
         </view>
       </view>
       <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-        <swiper-item wx:for="{{userInfo.photos}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{userInfo.photos[index]}}">
+        <swiper-item wx:if="{{userInfo.photos.length!=0}}" wx:for="{{userInfo.photos}}" wx:key="{{index}}" bindtap="ViewImage" data-url="{{userInfo.photos[index]}}">
           <image class='response' src="{{item}}" mode="aspectFill"></image>
+        </swiper-item>
+        <swiper-item wx:if="{{userInfo.photos.length==0}}" bindtap="ViewImage" data-url="{{userInfo.wechat_info.avatarUrl}}">
+          <image class='response' src="{{userInfo.wechat_info.avatarUrl}}" mode="aspectFill"></image>
         </swiper-item>
       </swiper>
       <view class='padding'>
@@ -50,16 +67,16 @@
             <text>  {{funcModule.deal(userInfo.basic_info.birthday,0,4)}}年・{{funcModule.getAstro(userInfo.basic_info.birthday)}}座・{{userInfo.basic_info.height}}CM・{{userInfo.basic_info.college}} {{userInfo.basic_info.education}}・{{userInfo.basic_info.profession}}</text>
           </view>
           <view class='text-gray text-sm'>
-            <text><text class="cuIcon-locationfill"></text> 现居{{userInfo.basic_info.location[1]}}・{{funcModule.deal(userInfo.basic_info.hometown[1],0,2)}}人</text>
+            <text><text class="cuIcon-locationfill"></text> 现居:{{userInfo.basic_info.location[1]}}・家乡:{{userInfo.basic_info.hometown[0]}}{{userInfo.basic_info.hometown[1]}}</text>
           </view>
           <view class='margin-top-sm flex justify-start align-center'>
             <!-- <view class='text-gray'>来历：</view> -->
             <scroll-view scroll-x>
               <view class="source-group padding-lr-xs flex">
                 <view wx:for="{{userInfo.relativeInfo.relation}}" wx:key class="source-item flex">
-                  <view style="display:{{!item.relation?'none':'block'}};text-align:center" class='source-connection'>
+                  <view style="display:{{!item.relationship?'none':'block'}};text-align:center" class='source-connection'>
                     <view class='source-line'></view>
-                    <text class="cu-tag round bg-green sm">{{item.relation}}</text>
+                    <text class="cu-tag round bg-green sm">{{item.relationship}}</text>
                   </view>
                   <view class='source-user flex flex-direction justify-center align-center'>
                     <!--<view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>-->
@@ -80,7 +97,7 @@
 
         </view>
 
-        <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="share2Friend"/>
+        <!--zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="share2Friend"/-->
 
         <view class="section">
           <view class="section-title">
@@ -179,10 +196,26 @@
 
       </view>
 
+      <!-- radio window -->
+      <view class="cu-modal {{showModal}}">
+        <view class="cu-dialog">
+          <radio-group class="block">
+            <view class="cu-list menu text-left">
+              <view class="cu-item" wx:for="{{relationArry}}" wx:key catchtap="chooseRelation" data-relation="{{item}}" data-index="{{index}}">
+                <label class="flex justify-between align-center flex-sub">
+                  <view class="flex-sub">{{item}}</view>
+                  <radio class="round" wx:if="{{index!=0}}"></radio>
+                </label>
+              </view>
+            </view>
+          </radio-group>
+        </view>
+      </view>
+
       <view wx:if="{{source == 'meet'}}" class="btn-group cu-bar tabbar foot">
         <button style="display:{{showLike?'block':'none'}}" bindtap="bindLike" class="cu-btn bg-red round">{{likeTag}}</button>
         <button open-type="share" class="cu-btn bg-green round">推荐给好友</button>
-        <button bindtap="bindBack" class="cu-btn bg-green round">回到首页</button>
+        <button bindtap="toHomePage" class="cu-btn bg-green round">回到首页</button>
       </view>
 
       <view class="cu-tabbar-height"></view>
@@ -192,4 +225,18 @@
   </picker>
 </view>
 </view>
-<loading wx:else redirectPath="{{redirectPath}}"> </loading>
+<view wx:else>
+  <view class="padding-xs flex align-center" style="position:relative;margin-top:70%">
+    <!-- <view class="padding">18</view> -->
+    <view class="flex-sub text-center">
+      <view class="text-xl padding">
+        <text class="text-shadow text-gray">用户不存在</text>
+      </view>
+        <!-- <view class="padding">页面大标题，用于结果页等单一信息页</view> -->
+    </view>
+  </view>
+  <view class='foot padding-lr flex flex-direction'>
+    <!-- <button class="cu-btn bg-grey lg">玄灰</button> -->
+    <button class="cu-btn bg-blue margin-tb-sm lg" bindtap="toHomePage">返回首页</button>
+  </view>
+</view>

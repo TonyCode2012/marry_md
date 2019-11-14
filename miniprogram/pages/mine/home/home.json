@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "aboutme": "/pages/mine/aboutme/list/list"
+    "aboutme": "/pages/mine/aboutme/list/list",
+    "loading": "/pages/index/loading/loading"
   }
 }

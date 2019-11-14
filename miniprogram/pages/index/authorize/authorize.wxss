@@ -1,7 +1,7 @@
 /* miniprogram/pages/meet/authorize/authorize.wxss */
 
 .cu-btn.xxl {
-  padding: 20rpx 160rpx;
+  padding: 20rpx 90rpx;
   font-size: 34rpx;
   height: 100rpx;
   letter-spacing: 5rpx;

@@ -1,11 +1,10 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 
-cloud.init()
-
-const db = cloud.database({
+cloud.init({
   env: 'dev-2019-xe6cj'
-});
+})
+const db = cloud.database();
 const _ = db.command;
 
 
@@ -15,6 +14,10 @@ exports.main = async (event, context) => {
     var statuscode = 200
     var ilikePromise = ''
     var likemePromise = ''
+    var dt = new Date()
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
+    var timeStr = dt.toLocaleString()
+
     var resp = {
         ilike: {
             statuscode: 200,
@@ -95,7 +98,8 @@ exports.main = async (event, context) => {
         }).update({
           data: {
             'match_info.ilike': ilike,
-            'match_info.deletes': ilikedel
+            'match_info.deletes': ilikedel,
+            time: timeStr,
           }
         }).then(
             function(res) {
@@ -114,7 +118,8 @@ exports.main = async (event, context) => {
         }).update({
           data: {
             'match_info.likeme': likeme,
-            'match_info.deletes': likemedel
+            'match_info.deletes': likemedel,
+            time: timeStr,
           }
         }).then(
             function(res) {

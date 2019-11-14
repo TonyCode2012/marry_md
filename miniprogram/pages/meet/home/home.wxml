@@ -8,28 +8,31 @@
   }
 </wxs>
 
+<view style="min-height:600px" bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd">
+    <cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{false}}">
+    <view slot="backText">返回</view>
+    <view slot="content" class="text-bold">遇见</view>
+    </cu-custom>
+    <view hidden="{{!showTip}}" class="cu-load bg-grey {{tipContent}}" style="background-color:white;color:grey"></view>
+    <scroll-view scroll-x class="bg-white nav text-center navbar fixed" style="top:{{CustomBar}}px;" >
+    <view class="cu-item {{0==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
+        亲友关系
+    </view>
+    <view class="cu-item {{1==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
+        同事资源
+    </view>
+    <view class="cu-item {{2==tabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="2">
+        单身广场
+    </view>
+    </scroll-view>
 
-<cu-custom bgColor="bg-gradual-red" isBack="{{false}}" isContentLeft="{{false}}">
-  <view slot="backText">返回</view>
-  <view slot="content" class="text-bold">遇见</view>
-</cu-custom>
+    <zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
 
-<scroll-view scroll-x class="bg-white nav text-center navbar fixed" style="top:{{CustomBar}}px;">
-  <view class="cu-item {{0==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="0">
-    亲友关系
-  </view>
-  <view class="cu-item {{1==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="1">
-    同事资源
-  </view>
-  <view class="cu-item {{2==TabCur?'text-pink cur':''}}" bindtap="tabSelect" data-id="2">
-    名企白领
-  </view>
-</scroll-view>
+    <scroll-view scroll-y="true" bindscroll="scrollChange" style="top:{{CustomBar}}px">
+        <memberlist class="{{0==tabCur? 'show animation-slide-right': 'hide'}}" source="meet" id="memberlistCom" seekerList="{{seekers.relativeCandidates}}"></memberlist>
+        <authed wx:if="{{authed}}" seekers="{{seekers}}" tabCur="{{tabCur}}"></authed> 
+        <unauthed wx:else seekers="{{seekers}}" tabCur="{{tabCur}}"></unauthed> 
+    </scroll-view>
 
-<zy-selector selectData="{{userIDs}}" index="{{userIdx}}" bind:userChange="userChange"/>
-<authed wx:if="{{isAuth}}"></authed> 
-<!-- <unauthed wx:if="{{!isAuth}}" seekerList="{{seekerList}}"></unauthed>  -->
-<unauthed wx:if="{{!isAuth}}" seekers="{{seekers}}" tabCur="{{TabCur}}"></unauthed> 
-
-
-<view class="cu-tabbar-height"></view>
+    <view class="cu-tabbar-height"></view>
+</view>

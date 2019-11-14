@@ -30,13 +30,26 @@ const listItem = [{
   }
 ]
 
+const requiredInfo = [
+    'birthday',
+    'company',
+    'education',
+    'gender',
+    'height',
+    'hometown',
+    'location',
+    'marryStatus',
+    'job_title',
+    'wechat',
+]
+
 //const weightRange = [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120];
 const weightStart = 30
 const weightEnd = 120
 var weightStep = weightStart - 1
 const weightRange = Array.apply(null,{length:weightEnd-weightStart+1}).map(function (v,i){weightStep++;return weightStep;})
 
-const heightStart = 160
+const heightStart = 150
 const heightEnd = 220
 var heightStep = heightStart - 1
 const heightRange = Array.apply(null,{length:heightEnd-heightStart+1}).map(function (v,i){heightStep++;return heightStep;})
@@ -48,6 +61,8 @@ const educationRange = ['大专', '本科', '硕士', '博士'];
 const incomeRange = ['5-15W', '15-30W', '30-50W', '50-100W'];
 const jobRange = ['手动填写', '产品经理', '程序员', '设计师', '运营'];
 
+const loveInfoCompletePer = 0.8
+
 module.exports = {
   aboutme: {
     listItem: listItem
@@ -56,5 +71,7 @@ module.exports = {
   heightRange,
   educationRange,
   incomeRange,
-  jobRange
+  jobRange,
+  loveInfoCompletePer,
+  requiredInfo
 }

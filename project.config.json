@@ -40,6 +40,10 @@
 		"game": {
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
 			"current": 12,
 			"list": [
@@ -129,9 +133,9 @@
 				},
 				{
 					"id": 12,
-					"name": "enter_mini_card",
+					"name": "pages/member/detail/detail",
 					"pathName": "pages/member/detail/detail",
-					"query": "sopenid=alibaba0&topenid=alibaba9",
+					"query": "sopenid=o7-nX5b7YLQCTvdruA7-m_zkDej4&topenid=o7-nX5b7YLQCTvdruA7-m_zkDej4",
 					"scene": 1007
 				},
 				{

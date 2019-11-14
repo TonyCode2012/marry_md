@@ -26,13 +26,14 @@
       <text>编辑资料</text>
       <text class='cuIcon-right'></text>
     </view>
-    <view class="text-black text-xl">{{userInfo.basic_info.nickName}}</view>
+    <view wx:if="{{!loginAsTourist}}" class="text-black text-xl">{{userInfo.basic_info.nickName}}</view>
+    <view wx:else bindtap="go2CheckAuth" class="text-black text-xl">点我登录</view>
     <view class="text-gray text-sm flex align-center margin-top-sm">
       <text class='cuIcon-safe lg text-gray margin-right-xs'> </text>
       <text class='text-xs text-orange'>{{authed ? '已认证' : '未认证'}}</text>
     </view>
     <view class="text-gray text-xs  margin-top-xs">
-      <text>*只有通过认证且资料完整度50%以上才能被别人看到并认识其他人</text>
+      <text>*只有通过认证且资料完整度80%以上才能被别人看到并认识其他人</text>
     </view>
   </view>
 
@@ -48,7 +49,7 @@
   </view>
 </view>
 
-<view bindtap="gotoAuthCorp" class="cu-list menu solid-top">
+<!--view bindtap="gotoAuthCorp" class="cu-list menu solid-top">
   <view class="cu-item arrow">
     <view class="content flex">
       <view class="text-xxl margin-right-sm">
@@ -60,7 +61,7 @@
       <text class="text-white text-sm padding-sm">{{authed ? '已认证' : '未认证'}}</text>
     </view>
   </view>
-</view>
+</view-->
 
 
 <!--<view class="cu-bar bg-white solid-bottom margin-top">

@@ -1,26 +1,30 @@
 {
-  "pages": [
-    "pages/index/index",
-    "pages/meet/home/home",
-    "pages/mine/home/home",
-    "pages/like/home/home",
-    "pages/group/home/home",
-    "pages/mine/profile/profile",
-    "pages/group/detail/detail",
-    "pages/member/detail/detail",
-    "pages/mine/expect/expect",
-    "pages/mine/aboutme/edit/edit",
-    "pages/authcorp/authcorp",
-    "pages/index/authorize/authorize"
-  ],
-  "window": {
-    "navigationBarBackgroundColor": "#39b54a",
-    "navigationBarTitleText": "",
-    "navigationStyle": "custom",
-    "navigationBarTextStyle": "white"
-  },
-  "usingComponents": {
-    "cu-custom": "/colorui/components/cu-custom"
-  },
-  "sitemapLocation": "sitemap.json"
+    "pages": [
+        "pages/index/index",
+        "pages/meet/home/home",
+        "pages/mine/home/home",
+        "pages/like/home/home",
+        "pages/group/home/home",
+        "pages/mine/profile/profile",
+        "pages/group/detail/detail",
+        "pages/member/detail/detail",
+        "pages/mine/expect/expect",
+        "pages/mine/profile/aboutme/edit/edit",
+        "pages/authcorp/authcorp",
+        "pages/index/authorize/authorize",
+        "pages/privacy/privacy",
+        "pages/chat/chat"
+    ],
+    "window": {
+        "navigationBarBackgroundColor": "#39b54a",
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "enablePullDownRefresh": false
+    },
+    "usingComponents": {
+        "cu-custom": "/colorui/components/cu-custom",
+        "zy-custom": "/colorui/components/zy-custom/zy-custom"
+    },
+    "sitemapLocation": "sitemap.json"
 }

@@ -3,6 +3,7 @@
   "usingComponents": {
     "authed": "/pages/meet/authed/authed",
     "unauthed": "/pages/meet/unauthed/unauthed",
+    "memberlist": "/pages/member/list/list",
     "zy-selector": "/myComponent/zy-selector/zySelector"
   }
 }
