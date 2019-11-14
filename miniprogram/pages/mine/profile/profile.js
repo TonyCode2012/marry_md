@@ -629,15 +629,21 @@ Page({
         //const love_info = this.data.love_info
         const love_info = globalData.userInfo.love_info
         let loveInfoHash = stringHash(JSON.stringify(love_info))
-        // if hashcode is changed, update
+        // if love_info hashcode is changed, update
         if (loveInfoHash != this.data.loveInfoHash) {
-            let completePercent = 0
+            that.data.loveInfoHash = loveInfoHash
+            let loveInfoCompletePer = 0
             for (let i = 0; i < aboutme.listItem.length; i++) {
                 var loveInfo_item = love_info[aboutme.listItem[i].type]
                 if (loveInfo_item != undefined && loveInfo_item.content != '') {
-                    completePercent++
+                    loveInfoCompletePer++
                 }
             }
+            loveInfoCompletePer = parseInt(loveInfoCompletePer / aboutme.listItem.length * 100)
+            that.setData({
+                loveInfoCompletePer: loveInfoCompletePer,
+                love_info: love_info
+            })
         }
         // if basic info changed, update
         const basic_info = globalData.userInfo.basic_info
