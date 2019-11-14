@@ -628,7 +628,6 @@ Page({
         const that = this
         //const love_info = this.data.love_info
         const love_info = globalData.userInfo.love_info
-        if (love_info == undefined) return
         let loveInfoHash = stringHash(JSON.stringify(love_info))
         // if hashcode is changed, update
         if (loveInfoHash != this.data.loveInfoHash) {
@@ -638,28 +637,28 @@ Page({
                 if (loveInfo_item != undefined && loveInfo_item.content != '') {
                     completePercent++
                 }
-                // if basic info changed, update
-                const basic_info = globalData.userInfo.basic_info
-                var basicInfoHash = stringHash(JSON.stringify(basic_info))
-                if (basicInfoHash != that.data.basicInfoHash) {
-                    that.data.basicInfoHash = basicInfoHash
-                    that.setData({
-                        basic_info: basic_info
-                    })
-                }
-                // check if complete authentication
-                var checkedUserInfo = {
-                    basic_info: that.data.basic_info,
-                    love_info: love_info,
-                }
-                var completePer = checkComplete(checkedUserInfo)
-                that.setData({
-                    authed: globalData.nexusInfo.authed,
-                    canShare: completePer == 100,
-                    completePer: completePer,
-                })
             }
         }
+        // if basic info changed, update
+        const basic_info = globalData.userInfo.basic_info
+        var basicInfoHash = stringHash(JSON.stringify(basic_info))
+        if (basicInfoHash != that.data.basicInfoHash) {
+            that.data.basicInfoHash = basicInfoHash
+            that.setData({
+                basic_info: basic_info
+            })
+        }
+        // check if complete authentication
+        var checkedUserInfo = {
+            basic_info: that.data.basic_info,
+            love_info: love_info,
+        }
+        var completePer = checkComplete(checkedUserInfo)
+        that.setData({
+            authed: globalData.nexusInfo.authed,
+            canShare: completePer == 100,
+            completePer: completePer,
+        })
     },
 
     /**
