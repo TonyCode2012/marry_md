@@ -30,6 +30,30 @@ const listItem = [{
   }
 ]
 
+
+const relationMap = {
+    family: '亲戚',
+    friend: '朋友',
+    schoolmate: '同学',
+    colleague: '同事'
+}
+
+
+const basic_item = [
+    "birthday",
+    "college",
+    "company",
+    "education",
+    "gender",
+    "height",
+    "weight",
+    "hometown",
+    "location",
+    "nickName",
+    "profession",
+    "wechat",
+]
+
 const requiredInfo = [
     'birthday',
     'company',
@@ -73,5 +97,7 @@ module.exports = {
   incomeRange,
   jobRange,
   loveInfoCompletePer,
-  requiredInfo
+  requiredInfo,
+  relationMap,
+  basic_item
 }

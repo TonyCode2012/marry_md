@@ -26,13 +26,6 @@ Component({
     myCompanyCandidates: [],
 
     relativeCandidates: [],
-
-    relationMap: {
-      family: '亲戚',
-      friend: '朋友',
-      schoolmate: '同学',
-      colleague: '同事'
-    }
   },
 
   /**

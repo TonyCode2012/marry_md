@@ -84,6 +84,11 @@ Page({
         // id control
         getRealID: false,
         idCardUrl: '',
+
+        // education control
+        getRealED: false,
+        edPicUrl: '',
+        edVerifyInfo: '请上传学历证明照片进行验证(您的信息仅用来做验证，不会被保留)',
     },
 
     noChangeIDInfo() {
@@ -95,23 +100,24 @@ Page({
     },
 
     watch: {
-        basic_info: function(data,that) {
+        basic_info: function (data, that) {
             that.setDataChanged()
         },
         //love_info: function(data,that) {
         //    that.setDataChanged()
         //},
-        imgList: function(data,that) {
+        imgList: function (data, that) {
             that.setDataChanged()
         }
     },
 
     calOrgAllHash() {
         var basic_info = JSON.stringify(this.data.basic_info)
-        var love_info = JSON.stringify(this.data.love_info)
+        // var love_info = JSON.stringify(this.data.love_info)
         var imgList = JSON.stringify(this.data.imgList)
-        
-        return stringHash(basic_info+love_info+imgList)
+
+        // return stringHash(basic_info + love_info + imgList)
+        return stringHash(basic_info + imgList)
     },
     setDataChanged() {
         var allHash = this.calOrgAllHash()
@@ -121,7 +127,7 @@ Page({
             love_info: this.data.love_info,
         })
         var canShare = completePer == 100
-        if(allHash != this.data.orgAllHash) {
+        if (allHash != this.data.orgAllHash) {
             dataChanged = true
         }
         this.setData({
@@ -178,8 +184,9 @@ Page({
 
     Save: function (e) {
         const that = this
-        this.data.basic_info.company = globalData.userInfo.auth_info.company_auth.company
-        globalData.userInfo.basic_info = this.data.basic_info
+        if(that.calOrgAllHash() == that.data.orgAllHash) return
+        that.data.basic_info.company = globalData.userInfo.auth_info.company_auth.company
+        globalData.userInfo.basic_info = that.data.basic_info
         globalData.nexusInfo.completed = checkComplete(globalData.userInfo) == 100
         //if (!globalData.nexusInfo.completed) {
         //    wx.showModal({
@@ -295,6 +302,15 @@ Page({
         globalData.userInfo.basic_info = that.data.basic_info
         globalData.userInfo.photos = that.data.imgList
         var userInfoHash = stringHash(JSON.stringify(globalData.userInfo))
+        var updateData = {
+            basic_info: that.data.basic_info,
+            photos: that.data.imgList,
+            time: timeStr,
+        }
+        // if submit education pic
+        if (that.data.edPicUrl != '') {
+            updateData.basic_info.edPicUrl = that.data.edPicUrl
+        }
         if (userInfoHash != globalData.userInfoHash) {
             globalData.userInfoHash = userInfoHash
             wx.cloud.callFunction({
@@ -303,11 +319,7 @@ Page({
                     table: 'users',
                     idKey: '_openid',
                     idVal: globalData.userInfo._openid,
-                    data: {
-                        basic_info: that.data.basic_info,
-                        photos: that.data.imgList,
-                        time: timeStr,
-                    }
+                    data: updateData,
                 },
                 success: function (res) {
                     that.setData({
@@ -333,11 +345,11 @@ Page({
                                 name: globalData.userInfo.basic_info.nickName,
                             }
                         },
-                        success: function(res) {
-                            console.log("Update related nexus info successfully!",res)
+                        success: function (res) {
+                            console.log("Update related nexus info successfully!", res)
                         },
-                        fail: function(err) {
-                            console.log("Update related nexus info failed!",err)
+                        fail: function (err) {
+                            console.log("Update related nexus info failed!", err)
                         },
                     })
                 },
@@ -406,9 +418,9 @@ Page({
         })
     },
     gotoAuthCorp() {
-      wx.navigateTo({
-        url: '/pages/authcorp/authcorp',
-      })
+        wx.navigateTo({
+            url: '/pages/authcorp/authcorp',
+        })
     },
     go2Privacy() {
         wx.navigateTo({
@@ -454,12 +466,13 @@ Page({
             authed: globalData.nexusInfo.authed,
             canShare: globalData.nexusInfo.authed && globalData.nexusInfo.completed,
             completePer: checkComplete(globalData.userInfo),
-            getRealID: basic_info.birthday!='' && basic_info.gender!='',
+            getRealID: basic_info.birthday != '' && basic_info.gender != '',
+            edVerifyInfo: basic_info.edPicUrl == '' ? '请上传学历证明照片进行验证(您的信息仅用来做验证，不会被保留)' : '已提交验证，我们会尽快帮您验证学历信息'
         })
         this.data.orgAllHash = this.calOrgAllHash()
 
         // set watcher
-        app.setWatcher(this.data,this.watch, this)
+        app.setWatcher(this.data, this.watch, this)
     },
 
     /**
@@ -472,7 +485,7 @@ Page({
     ChooseIDCardImg(e) {
         const that = this
         wx.chooseImage({
-            count: 4, //默认9
+            count: 1, //默认9
             sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], //从相册选择
             success: (res) => {
@@ -485,7 +498,7 @@ Page({
                 })
                 var now = Date.parse((new Date()).toUTCString())
                 wx.cloud.uploadFile({
-                    cloudPath: that.data.type + '_' + now + '.jpeg', //仅为示例，非真实的接口地址
+                    cloudPath: that.data.photoDir + "/" + that.data.type + '_' + now + '.jpeg',
                     filePath: idCardUrl,
                     complete(res) {
                         if (res.fileID != undefined) {
@@ -547,6 +560,70 @@ Page({
     DelIDCardImg(e) {
         this.setData({
             idCardUrl: ''
+        })
+    },
+    ViewEDImage(e) {
+        wx.previewImage({
+            urls: [e.currentTarget.dataset.url],
+            current: e.currentTarget.dataset.url
+        });
+    },
+    ChooseEDPicImg(e) {
+        const that = this
+        wx.chooseImage({
+            count: 1, //默认9
+            sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], //从相册选择
+            success: (res) => {
+                var edPicUrl = res.tempFilePaths[0]
+                var now = Date.parse((new Date()).toUTCString())
+                wx.cloud.uploadFile({
+                    cloudPath: that.data.photoDir + "/" + that.data.type + '_' + now + '_ED.jpeg',
+                    filePath: edPicUrl,
+                    complete(res) {
+                        var redPicUrl = res.fileID
+                        if (redPicUrl != undefined) {
+                            that.setData({
+                                edVerifyInfo: '已提交验证，我们会尽快帮您验证学历信息',
+                                'basic_info.edPicUrl': redPicUrl,
+                                // edPicUrl: redPicUrl
+                            })
+                            that.Save(null)
+                        } else {
+                            console.log("upload file failed!")
+                        }
+                    }
+                })
+            }
+        });
+    },
+    DelEDPicImg(e) {
+        const that = this
+        if (that.data.basic_info.edPicUrl == '') return
+        wx.showModal({
+            title: '召唤师',
+            content: '确定要删除学历照片么？(没有学历认证将不能发起喜欢))',
+            cancelText: '考虑一下',
+            confirmText: '删除',
+            success: res => {
+                if (res.confirm) {
+                    wx.cloud.deleteFile({
+                        fileList: [that.data.basic_info.edPicUrl],
+                        success: res => {
+                            that.setData({
+                                edVerifyInfo: '请上传学历证明照片进行验证(您的信息仅用来做验证，不会被保留)',
+                                'basic_info.edPicUrl': '',
+                                // edPicUrl: '',
+                            })
+                            that.Save(null)
+                        },
+                        fail: err => {
+                            // handle error
+                            console.log("Delete education picture failed!", err)
+                        }
+                    })
+                }
+            }
         })
     },
 
@@ -626,7 +703,7 @@ Page({
     /**
      * 用户点击右上角分享
      */
-    checkShareStatus: function(res) {
+    checkShareStatus: function (res) {
         wx.showToast({
             title: '请完成认证和完善资料，否则无法分享',
             icon: 'none',
@@ -640,22 +717,22 @@ Page({
         }
         var openid = globalData.userInfo._openid
         var imageUrl = globalData.userInfo.wechat_info.avatarUrl
-        if(this.data.imgList.length != 0) {
+        if (this.data.imgList.length != 0) {
             imageUrl = this.data.imgList[0]
         }
         // generate description
         const basic_info = this.data.basic_info
         var loc = basic_info.location[0]
-        if(loc.indexOf("黑龙江")!=-1 || loc.indexOf("内蒙古")!=-1) loc = loc.substring(0,3)
-        else loc = loc.substring(0,2)
+        if (loc.indexOf("黑龙江") != -1 || loc.indexOf("内蒙古") != -1) loc = loc.substring(0, 3)
+        else loc = loc.substring(0, 2)
         var home = basic_info.hometown[0]
-        if(home.indexOf("黑龙江")!=-1 || home.indexOf("内蒙古")!=-1) home = home.substring(0,3)
-        else home = home.substring(0,2)
+        if (home.indexOf("黑龙江") != -1 || home.indexOf("内蒙古") != -1) home = home.substring(0, 3)
+        else home = home.substring(0, 2)
         var job = basic_info.job_title
         job = job ? job : ''
-        var age = basic_info.birthday.substring(2,4)
-        var desc = "「" + loc + "」" + age + "年 身高" + basic_info.height + " " + 
-            job + (basic_info.gender=='male'?'小哥哥,':'小姐姐,') + 
+        var age = basic_info.birthday.substring(2, 4)
+        var desc = "「" + loc + "」" + age + "年 身高" + basic_info.height + " " +
+            job + (basic_info.gender == 'male' ? '小哥哥,' : '小姐姐,') +
             home + "人," + basic_info.education + "学位"
         return {
             //title: "from:" + openid + ",user:" + openid,

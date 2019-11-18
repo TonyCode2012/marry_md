@@ -77,12 +77,6 @@ Page({
         }
         let auth = res.data[0];
 
-        // db.collection('auth').doc(auth._id).update({
-        //   data: {
-        //     is_active: false,
-        //     status: 'success'
-        //   }
-        // })
         wx.cloud.callFunction({
             name: 'dbupdate',
             data: {
@@ -165,62 +159,6 @@ Page({
                 wx.hideLoading()
             }
         })
-        /*
-        // update users info
-        wx.cloud.callFunction({
-            name: 'dbupdate',
-            data: {
-                table: 'users',
-                _openid: auth._openid,
-                data: {
-                    auth_info: {
-                        company_auth: {
-                            authed: true,
-                            company: corp,
-                            job_title: jobTitle
-                        }
-                    }
-                }
-            },
-            success: function (res) {
-                wx.showToast({
-                    title: '认证成功',
-                    icon: 'success',
-                    duration: 2000
-                })
-                globalData.userInfo.auth_info.company_auth = {
-                    authed: true,
-                    company: corp,
-                    job_title: jobTitle
-                }
-                globalData.nexusInfo.authed = true
-                that.setData({
-                    authed: true
-                })
-            },
-            fail: function (err) {
-                console.log("认证失败," + err)
-            }
-        })
-        // update nexus info
-        wx.cloud.callFunction({
-            name: 'dbupdate',
-            data: {
-                table: 'nexus',
-                _openid: auth._openid,
-                data: {
-                    authed: true,
-                    company: corp,
-                }
-            },
-            success: function (res) {
-                console.log("update nexus table successfully!" + res)
-            },
-            fail: function (err) {
-                console.log("update nexus table failed!" + err)
-            }
-        })
-        */
     },
 
     getAuthCode: async function () {

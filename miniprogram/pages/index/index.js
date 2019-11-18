@@ -3,6 +3,7 @@ const app = getApp()
 const {
     aboutme,
     loveInfoCompletePer,
+    relationMap,
 } = require("../../utils/data.js");
 
 const { checkComplete } = require("../../utils/util.js")
@@ -22,12 +23,6 @@ Page({
         userInfo: globalData.userInfo,
         seekers: {},
         userIDs: [],
-        relationMap: {
-            family: '亲戚',
-            friend: '朋友',
-            schoolmate: '同学',
-            colleague: '同事'
-        },
 
         // authed and completed
         authed: globalData.nexusInfo.authed,
@@ -78,7 +73,7 @@ Page({
                     // relative.relation.reverse()
                     for (var relation of relative.relation) {
                         if (relation.relationship) {
-                            relation.relationship = that.data.relationMap[relation.relationship]
+                            relation.relationship = relationMap[relation.relationship]
                         }
                     }
                 }

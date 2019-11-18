@@ -1,4 +1,5 @@
-const { stringHash } = require("../../../utils/util.js");
+const { stringHash } = require("../../../utils/util.js"); 
+const { basic_item } = require("../../../utils/data.js");
 const app = getApp()
 let {
     db,
@@ -41,20 +42,6 @@ Component({
         StatusBar: app.globalData.StatusBar,
         CustomBar: app.globalData.CustomBar,
         Custom: app.globalData.Custom,
-        basic_item: [
-            "birthday",
-            "college",
-            "company",
-            "education",
-            "gender",
-            "height",
-            "weight",
-            "hometown",
-            "location",
-            "nickName",
-            "profession",
-            "wechat",
-        ],
 
         userInfo: {},
         likeTag: "感兴趣",
@@ -414,7 +401,7 @@ Component({
             })
             let now = new Date()
             var basic_info_t = {}
-            for (var item of this.data.basic_item) {
+            for (var item of basic_item) {
                 basic_info_t[item] = this.data.userInfo.basic_info[item]
             }
             var portraitURL = ""
@@ -435,7 +422,7 @@ Component({
             var ilikeInfo = app.globalData.userInfo.match_info.ilike
             ilikeInfo.push(likeInfo)
             var basic_info_g = {}
-            for (var item of this.data.basic_item) {
+            for (var item of basic_item) {
                 basic_info_g[item] = app.globalData.userInfo.basic_info[item]
             }
             portraitURL = ""

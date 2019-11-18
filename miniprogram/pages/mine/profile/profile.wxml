@@ -121,7 +121,7 @@
 </view>
 
 <!-- education -->
-<view class="cu-form-group margin-top">
+<!-- <view class="cu-form-group margin-top">
   <view class="title">学历*</view>
   <picker data-type="education" bindchange="bindInfoRange" value="{{rangeIndexObj.educationIndex}}" range="{{educationRange}}">
     <view class="picker">
@@ -132,6 +132,34 @@
 <view class="cu-form-group">
   <view class="title">毕业院校</view>
   <input placeholder="请填写您的毕业学校" class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
+</view> -->
+
+<view class="cu-form-group margin-top" style="min-height:100px" wx:if="{{!getRealED}}">
+  <view class="title" style="min-height:60px"><text>学历*\n毕业院校*</text></view>
+  <view class="grid col-4 grid-square flex-sub" style="display:flex;align-items:center">
+    <view class='padding-tb-xs text-sm block text-gray' style="width:70%;text-align:center;margin-top:0px">{{edVerifyInfo}}</view>
+    <view wx:if="{{basic_info.edPicUrl && basic_info.edPicUrl != ''}}" class="bg-img" style="margin-bottom:0px" bindtap="ViewEDImage" data-url="{{basic_info.edPicUrl}}">
+      <image src="{{basic_info.edPicUrl}}" mode='aspectFill'></image>
+        <view class="cu-tag bg-red" catchtap="DelEDPicImg">
+          <text class="cuIcon-close"></text>
+        </view>
+    </view>
+    <view wx:else class="solids" style="margin-bottom:0px" bindtap="ChooseEDPicImg">
+      <text class="cuIcon-cameraadd"></text>
+    </view>
+  </view>
+</view>
+<view wx:if="{{getRealED}}" class="cu-form-group margin-top">
+  <view class="title">学历*</view>
+  <picker data-type="education" bindchange="bindInfoRange" value="{{rangeIndexObj.educationIndex}}" range="{{educationRange}}">
+    <view class="picker">
+      {{educationRange[rangeIndexObj.educationIndex]}}
+    </view>
+  </picker>
+</view>
+<view wx:if="{{getRealED}}" class="cu-form-group margin-top">
+  <view class="title">毕业院校*</view>
+  <input class='text-right' value='{{basic_info.college}}' data-type="college" bindinput="bindInfoInput"></input>
 </view>
 
 

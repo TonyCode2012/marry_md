@@ -6,6 +6,12 @@ const {
     globalData
 } = app
 
+const {
+    aboutme,
+    loveInfoCompletePer,
+    relationMap,
+} = require("../../../utils/data.js");
+
 
 Component({
     options: {

@@ -44,6 +44,7 @@ Page({
         // control update data
         showTip: false,
         tipContent: '',
+        isLeaveMsg: false,
     },
 
 
@@ -68,28 +69,31 @@ Page({
         that.setData({
             InputBottom: InputBottom,
         }, function (res) {
+                // that.adjustPosition({
+                //     focusOnInput: true,
+                //     showedScreen: that.data.showedScreen - InputBottom,
+                // })
+                // that.scrollToBottom()
                 setTimeout(res=>{
                     var allMsgHeight = that.data.chatInfo.messages.length * 
                                         that.data.chatMsgHeight
                     var showedScreen = that.data.showedScreen - InputBottom
+                    var chatBoxPos = 'bottom'
+                    var chatBoxPosVal = 0
                     if (allMsgHeight > showedScreen + InputBottom) {
-                        // show top
-                        that.scrollToBottom()
-                        that.setData({
-                            chatBoxPos: 'bottom',
-                            chatBoxPosVal: 0,
-                            focusOnInput: true,
-                            showedScreen: showedScreen,
-                        })
-                    } else {
                         // show bottom
-                        that.setData({
-                            chatBoxPos: 'top',
-                            chatBoxPosVal: InputBottom,
-                            focusOnInput: true,
-                            showedScreen: showedScreen,
-                        })
+                        that.scrollToBottom()
+                    } else {
+                        // show top
+                        chatBoxPos = 'top'
+                        chatBoxPosVal = InputBottom
                     }
+                    that.setData({
+                        chatBoxPos: chatBoxPos,
+                        chatBoxPosVal: chatBoxPosVal,
+                        focusOnInput: true,
+                        showedScreen: showedScreen,
+                    })
                 },500)
             }
         )
@@ -120,6 +124,48 @@ Page({
         })
     },
 
+
+    /*
+     * used to adjust message position
+     */
+    adjustPosition(data) {
+        const that = this
+        if(that.data.isLeaveMsg) return
+        var waitTime = 600
+        if (that.data.chatMsgHeight > 0) waitTime = 0
+        setTimeout(res => {
+            var chatMsgHeight = that.data.chatMsgHeight
+            var allMsgHeight = that.data.chatInfo.messages.length * chatMsgHeight
+            var chatBoxPos = that.data.chatBoxPos
+            var chatBoxPosVal = that.data.chatBoxPosVal
+            var showedScreen = that.data.showedScreen
+            var InputBottom = that.data.InputBottom
+            if (allMsgHeight > showedScreen + InputBottom) {
+                chatBoxPos = 'bottom'
+                chatBoxPosVal += chatMsgHeight
+            } else {
+                chatBoxPos = 'top'
+                if (allMsgHeight > showedScreen) {
+                    chatBoxPosVal -= chatMsgHeight
+                    if (chatBoxPosVal <= chatMsgHeight) chatBoxPosVal = 0
+                } else {
+                    chatBoxPosVal = InputBottom
+                }
+            }
+            var posData = {
+                chatBoxPos: chatBoxPos,
+                chatBoxPosVal: chatBoxPosVal,
+            }
+            if(data) {
+                for(var key of Object.keys(posData)) {
+                    data[key] = posData[key]
+                }
+            } else {
+                data = posData
+            }
+            that.setData(data)
+        }, waitTime)
+    },
     inputMessage(e) {
         this.setData({
             text: e.detail.value,
@@ -147,31 +193,32 @@ Page({
             chatInfo: that.data.chatInfo,
             text: '',
         },function (res) {
-            var waitTime = 600
-            if(that.data.chatMsgHeight > 0) waitTime = 0
-            setTimeout(res => {
-            var chatMsgHeight = that.data.chatMsgHeight
-            var allMsgHeight = messages.length * chatMsgHeight
-            var chatBoxPos = that.data.chatBoxPos
-            var chatBoxPosVal = that.data.chatBoxPosVal
-            var showedScreen = that.data.showedScreen
-            var InputBottom = that.data.InputBottom
-            if (allMsgHeight > showedScreen + InputBottom) {
-                chatBoxPos = 'bottom'
-                chatBoxPosVal += chatMsgHeight
-            } else {
-                chatBoxPos = 'top'
-                if (allMsgHeight > showedScreen) {
-                    chatBoxPosVal -= chatMsgHeight
-                    if (chatBoxPosVal <= chatMsgHeight) chatBoxPosVal = 0
-                } else {
-                    chatBoxPosVal = InputBottom
-                }
-            }
-            that.setData({
-                chatBoxPos: chatBoxPos,
-                chatBoxPosVal: chatBoxPosVal,
-            })},waitTime)
+            that.adjustPosition()
+            // var waitTime = 600
+            // if(that.data.chatMsgHeight > 0) waitTime = 0
+            // setTimeout(res => {
+            // var chatMsgHeight = that.data.chatMsgHeight
+            // var allMsgHeight = messages.length * chatMsgHeight
+            // var chatBoxPos = that.data.chatBoxPos
+            // var chatBoxPosVal = that.data.chatBoxPosVal
+            // var showedScreen = that.data.showedScreen
+            // var InputBottom = that.data.InputBottom
+            // if (allMsgHeight > showedScreen + InputBottom) {
+            //     chatBoxPos = 'bottom'
+            //     chatBoxPosVal += chatMsgHeight
+            // } else {
+            //     chatBoxPos = 'top'
+            //     if (allMsgHeight > showedScreen) {
+            //         chatBoxPosVal -= chatMsgHeight
+            //         if (chatBoxPosVal <= chatMsgHeight) chatBoxPosVal = 0
+            //     } else {
+            //         chatBoxPosVal = InputBottom
+            //     }
+            // }
+            // that.setData({
+            //     chatBoxPos: chatBoxPos,
+            //     chatBoxPosVal: chatBoxPosVal,
+            // })},waitTime)
         })
         // sync messages to db
         wx.cloud.callFunction({
@@ -213,6 +260,7 @@ Page({
                     globalData.userInfo.match_info[tag][index] = likeInfo
                     that.setData({
                         'likeInfo.decision': decision,
+                        isLeaveMsg: decision != 'yes',
                     })
                 }
                 console.log(res)
@@ -262,12 +310,12 @@ Page({
     // ListTouch计算滚动
     ListTouchEnd(e) {
         const that = this
-        var shiftDisY = this.data.shiftDisY
-        var shiftDisX = this.data.shiftDisX
-        var scrollToTop = this.data.scrollToTop
-        var ListTouchVDirection = this.data.ListTouchVDirection
+        var shiftDisY = that.data.shiftDisY
+        var shiftDisX = that.data.shiftDisX
+        var scrollToTop = that.data.scrollToTop
+        var ListTouchVDirection = that.data.ListTouchVDirection
         if (shiftDisY > 70 && scrollToTop && ListTouchVDirection == 'down') {
-            this.setData({
+            that.setData({
                 showTip: true,
                 tipContent: 'loading',
             })
@@ -299,7 +347,7 @@ Page({
                         that.setData({
                             chatInfo: chatInfo,
                         })
-                        this.scrollToTop()
+                        that.scrollToTop()
                     } else {
                         console.log("Get old messages failed!",res)
                     }
@@ -315,12 +363,101 @@ Page({
                 }
             })
         }
-        this.setData({
+        that.setData({
             ListTouchHDirection: '',
             ListTouchVDirection: '',
             shiftDisX: 0,
             shiftDisY: 0,
         })
+    },
+
+    // get new messages
+    checkNewMessages() {
+        const that = this
+        // check if there is a update every 3 seconds
+        return setInterval(function (res) {
+            db.collection('chat').where({
+                _chatid: that.data.chatid
+            }).get({
+                success: function (res) {
+                    if (res.data.length != 0) {
+                        var nChatInfo = res.data[0]
+                        var cChatInfo = that.data.chatInfo
+                        var nEndPos = nChatInfo.messages.length
+                        var cEndPos = cChatInfo.endPos
+                        var fMessaegs = cChatInfo.messages
+                        var talkOID = that.data.talkOID
+                        var needDBUpdate = false
+                        var needPGUpdate = false
+                        var messageChanged = false
+                        // update messages
+                        if (nEndPos > cEndPos) {
+                            // if get new messages, update
+                            var diffNum = nEndPos - cEndPos
+                            var nMessages = nChatInfo.messages.slice(nEndPos - diffNum, nEndPos)
+                            cChatInfo.messages = cChatInfo.messages.concat(nMessages)
+                            cChatInfo.endPos = nEndPos
+                            globalData.chatMap.set(that.data.chatid, cChatInfo)
+                            fMessaegs = cChatInfo.messages
+                            messageChanged = true
+                        } else {
+                            fMessaegs = nChatInfo.messages
+                        }
+                        // update check status
+                        for (var msg of fMessaegs) {
+                            if (msg._openid == talkOID) {
+                                if (!msg.checked) {
+                                    msg.checked = true
+                                    needDBUpdate = true
+                                }
+                            } else if (!needPGUpdate && msg.checked) {
+                                needPGUpdate = true
+                            }
+                        }
+                        cChatInfo.messages = fMessaegs
+                        // update db check status
+                        if (needDBUpdate) {
+                            wx.cloud.callFunction({
+                                name: 'dbupdate',
+                                data: {
+                                    table: 'chat',
+                                    idKey: '_chatid',
+                                    idVal: that.data.chatid,
+                                    data: {
+                                        messages: fMessaegs,
+                                    }
+                                },
+                                success: function (res) {
+                                    console.log("Update read status succesfully!", res)
+                                },
+                                fail: function (err) {
+                                    console.log("Update read status failed!", err)
+                                }
+                            })
+                        }
+                        // update page messaget status
+                        if (needPGUpdate || messageChanged) {
+                            that.setData({
+                                chatInfo: cChatInfo,
+                            }, function (res) {
+                                if (messageChanged) {
+                                    if (that.data.InputBottom == 0) {
+                                        that.scrollToBottom()
+                                        return
+                                    }
+                                    that.adjustPosition()
+                                }
+                            })
+                        }
+                    } else {
+                        console.log("Check chat update failed!", res)
+                    }
+                },
+                fail: function (err) {
+                    console.log("Check chat update failed!Internal error!", err)
+                }
+            })
+        }, 2000)
     },
 
     onLoad(option) {
@@ -373,117 +510,12 @@ Page({
             that.setData({
                 chatInfo: chatInfo,
             })
+            that.adjustPosition()
             // scroll to page bottom
             that.scrollToBottom()
         }
-        // check if there is a update every 3 seconds
-        var chatIntervalID = setInterval(function(res) {
-            db.collection('chat').where({
-                _chatid: chatid
-            }).get({
-                success: function(res) {
-                    if(res.data.length != 0) {
-                        var nChatInfo = res.data[0]
-                        var cChatInfo = that.data.chatInfo
-                        var nEndPos = nChatInfo.messages.length
-                        var cEndPos = cChatInfo.endPos
-                        var fMessaegs = cChatInfo.messages
-                        var talkOID = that.data.talkOID
-                        var needDBUpdate = false
-                        var needPGUpdate = false
-                        var messageChanged = false
-                        // update messages
-                        if (nEndPos > cEndPos) {
-                            // if get new messages, update
-                            var diffNum = nEndPos - cEndPos
-                            var nMessages = nChatInfo.messages.slice(nEndPos-diffNum,nEndPos)
-                            cChatInfo.messages = cChatInfo.messages.concat(nMessages)
-                            cChatInfo.endPos = nEndPos
-                            globalData.chatMap.set(that.data.chatid,cChatInfo)
-                            fMessaegs = cChatInfo.messages
-                            messageChanged = true
-                        } else {
-                            fMessaegs = nChatInfo.messages
-                        }
-                        // update check status
-                        for(var msg of fMessaegs) {
-                            if(msg._openid == talkOID) {
-                                if (!msg.checked) {
-                                    msg.checked = true
-                                    needDBUpdate = true
-                                }
-                            } else if (!needPGUpdate && msg.checked) {
-                                needPGUpdate = true
-                            }
-                        }
-                        cChatInfo.messages = fMessaegs
-                        // update db check status
-                        if (needDBUpdate) {
-                            wx.cloud.callFunction({
-                                name: 'dbupdate',
-                                data: {
-                                    table: 'chat',
-                                    idKey: '_chatid',
-                                    idVal: that.data.chatid,
-                                    data: {
-                                        messages: fMessaegs,
-                                    }
-                                },
-                                success: function (res) {
-                                    console.log("Update read status succesfully!", res)
-                                },
-                                fail: function (err) {
-                                    console.log("Update read status failed!", err)
-                                }
-                            })
-                        }
-                        // update page messaget status
-                        if(needPGUpdate || messageChanged) {
-                            that.setData({
-                                chatInfo: cChatInfo,
-                            },function(res) {
-                                if(messageChanged) {
-                                    if(that.data.InputBottom == 0) {
-                                        that.scrollToBottom()
-                                        return
-                                    }
-                                    var waitTime = 500
-                                    if(that.data.chatMsgHeight > 0) waitTime = 0
-                                    setTimeout(res => {
-                                    var chatMsgHeight = that.data.chatMsgHeight
-                                    var allMsgHeight = cChatInfo.messages.length * chatMsgHeight
-                                    var chatBoxPos = that.data.chatBoxPos
-                                    var chatBoxPosVal = that.data.chatBoxPosVal
-                                    var showedScreen = that.data.showedScreen
-                                    var InputBottom = that.data.InputBottom
-                                    if(allMsgHeight > showedScreen + InputBottom) {
-                                        chatBoxPos = 'bottom'
-                                        chatBoxPosVal += chatMsgHeight
-                                    } else {
-                                        chatBoxPos = 'top'
-                                        if (allMsgHeight > showedScreen) {
-                                            chatBoxPosVal -= chatMsgHeight
-                                            if (chatBoxPosVal <= chatMsgHeight) chatBoxPosVal = 0
-                                        } else {
-                                            chatBoxPosVal = InputBottom
-                                        }
-                                    }
-                                    that.setData({
-                                        chatBoxPos: chatBoxPos,
-                                        chatBoxPosVal: chatBoxPosVal,
-                                    })}, waitTime)
-                                }
-                            })
-                        }
-                    } else {
-                        console.log("Check chat update failed!",res)
-                    }
-                },
-                fail: function(err) {
-                    console.log("Check chat update failed!Internal error!",err)
-                }
-            })
-        }, 2000)
+        // check new messages
+        var chatIntervalID = that.checkNewMessages()
         this.setData({
             selfOID: selfOID,
             talkOID: talkOID,
@@ -492,6 +524,7 @@ Page({
             chatid: chatid,
             chatIntervalID: chatIntervalID,
             likeInfo: likeInfo,
+            isLeaveMsg: likeInfo.decision != 'yes',
         })
     },
 
@@ -507,6 +540,12 @@ Page({
                 displayScreen: displayScreen,
             })
         }).exec()
+        // check new messages
+        if(that.data.chatid != '') {
+            that.setData({
+                chatIntervalID: that.checkNewMessages()
+            })
+        }
     },
 
     onPageScroll: function(e) {

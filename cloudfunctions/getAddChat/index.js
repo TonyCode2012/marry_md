@@ -56,7 +56,11 @@ exports.main = async (event, context) => {
                             getShow = true
                         }
                         if (getShow) {
-                            showedMsg.push(JSON.parse(JSON.stringify(msg)))
+                            var nMsg = JSON.parse(JSON.stringify(msg))
+                            if(nMsg._openid == talkOID) {
+                                nMsg.checked = true
+                            }
+                            showedMsg.push(nMsg)
                             msg.checked = true
                         }
                     }
