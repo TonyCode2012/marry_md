@@ -69,7 +69,7 @@ Page({
         that.setData({
             InputBottom: InputBottom,
         }, function (res) {
-                // that.adjustPosition({
+                // that.adjustMsgPos({
                 //     focusOnInput: true,
                 //     showedScreen: that.data.showedScreen - InputBottom,
                 // })
@@ -80,13 +80,24 @@ Page({
                     var showedScreen = that.data.showedScreen - InputBottom
                     var chatBoxPos = 'bottom'
                     var chatBoxPosVal = 0
+                    var chatMsgHeight = that.data.chatMsgHeight
                     if (allMsgHeight > showedScreen + InputBottom) {
                         // show bottom
                         that.scrollToBottom()
                     } else {
                         // show top
                         chatBoxPos = 'top'
-                        chatBoxPosVal = InputBottom
+                        if (allMsgHeight > showedScreen) {
+                            chatBoxPosVal = InputBottom - (allMsgHeight - showedScreen)
+                        } else {
+                            chatBoxPosVal = InputBottom
+                        }
+                        // if(allMsgHeight < showedScreen) {
+                        //     chatBoxPos = 'top'
+                        //     chatBoxPosVal = InputBottom
+                        // } else {
+                        //     that.scrollToBottom()
+                        // }
                     }
                     that.setData({
                         chatBoxPos: chatBoxPos,
@@ -128,7 +139,7 @@ Page({
     /*
      * used to adjust message position
      */
-    adjustPosition(data) {
+    adjustMsgPos(data) {
         const that = this
         if(that.data.isLeaveMsg) return
         var waitTime = 600
@@ -193,7 +204,7 @@ Page({
             chatInfo: that.data.chatInfo,
             text: '',
         },function (res) {
-            that.adjustPosition()
+            that.adjustMsgPos()
             // var waitTime = 600
             // if(that.data.chatMsgHeight > 0) waitTime = 0
             // setTimeout(res => {
@@ -261,6 +272,21 @@ Page({
                     that.setData({
                         'likeInfo.decision': decision,
                         isLeaveMsg: decision != 'yes',
+                    },function(res) {
+                        if(decision != 'yes') return
+                        setTimeout(res => {
+                            wx.createSelectorQuery().select('#inputBox').
+                            boundingClientRect(rect => {
+                                var showedScreen = that.data.showedScreen
+                                var displayScreen = showedScreen
+                                if (rect) {
+                                    showedScreen -= rect.height
+                                }
+                                that.setData({
+                                    showedScreen: showedScreen,
+                                    displayScreen: displayScreen,
+                                })
+                        }).exec(), 500})
                     })
                 }
                 console.log(res)
@@ -376,10 +402,53 @@ Page({
         const that = this
         // check if there is a update every 3 seconds
         return setInterval(function (res) {
+            // check if agreed
+            if (that.data.likeInfo.decision != 'yes') {
+                db.collection('users').where({
+                    _openid: globalData.userInfo._openid
+                }).get().then(
+                    function (res) {
+                        if (res.data.length == 0) {
+                            console.log("Get user info failed!", res)
+                            return
+                        }
+                        var ilikeInfo = res.data[0].match_info.ilike
+                        for (var index in ilikeInfo) {
+                            var item = ilikeInfo[index]
+                            if (item._openid == that.data.talkOID && item.decision == 'yes') {
+                                globalData.userInfo.match_info['ilike'][index].decision = 'yes'
+                                that.setData({
+                                    isLeaveMsg: false,
+                                    'likeInfo.decision': 'yes',
+                                },function(res) {
+                                    setTimeout(res => {
+                                    wx.createSelectorQuery().select('#inputBox').
+                                    boundingClientRect(rect => {
+                                        var showedScreen = that.data.showedScreen
+                                        var displayScreen = showedScreen
+                                        if (rect) {
+                                            showedScreen -= rect.height
+                                        }
+                                        that.setData({
+                                            showedScreen: showedScreen,
+                                            displayScreen: displayScreen,
+                                        })
+                                    }).exec(),500})
+                                })
+                                break
+                            }
+                        }
+                    },
+                    function(err) {
+                        console.log("Get user info failed!Internal error!",err)
+                    }
+                )
+            }
             db.collection('chat').where({
                 _chatid: that.data.chatid
             }).get({
                 success: function (res) {
+                    console.log("Coming to check update,ID:", that.data.chatIntervalID)
                     if (res.data.length != 0) {
                         var nChatInfo = res.data[0]
                         var cChatInfo = that.data.chatInfo
@@ -445,7 +514,7 @@ Page({
                                         that.scrollToBottom()
                                         return
                                     }
-                                    that.adjustPosition()
+                                    that.adjustMsgPos()
                                 }
                             })
                         }
@@ -495,6 +564,7 @@ Page({
                         globalData.chatMap.set(chatid, chatInfo)
                         that.setData({
                             chatInfo: chatInfo,
+                            isLeaveMsg: likeInfo.decision != 'yes',
                         })
                         // scroll to page bottom
                         that.scrollToBottom()
@@ -509,8 +579,9 @@ Page({
         } else {
             that.setData({
                 chatInfo: chatInfo,
+                isLeaveMsg: likeInfo.decision != 'yes',
             })
-            that.adjustPosition()
+            // that.adjustMsgPos()
             // scroll to page bottom
             that.scrollToBottom()
         }
@@ -524,7 +595,6 @@ Page({
             chatid: chatid,
             chatIntervalID: chatIntervalID,
             likeInfo: likeInfo,
-            isLeaveMsg: likeInfo.decision != 'yes',
         })
     },
 
@@ -534,14 +604,16 @@ Page({
         var showedScreen = globalData.CustomHeight - globalData.CustomBar
         wx.createSelectorQuery().select('#inputBox').boundingClientRect(rect => {
             var displayScreen = showedScreen
-            showedScreen -= rect.height
+            if(rect) {
+                showedScreen -= rect.height
+            }
             that.setData({
                 showedScreen: showedScreen,
                 displayScreen: displayScreen,
             })
         }).exec()
         // check new messages
-        if(that.data.chatid != '') {
+        if (that.data.chatIntervalID == -1) {
             that.setData({
                 chatIntervalID: that.checkNewMessages()
             })
@@ -554,8 +626,14 @@ Page({
 
     onUnload: function() {
         clearInterval(this.data.chatIntervalID)
+        this.setData({
+            chatIntervalID: -1,
+        })
     },
     onHide: function() {
         clearInterval(this.data.chatIntervalID)
+        this.setData({
+            chatIntervalID: -1,
+        })
     },
 })
