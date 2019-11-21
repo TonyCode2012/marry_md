@@ -401,10 +401,10 @@ Page({
     checkNewMessages() {
         const that = this
         // check if there is a update every 3 seconds
-        return setInterval(function (res) {
+        return setInterval(async function (res) {
             // check if agreed
             if (that.data.likeInfo.decision != 'yes') {
-                db.collection('users').where({
+                await db.collection('users').where({
                     _openid: globalData.userInfo._openid
                 }).get().then(
                     function (res) {
@@ -444,6 +444,7 @@ Page({
                     }
                 )
             }
+            if(that.data.likeInfo.tag == 'ilike' && that.data.likeInfo.decision != 'yes') return
             db.collection('chat').where({
                 _chatid: that.data.chatid
             }).get({
